@@ -1,4 +1,9 @@
-import { FiPlus, FiTrash2 } from "react-icons/fi";
+import { useState } from "react";
+import { FiPlus } from "react-icons/fi";
+
+import { Button } from "../../../components/ui/button/Button";
+import StepCheckList from "../../../components/ui/step-check-list/StepCheckList";
+import { useTranslation } from "../../../i18n";
 import type { TaskStep } from "../domain/others";
 import styles from "./TaskStepsEditor.module.scss";
 
@@ -27,8 +32,15 @@ export function TaskStepsEditor({
   onChange,
   labels,
 }: TaskStepsEditorProps) {
+  const { t } = useTranslation();
+  const [editable, setEditable] = useState(true);
+  const [focusStepId, setFocusStepId] = useState<string | null>(null);
+
   const addStep = () => {
-    onChange([...steps, createStep()]);
+    const step = createStep();
+    onChange([...steps, step]);
+    setEditable(true);
+    setFocusStepId(step.id);
   };
 
   const updateStep = (id: string, text: string) => {
@@ -39,34 +51,56 @@ export function TaskStepsEditor({
     onChange(steps.filter((step) => step.id !== id));
   };
 
+  const toggleEditable = () => {
+    setEditable((value) => !value);
+  };
+
   return (
     <div className={styles.root}>
-      <ul className={styles.list}>
-        {steps.map((step, index) => (
-          <li key={step.id} className={styles.item}>
-            <span className={styles.index}>{index + 1}</span>
-            <input
-              type="text"
-              value={step.text}
-              onChange={(event) => updateStep(step.id, event.target.value)}
-              placeholder={labels.stepPlaceholder}
-              aria-label={`${labels.stepPlaceholder} ${index + 1}`}
+      <div className={styles.toolbar}>
+        <Button
+          onClick={toggleEditable}
+          active={editable}
+          className={`${styles.editSwitch} ${editable ? styles.editSwitchOn : ""}`}
+        >
+          <Button.Icon>
+            <span className={styles.editSwitchTrack}>
+              <span className={styles.editSwitchThumb} />
+            </span>
+          </Button.Icon>
+          <Button.Text>{t.tasks.dashboard.editSteps}</Button.Text>
+        </Button>
+      </div>
+
+      {steps.length > 0 ? (
+        <StepCheckList
+          editable={editable}
+          onChangeStep={updateStep}
+          onRemoveStep={removeStep}
+          stepPlaceholder={labels.stepPlaceholder}
+          removeStepLabel={labels.removeStep}
+        >
+          {steps.map((step, index) => (
+            <StepCheckList.Item
+              key={step.id}
+              step={{ ...step, completed: Boolean(step.completed) }}
+              index={index}
+              autoFocus={step.id === focusStepId}
             />
-            <button
-              type="button"
-              className={styles.removeBtn}
-              onClick={() => removeStep(step.id)}
-              aria-label={labels.removeStep}
-            >
-              <FiTrash2 size={14} aria-hidden />
-            </button>
-          </li>
-        ))}
-      </ul>
-      <button type="button" className={styles.addBtn} onClick={addStep}>
-        <FiPlus size={14} aria-hidden />
-        {labels.addStep}
-      </button>
+          ))}
+        </StepCheckList>
+      ) : !editable ? (
+        <p className={styles.empty}>{t.tasks.dashboard.stepsEditorEmpty}</p>
+      ) : null}
+
+      {editable ? (
+        <Button onClick={addStep} className={styles.addBtn}>
+          <Button.Icon>
+            <FiPlus size={14} />
+          </Button.Icon>
+          <Button.Text>{labels.addStep}</Button.Text>
+        </Button>
+      ) : null}
     </div>
   );
 }

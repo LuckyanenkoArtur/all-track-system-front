@@ -7,3 +7,17 @@
   color: var(--color-text);
   white-space: nowrap;
 }
+
+.title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.titleUnderline {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}

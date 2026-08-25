@@ -9,6 +9,7 @@ import styles from "./Drawer.module.scss";
 import { Form } from "../../../../../components/ui/form/Form";
 import formStyles from "../../../../../components/ui/form/Form.module.scss";
 import { Drawer } from "../../../../../components/ui/drawer/Drawer";
+import Title from "../../../../../components/ui/title/Title";
 import type { CompletionReportStep } from "../../../domain/step";
 import type { TaskStep } from "../../../domain/others";
 import { TaskStepsEditor } from "../../TaskStepsEditor";
@@ -134,7 +135,12 @@ export function CompleteTaskDrawer({
                   className={formStyles.section}
                   aria-label={labels.steps}
                 >
-                  <h3 className={formStyles.sectionTitle}>{labels.steps}</h3>
+                  <Title
+                    text={labels.steps}
+                    as="h3"
+                    underline
+                    className={formStyles.sectionTitle}
+                  />
                   <TaskStepsEditor
                     steps={toEditorSteps(steps)}
                     onChange={(next) => setSteps(fromEditorSteps(next))}

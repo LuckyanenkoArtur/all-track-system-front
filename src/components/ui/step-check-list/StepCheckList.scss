@@ -21,7 +21,8 @@
     &--completed {
       opacity: 0.75;
 
-      .check-list__text {
+      .check-list__text,
+      .check-list__input {
         text-decoration: line-through;
         color: var(--color-text-muted);
       }
@@ -61,7 +62,8 @@
     font-weight: 700;
   }
 
-  &__text {
+  &__text,
+  &__input {
     flex: 1;
     min-width: 0;
     font-size: 0.875rem;
@@ -69,5 +71,55 @@
     line-height: 1.4;
     overflow-wrap: anywhere;
     word-break: break-word;
+  }
+
+  &__input {
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font-family: inherit;
+    font-weight: inherit;
+    caret-color: var(--color-accent);
+
+    &::placeholder {
+      color: var(--color-text-muted);
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+
+  &__remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-surface-hover);
+      color: var(--color-danger);
+    }
+  }
+
+  &--editable {
+    .check-list__item:focus-within {
+      border-color: var(--color-accent);
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { Form } from "../../../../../components/ui/form/Form";
 import formStyles from "../../../../../components/ui/form/Form.module.scss";
 import { Drawer } from "../../../../../components/ui/drawer/Drawer";
+import Title from "../../../../../components/ui/title/Title";
 import {
   useCallback,
   useEffect,
@@ -320,9 +321,13 @@ export function TaskCreationDrawer({
                 className={formStyles.section}
                 aria-labelledby="create-task-details"
               >
-                <h3 id="create-task-details" className={formStyles.sectionTitle}>
-                  {labels.sectionTaskDetails}
-                </h3>
+                <Title
+                  id="create-task-details"
+                  text={labels.sectionTaskDetails}
+                  as="h3"
+                  underline
+                  className={formStyles.sectionTitle}
+                />
                 <div className={formStyles.sectionGrid}>
                   <label
                     className={`${formStyles.field} ${styles.field}`.trim()}
@@ -378,9 +383,13 @@ export function TaskCreationDrawer({
                 className={formStyles.section}
                 aria-labelledby="create-task-people"
               >
-                <h3 id="create-task-people" className={formStyles.sectionTitle}>
-                  {labels.sectionPeople}
-                </h3>
+                <Title
+                  id="create-task-people"
+                  text={labels.sectionPeople}
+                  as="h3"
+                  underline
+                  className={formStyles.sectionTitle}
+                />
                 <div className={formStyles.sectionGrid}>
                   <div className={styles.initiatorRow}>
                     <span className={formStyles.fieldLabel}>
@@ -421,9 +430,13 @@ export function TaskCreationDrawer({
                 className={formStyles.section}
                 aria-labelledby="create-task-schedule"
               >
-                <h3 id="create-task-schedule" className={formStyles.sectionTitle}>
-                  {labels.sectionSchedule}
-                </h3>
+                <Title
+                  id="create-task-schedule"
+                  text={labels.sectionSchedule}
+                  as="h3"
+                  underline
+                  className={formStyles.sectionTitle}
+                />
                 <div className={formStyles.fieldRow}>
                   <label
                     className={`${formStyles.field} ${styles.field}`.trim()}
@@ -469,12 +482,13 @@ export function TaskCreationDrawer({
                 className={formStyles.section}
                 aria-labelledby="create-task-priority-budget"
               >
-                <h3
+                <Title
                   id="create-task-priority-budget"
+                  text={labels.sectionPriorityBudget}
+                  as="h3"
+                  underline
                   className={formStyles.sectionTitle}
-                >
-                  {labels.sectionPriorityBudget}
-                </h3>
+                />
                 <div className={formStyles.fieldRow}>
                   <label
                     className={`${formStyles.field} ${styles.field}`.trim()}
@@ -531,12 +545,13 @@ export function TaskCreationDrawer({
                 className={formStyles.section}
                 aria-labelledby="create-task-attachments"
               >
-                <h3
+                <Title
                   id="create-task-attachments"
+                  text={labels.sectionAttachments}
+                  as="h3"
+                  underline
                   className={formStyles.sectionTitle}
-                >
-                  {labels.sectionAttachments}
-                </h3>
+                />
                 <div className={formStyles.sectionGrid}>
                   <div
                     className={`${formStyles.field} ${styles.field}`.trim()}

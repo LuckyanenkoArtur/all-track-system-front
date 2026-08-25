@@ -1,7 +1,7 @@
-.field input[type="text"],
-.field input[type="number"],
-.field select,
-.field textarea {
+.field > input[type="text"],
+.field > input[type="number"],
+.field > select,
+.field > textarea {
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -19,8 +19,8 @@
   }
 }
 
-.field input[type="text"],
-.field select {
+.field > input[type="text"],
+.field > select {
   height: 38px;
   padding: 0 12px;
 }

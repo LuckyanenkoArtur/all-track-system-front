@@ -253,6 +253,8 @@
       "addStep": "Добавить шаг",
       "stepPlaceholder": "Опишите шаг для выполнения…",
       "removeStep": "Удалить шаг",
+      "editSteps": "Изменить",
+      "stepsEditorEmpty": "Шагов пока нет.",
       "priorityPlaceholder": "Выберите приоритет…",
       "maxBudget": "Макс. бюджет",
       "maxBudgetPlaceholder": "0.00",

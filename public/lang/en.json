@@ -253,6 +253,8 @@
       "addStep": "Add step",
       "stepPlaceholder": "Describe a step to perform…",
       "removeStep": "Remove step",
+      "editSteps": "Edit",
+      "stepsEditorEmpty": "No steps yet.",
       "priorityPlaceholder": "Choose priority…",
       "maxBudget": "Max budget",
       "maxBudgetPlaceholder": "0.00",

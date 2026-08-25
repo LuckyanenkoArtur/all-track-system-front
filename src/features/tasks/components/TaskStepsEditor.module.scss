@@ -4,84 +4,125 @@
   gap: 10px;
 }
 
-.list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.item {
+.toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-end;
 }
 
-.index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 9999px;
-  background: var(--color-surface-hover);
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.item input {
-  flex: 1;
-  min-width: 0;
-  height: 38px;
-  padding: 0 12px;
+.editSwitch {
+  height: 34px;
+  min-height: 34px;
+  padding: 0 12px 0 8px;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-surface-secondary);
-  color: var(--color-text);
-  font-size: 0.875rem;
-}
-
-.removeBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
+  background: var(--color-surface);
+  box-shadow: none;
   color: var(--color-text-muted);
-  cursor: pointer;
 
-  &:hover {
-    background: var(--color-surface-hover);
-    color: var(--color-danger);
+  &:active {
+    transform: none;
+  }
+
+  &:hover:not(:disabled) .editSwitchTrack {
+    border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  }
+
+  :global(strong) {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: inherit;
+  }
+
+  > span[aria-hidden] {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
   }
 }
 
-.addBtn {
+.editSwitch.editSwitchOn {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.editSwitchTrack {
+  position: relative;
   display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-surface-hover);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.editSwitchOn .editSwitchTrack {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.editSwitchThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.editSwitchOn .editSwitchThumb {
+  transform: translateX(16px);
+}
+
+.empty {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.addBtn {
   align-self: flex-start;
   height: 34px;
+  min-height: 34px;
   padding: 0 12px;
   border: 1px dashed var(--color-border);
   border-radius: 10px;
   background: transparent;
+  box-shadow: none;
   color: var(--color-text-muted);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  cursor: pointer;
 
-  &:hover {
+  &:active {
+    transform: none;
+  }
+
+  &:hover:not(:disabled) {
     border-color: var(--color-accent);
-    color: var(--color-accent);
     background: var(--color-accent-light);
+    color: var(--color-accent);
+  }
+
+  :global(strong) {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: inherit;
+  }
+
+  > span[aria-hidden] {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
   }
 }
