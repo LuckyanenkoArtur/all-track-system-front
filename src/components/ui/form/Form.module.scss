@@ -45,10 +45,6 @@
 
 .sectionTitle {
   margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: normal;
-  color: var(--color-text);
 }
 
 .sectionGrid {
@@ -73,22 +69,18 @@
 }
 
 .fieldLabel {
-  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-text);
-
-  em {
-    margin-left: 6px;
-    font-style: normal;
-    font-weight: 500;
-    color: var(--color-text-muted);
-  }
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
 }
 
 .fieldLabelFilter {
   font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-text-muted);
 }

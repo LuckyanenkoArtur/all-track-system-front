@@ -114,7 +114,7 @@ export function TaskStateFilterSection({
         {t.tasks.filterSections.taskState}
       </Sections.Section.Title>
       <Sections.Section.Content>
-        <div className={styles.stack}>
+        <div className={styles.row}>
           {fields.map(({ key, label, options, icon }) => (
             <MultiSelect
               key={key}

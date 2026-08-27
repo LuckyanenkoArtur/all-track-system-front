@@ -20,6 +20,15 @@
       "en": "English",
       "ru": "Русский",
       "label": "Язык"
+    },
+    "datePicker": {
+      "placeholder": "Выберите дату…",
+      "today": "Сегодня",
+      "clear": "Очистить",
+      "previousMonth": "Предыдущий месяц",
+      "nextMonth": "Следующий месяц",
+      "hour": "Часы",
+      "minute": "Минуты"
     }
   },
   "sidebar": {
@@ -253,8 +262,6 @@
       "addStep": "Добавить шаг",
       "stepPlaceholder": "Опишите шаг для выполнения…",
       "removeStep": "Удалить шаг",
-      "editSteps": "Изменить",
-      "stepsEditorEmpty": "Шагов пока нет.",
       "priorityPlaceholder": "Выберите приоритет…",
       "maxBudget": "Макс. бюджет",
       "maxBudgetPlaceholder": "0.00",

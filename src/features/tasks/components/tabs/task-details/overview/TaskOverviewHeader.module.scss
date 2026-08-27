@@ -69,7 +69,7 @@
   min-width: 0;
   flex: 1;
 
-  &:global(.pageHeading) {
+  &:global(.title) {
     min-width: 0;
     font-size: clamp(1.0625rem, 2vw, 1.375rem);
     line-height: 1.3;

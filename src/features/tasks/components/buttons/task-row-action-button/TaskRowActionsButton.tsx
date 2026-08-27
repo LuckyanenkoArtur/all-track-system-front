@@ -10,9 +10,9 @@ import {
 import { Button } from "../../../../../components/ui/button/Button";
 import type { Task } from "../../../domain/others";
 import { isTerminalTaskStatus } from "../../../utils/taskStatusUtils";
-import styles from "./TaskRowActions.module.scss";
+import styles from "./TaskRowActionsButton.module.scss";
 
-type TaskRowActionsProps = {
+type TaskRowActionsButtonProps = {
   task: Task;
   isTracking: boolean;
   labels: {
@@ -29,7 +29,7 @@ type TaskRowActionsProps = {
   onLogBudgetExpense?: (taskId: string) => void;
 };
 
-export function TaskRowActions({
+export function TaskRowActionsButton({
   task,
   isTracking,
   labels,
@@ -37,7 +37,7 @@ export function TaskRowActions({
   onComplete = () => {},
   onAddManualTime = () => {},
   onLogBudgetExpense = () => {},
-}: TaskRowActionsProps) {
+}: TaskRowActionsButtonProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 

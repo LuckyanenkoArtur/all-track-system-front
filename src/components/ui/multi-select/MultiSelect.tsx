@@ -24,6 +24,7 @@ type MultiSelectProps = {
   searchPlaceholder?: string;
   noResultsLabel?: string;
   clearLabel?: string;
+  multiple?: boolean;
 };
 
 export function MultiSelect({
@@ -36,6 +37,7 @@ export function MultiSelect({
   searchPlaceholder = "Search…",
   noResultsLabel = "No options found",
   clearLabel = "Clear",
+  multiple = true,
 }: MultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -61,6 +63,13 @@ export function MultiSelect({
   );
 
   const toggle = (value: string) => {
+    if (!multiple) {
+      onChange([value]);
+      setOpen(false);
+      setQuery("");
+      return;
+    }
+
     onChange(
       selected.includes(value)
         ? selected.filter((item) => item !== value)
@@ -103,11 +112,11 @@ export function MultiSelect({
           >
             {triggerText}
           </span>
-          {hasSelection && (
+          {hasSelection && multiple ? (
             <span className={styles.badge}>{selected.length}</span>
-          )}
+          ) : null}
         </button>
-        {hasSelection && (
+        {hasSelection && multiple ? (
           <button
             type="button"
             className={styles.clearBtn}
@@ -116,7 +125,7 @@ export function MultiSelect({
           >
             <FiX size={14} aria-hidden />
           </button>
-        )}
+        ) : null}
         <button
           type="button"
           className={styles.chevronBtn}
@@ -144,28 +153,45 @@ export function MultiSelect({
           <ul
             className={styles.options}
             role="listbox"
-            aria-multiselectable
+            aria-multiselectable={multiple}
             id={listId}
           >
             {filtered.length === 0 ? (
               <li className={styles.noResults}>{noResultsLabel}</li>
             ) : (
-              filtered.map((option) => (
-                <li
-                  key={option.value}
-                  role="option"
-                  aria-selected={selected.includes(option.value)}
-                >
-                  <label className={styles.option}>
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(option.value)}
-                      onChange={() => toggle(option.value)}
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                </li>
-              ))
+              filtered.map((option) => {
+                const isSelected = selected.includes(option.value);
+                const optionClassName = `${styles.option} ${
+                  !multiple && isSelected ? styles.optionSelected : ""
+                }`.trim();
+
+                return (
+                  <li
+                    key={option.value}
+                    role="option"
+                    aria-selected={isSelected}
+                  >
+                    {multiple ? (
+                      <label className={optionClassName}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggle(option.value)}
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ) : (
+                      <button
+                        type="button"
+                        className={optionClassName}
+                        onClick={() => toggle(option.value)}
+                      >
+                        <span>{option.label}</span>
+                      </button>
+                    )}
+                  </li>
+                );
+              })
             )}
           </ul>
         </div>

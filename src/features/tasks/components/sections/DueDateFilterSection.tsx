@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import formStyles from "../../../../components/ui/form/Form.module.scss";
+import { DatePicker } from "../../../../components/ui/date-picker/DatePicker";
 import { Sections } from "../../../../components/ui/sections/Sections";
 import { useTranslation } from "../../../../i18n";
 import type { TaskFilters } from "../../domain/others";
@@ -38,15 +38,13 @@ export function DueDateFilterSection({
       <Sections.Section.Content>
         <div className={styles.row}>
           {fields.map(({ key, label }) => (
-            <label key={key} className={formStyles.field}>
-              <span className={formStyles.fieldLabelFilter}>{label}</span>
-              <input
-                className={formStyles.fieldInput}
-                type="date"
-                value={filters[key]}
-                onChange={(event) => onChange({ [key]: event.target.value })}
-              />
-            </label>
+            <DatePicker
+              key={key}
+              icon={<FiCalendar />}
+              label={label}
+              value={filters[key]}
+              onChange={(value) => onChange({ [key]: value })}
+            />
           ))}
         </div>
       </Sections.Section.Content>

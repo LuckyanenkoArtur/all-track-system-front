@@ -1,6 +1,6 @@
 import "./Title.scss";
 
-export type TitleAs = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div";
+export type TitleAs = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 export type TitleProps = {
   text: string;
@@ -11,22 +11,28 @@ export type TitleProps = {
   id?: string;
 };
 
+const TITLE_CLASS_NAME: Record<TitleAs, string> = {
+  h1: "title-h1",
+  h2: "title-h2",
+  h3: "title-h3",
+  h4: "title-h4",
+  h5: "title-h5",
+  h6: "title-h6",
+};
+
 export default function Title({
   text,
   className,
   title,
-  as = "div",
+  as,
   underline = false,
   id,
 }: TitleProps) {
-  const Tag = as;
-  const isPageHeading = as === "div";
-
   return (
-    <Tag
+    <div
       id={id}
       className={[
-        isPageHeading ? "pageHeading" : "title",
+        as ? TITLE_CLASS_NAME[as] : "title",
         underline ? "titleUnderline" : "",
         className,
       ]
@@ -35,6 +41,6 @@ export default function Title({
       title={title}
     >
       {text}
-    </Tag>
+    </div>
   );
 }

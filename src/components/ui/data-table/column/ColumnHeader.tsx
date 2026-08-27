@@ -1,10 +1,11 @@
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import type { ColumnSort, DataColumnProps } from "./column.types";
+
+import type { ColumnSort, DataTableColumnProps } from "./DataTableColumn";
 import { getColumnClassName } from "./column.utils";
 import styles from "./DataColumn.module.scss";
 
 type ColumnHeaderProps = {
-  column: DataColumnProps;
+  column: DataTableColumnProps;
   sort?: ColumnSort;
   onSort?: (field: string) => void;
 };

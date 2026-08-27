@@ -1,8 +1,31 @@
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import type { DataTablePaginationProps } from "./data-table-pagination.types";
+
+import { DATA_TABLE_SLOT } from "../slots";
 import styles from "./DataTablePagination.module.scss";
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [5, 10, 15, 20];
+
+export type DataTablePaginationLabels = {
+  showing: string;
+  rowsPerPage: string;
+  page: string;
+  of: string;
+  previous: string;
+  next: string;
+};
+
+export type DataTablePaginationProps = {
+  page: number;
+  totalPages: number;
+  total: number;
+  startIndex: number;
+  endIndex: number;
+  pageSize: number;
+  pageSizeOptions?: number[];
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+  labels: DataTablePaginationLabels;
+};
 
 export function DataTablePagination({
   page,
@@ -30,9 +53,7 @@ export function DataTablePagination({
           <span>{labels.rowsPerPage}</span>
           <select
             value={pageSize}
-            onChange={(event) =>
-              onPageSizeChange(Number(event.target.value))
-            }
+            onChange={(event) => onPageSizeChange(Number(event.target.value))}
           >
             {pageSizeOptions.map((size) => (
               <option key={size} value={size}>
@@ -69,3 +90,6 @@ export function DataTablePagination({
     </div>
   );
 }
+
+DataTablePagination.slot = DATA_TABLE_SLOT.Pagination;
+DataTablePagination.displayName = DATA_TABLE_SLOT.Pagination;

@@ -1,17 +1,25 @@
 import { Form } from "../../../../../components/ui/form/Form";
-import formStyles from "../../../../../components/ui/form/Form.module.scss";
 import { Drawer } from "../../../../../components/ui/drawer/Drawer";
-import Title from "../../../../../components/ui/title/Title";
 import {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
   type ChangeEvent,
   type FormEvent,
 } from "react";
-import { FiCalendar, FiPaperclip, FiUser, FiX } from "react-icons/fi";
+import {
+  FiAlertTriangle,
+  FiCalendar,
+  FiEye,
+  FiFileText,
+  FiGrid,
+  FiPaperclip,
+  FiType,
+  FiUser,
+  FiUsers,
+} from "react-icons/fi";
+import { FaMoneyBill } from "react-icons/fa6";
 import type {
   CreateTaskInput,
   Task,
@@ -19,20 +27,27 @@ import type {
   TaskStep,
 } from "../../../domain/others";
 import { TASK_PRIORITIES, isTaskPriorityId } from "../../../domain/priority";
+import { Attachments } from "../../../../../components/ui/attachments/Attachments";
+import { Button } from "../../../../../components/ui/button/Button";
+import { DatePicker } from "../../../../../components/ui/date-picker/DatePicker";
+import {
+  MultiSelect,
+  type MultiSelectOption,
+} from "../../../../../components/ui/multi-select/MultiSelect";
+import { NumberInput } from "../../../../../components/ui/number-input/NumberInput";
+import { Sections } from "../../../../../components/ui/sections/Sections";
+import { Textarea } from "../../../../../components/ui/textarea/Textarea";
+import { TextInput } from "../../../../../components/ui/text-input/TextInput";
+import inputStyles from "../../../../../components/ui/number-input/NumberInput.module.scss";
 import { toDateTimeLocalValue } from "../../../utils/dateUtils";
 import {
   createPendingAttachment,
-  formatFileSize,
   MAX_COMMENT_ATTACHMENTS,
   MAX_COMMENT_FILE_SIZE,
   readFileAsDataUrl,
   type PendingAttachment,
 } from "../../../utils/commentUtils";
-import {
-  MultiSelect,
-  type MultiSelectOption,
-} from "../../../../../components/ui/multi-select/MultiSelect";
-import { TaskStepsEditor } from "../../TaskStepsEditor";
+import { TaskStepsEditor } from "../../task-steps-editor/TaskStepsEditor";
 import styles from "./Drawer.module.scss";
 
 type FormState = {
@@ -103,6 +118,12 @@ type TaskCreationDrawerProps = {
   labels: CreateTaskDialogLabels;
 };
 
+function toBudgetInputValue(budget: string): string {
+  const numeric = budget.replace(/[$,]/g, "");
+  if (!numeric || !Number.isFinite(Number(numeric))) return "";
+  return Number(numeric).toFixed(2);
+}
+
 function createEmptyForm(): FormState {
   return {
     title: "",
@@ -129,7 +150,7 @@ function taskToForm(task: Task): FormState {
     startDate: toDateTimeLocalValue(new Date(task.startDate)),
     dueDate: toDateTimeLocalValue(new Date(task.dueDate)),
     priority: task.priority,
-    budget: task.budget.replace(/^\$/, ""),
+    budget: toBudgetInputValue(task.budget),
     attachments: (task.attachments ?? []).map((attachment) => ({
       id: attachment.id,
       name: attachment.name,
@@ -166,7 +187,7 @@ function isFormDirty(form: FormState, baseline: FormState): boolean {
   );
 }
 
-export function TaskCreationDrawer({
+function TaskCreationDrawerContent({
   open,
   onClose,
   onSubmit,
@@ -178,28 +199,33 @@ export function TaskCreationDrawer({
 }: TaskCreationDrawerProps) {
   const isEditMode = task != null;
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [form, setForm] = useState<FormState>(createEmptyForm);
-  const [baseline, setBaseline] = useState<FormState>(createEmptyForm);
+  const [form, setForm] = useState<FormState>(() =>
+    task ? taskToForm(task) : createEmptyForm(),
+  );
+  const [baseline] = useState<FormState>(() =>
+    task ? taskToForm(task) : createEmptyForm(),
+  );
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (open) {
-      const next = task ? taskToForm(task) : createEmptyForm();
-      setForm(next);
-      setBaseline(next);
-      setAttachmentError(null);
-    }
-  }, [open, task]);
-
   const canSubmit = form.title.trim().length > 0 && form.dueDate.length > 0;
+  const initiatorValue = isEditMode ? task!.initiator : initiatorName;
 
   const priorityOptions = useMemo(
     () => [
-      { value: "high" as const, label: labels.high },
-      { value: "medium" as const, label: labels.medium },
-      { value: "low" as const, label: labels.low },
+      { value: "high", label: labels.high },
+      { value: "medium", label: labels.medium },
+      { value: "low", label: labels.low },
     ],
     [labels.high, labels.medium, labels.low],
+  );
+
+  const multiSelectLabels = useMemo(
+    () => ({
+      placeholder: labels.selectPlaceholder,
+      searchPlaceholder: labels.searchOptions,
+      noResultsLabel: labels.noOptionsFound,
+    }),
+    [labels.selectPlaceholder, labels.searchOptions, labels.noOptionsFound],
   );
 
   const getIsDirty = useCallback(
@@ -229,7 +255,7 @@ export function TaskCreationDrawer({
       observables: form.observables,
       startDate: form.startDate || undefined,
       dueDate: form.dueDate,
-      initiator: isEditMode ? task!.initiator : initiatorName,
+      initiator: initiatorValue,
       responsible: isEditMode ? task!.responsible : ["Unassigned"],
       budget: form.budget.trim() ? `$${form.budget.replace(/^\$/, "")}` : "$0",
       attachments: form.attachments.map(
@@ -302,7 +328,7 @@ export function TaskCreationDrawer({
   };
 
   return (
-    <Drawer open={open} unSaveConfirmation={getIsDirty()}>
+    <>
       <Drawer.Header>
         <Drawer.Title>{labels.title}</Drawer.Title>
         <Drawer.Desciption>{labels.subtitle}</Drawer.Desciption>
@@ -315,317 +341,234 @@ export function TaskCreationDrawer({
           resetKey={open}
         >
           <Form.DrawerDismiss>
-            <div className={formStyles.wrapper}>
             <Form.Body id="create-task-form">
-              <section
-                className={formStyles.section}
-                aria-labelledby="create-task-details"
-              >
-                <Title
-                  id="create-task-details"
-                  text={labels.sectionTaskDetails}
-                  as="h3"
-                  underline
-                  className={formStyles.sectionTitle}
-                />
-                <div className={formStyles.sectionGrid}>
-                  <label
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>
-                      {labels.taskTitle}
-                      <em>{labels.required}</em>
-                    </span>
-                    <input
-                      type="text"
-                      value={form.title}
-                      onChange={(event) =>
-                        setForm({ ...form, title: event.target.value })
-                      }
-                      placeholder={labels.taskTitlePlaceholder}
-                      required
-                      autoFocus
-                    />
-                  </label>
-
-                  <label
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>{labels.description}</span>
-                    <textarea
-                      value={form.description}
-                      onChange={(event) =>
-                        setForm({ ...form, description: event.target.value })
-                      }
-                      placeholder={labels.descriptionPlaceholder}
-                      rows={4}
-                    />
-                  </label>
-
-                  <div
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>{labels.steps}</span>
-                    <TaskStepsEditor
-                      steps={form.steps}
-                      onChange={(steps) => setForm({ ...form, steps })}
-                      labels={{
-                        addStep: labels.addStep,
-                        stepPlaceholder: labels.stepPlaceholder,
-                        removeStep: labels.removeStep,
-                      }}
-                    />
-                  </div>
-                </div>
-              </section>
-
-              <section
-                className={formStyles.section}
-                aria-labelledby="create-task-people"
-              >
-                <Title
-                  id="create-task-people"
-                  text={labels.sectionPeople}
-                  as="h3"
-                  underline
-                  className={formStyles.sectionTitle}
-                />
-                <div className={formStyles.sectionGrid}>
-                  <div className={styles.initiatorRow}>
-                    <span className={formStyles.fieldLabel}>
-                      {labels.initiator}
-                    </span>
-                    <div className={styles.initiatorValue}>
-                      <FiUser size={15} aria-hidden />
-                      {isEditMode ? task!.initiator : initiatorName}
-                    </div>
-                  </div>
-
-                  <div className={styles.selectGrid}>
-                    <MultiSelect
-                      label={labels.groups}
-                      options={groupOptions}
-                      selected={form.groups}
-                      onChange={(groups) => setForm({ ...form, groups })}
-                      placeholder={labels.selectPlaceholder}
-                      searchPlaceholder={labels.searchOptions}
-                      noResultsLabel={labels.noOptionsFound}
-                    />
-                    <MultiSelect
-                      label={labels.observables}
-                      options={userOptions}
-                      selected={form.observables}
-                      onChange={(observables) =>
-                        setForm({ ...form, observables })
-                      }
-                      placeholder={labels.selectPlaceholder}
-                      searchPlaceholder={labels.searchOptions}
-                      noResultsLabel={labels.noOptionsFound}
-                    />
-                  </div>
-                </div>
-              </section>
-
-              <section
-                className={formStyles.section}
-                aria-labelledby="create-task-schedule"
-              >
-                <Title
-                  id="create-task-schedule"
-                  text={labels.sectionSchedule}
-                  as="h3"
-                  underline
-                  className={formStyles.sectionTitle}
-                />
-                <div className={formStyles.fieldRow}>
-                  <label
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>
-                      {labels.startDate}
-                    </span>
-                    <div className={styles.dateInput}>
-                      <input
-                        type="datetime-local"
-                        value={form.startDate}
-                        onChange={(event) =>
-                          setForm({ ...form, startDate: event.target.value })
-                        }
-                      />
-                      <FiCalendar size={16} aria-hidden />
-                    </div>
-                  </label>
-
-                  <label
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>
-                      {labels.dueDate}
-                      <em>{labels.required}</em>
-                    </span>
-                    <div className={styles.dateInput}>
-                      <input
-                        type="datetime-local"
-                        value={form.dueDate}
-                        onChange={(event) =>
-                          setForm({ ...form, dueDate: event.target.value })
-                        }
+              <Sections>
+                <Sections.Section>
+                  <Sections.Section.Icon>
+                    <FiFileText size={15} aria-hidden />
+                  </Sections.Section.Icon>
+                  <Sections.Section.Title>
+                    {labels.sectionTaskDetails}
+                  </Sections.Section.Title>
+                  <Sections.Section.Content>
+                    <div className={styles.stack}>
+                      <TextInput
+                        label={labels.taskTitle}
+                        requiredLabel={labels.required}
+                        icon={<FiType />}
+                        value={form.title}
+                        onChange={(title) => setForm({ ...form, title })}
+                        placeholder={labels.taskTitlePlaceholder}
                         required
+                        autoFocus
                       />
-                      <FiCalendar size={16} aria-hidden />
+
+                      <div className={inputStyles.field}>
+                        <span className={inputStyles.label}>
+                          {labels.description}
+                        </span>
+                        <Textarea
+                          value={form.description}
+                          onChange={(event) =>
+                            setForm({
+                              ...form,
+                              description: event.target.value,
+                            })
+                          }
+                          placeholder={labels.descriptionPlaceholder}
+                          rows={4}
+                        />
+                      </div>
+
+                      <div className={inputStyles.field}>
+                        <span className={inputStyles.label}>
+                          {labels.steps}
+                        </span>
+                        <TaskStepsEditor
+                          steps={form.steps}
+                          onChange={(steps) => setForm({ ...form, steps })}
+                          labels={{
+                            addStep: labels.addStep,
+                            stepPlaceholder: labels.stepPlaceholder,
+                            removeStep: labels.removeStep,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </label>
-                </div>
-              </section>
+                  </Sections.Section.Content>
+                </Sections.Section>
 
-              <section
-                className={formStyles.section}
-                aria-labelledby="create-task-priority-budget"
-              >
-                <Title
-                  id="create-task-priority-budget"
-                  text={labels.sectionPriorityBudget}
-                  as="h3"
-                  underline
-                  className={formStyles.sectionTitle}
-                />
-                <div className={formStyles.fieldRow}>
-                  <label
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>
-                      {labels.priority}
-                    </span>
-                    <select
-                      value={form.priority.id}
-                      onChange={(event) => {
-                        const nextId = event.target.value;
-                        if (!isTaskPriorityId(nextId)) return;
-                        setForm({
-                          ...form,
-                          priority: TASK_PRIORITIES[nextId],
-                        });
-                      }}
-                    >
-                      <option value="" disabled>
-                        {labels.priorityPlaceholder}
-                      </option>
-                      {priorityOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                <Sections.Section>
+                  <Sections.Section.Icon>
+                    <FiUsers size={15} aria-hidden />
+                  </Sections.Section.Icon>
+                  <Sections.Section.Title>
+                    {labels.sectionPeople}
+                  </Sections.Section.Title>
+                  <Sections.Section.Content>
+                    <div className={styles.stack}>
+                      <TextInput
+                        label={labels.initiator}
+                        icon={<FiUser />}
+                        value={initiatorValue}
+                        onChange={() => undefined}
+                        readOnly
+                      />
+                      <div className={styles.row}>
+                        <MultiSelect
+                          label={labels.groups}
+                          icon={<FiGrid />}
+                          options={groupOptions}
+                          selected={form.groups}
+                          onChange={(groups) => setForm({ ...form, groups })}
+                          {...multiSelectLabels}
+                        />
+                        <MultiSelect
+                          label={labels.observables}
+                          icon={<FiEye />}
+                          options={userOptions}
+                          selected={form.observables}
+                          onChange={(observables) =>
+                            setForm({ ...form, observables })
+                          }
+                          {...multiSelectLabels}
+                        />
+                      </div>
+                    </div>
+                  </Sections.Section.Content>
+                </Sections.Section>
 
-                  <label
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>
-                      {labels.budget}
-                    </span>
-                    <div className={styles.budgetInput}>
-                      <span className={styles.currencyPrefix}>$</span>
-                      <input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        value={form.budget}
-                        onChange={(event) =>
-                          setForm({ ...form, budget: event.target.value })
+                <Sections.Section>
+                  <Sections.Section.Icon>
+                    <FiCalendar size={15} aria-hidden />
+                  </Sections.Section.Icon>
+                  <Sections.Section.Title>
+                    {labels.sectionSchedule}
+                  </Sections.Section.Title>
+                  <Sections.Section.Content>
+                    <div className={styles.row}>
+                      <DatePicker
+                        label={labels.startDate}
+                        icon={<FiCalendar />}
+                        includeTime
+                        value={form.startDate}
+                        onChange={(startDate) =>
+                          setForm({ ...form, startDate })
                         }
-                        placeholder={labels.budgetPlaceholder}
+                      />
+                      <DatePicker
+                        label={labels.dueDate}
+                        icon={<FiCalendar />}
+                        includeTime
+                        required
+                        requiredLabel={labels.required}
+                        value={form.dueDate}
+                        onChange={(dueDate) => setForm({ ...form, dueDate })}
                       />
                     </div>
-                  </label>
-                </div>
-              </section>
+                  </Sections.Section.Content>
+                </Sections.Section>
 
-              <section
-                className={formStyles.section}
-                aria-labelledby="create-task-attachments"
-              >
-                <Title
-                  id="create-task-attachments"
-                  text={labels.sectionAttachments}
-                  as="h3"
-                  underline
-                  className={formStyles.sectionTitle}
-                />
-                <div className={formStyles.sectionGrid}>
-                  <div
-                    className={`${formStyles.field} ${styles.field}`.trim()}
-                  >
-                    <span className={formStyles.fieldLabel}>
-                      {labels.attachments}
-                    </span>
-                    <div className={styles.attachmentsArea}>
-                      {form.attachments.length > 0 && (
-                        <ul className={styles.attachmentList}>
-                          {form.attachments.map((attachment) => (
-                            <li
-                              key={attachment.id}
-                              className={styles.attachmentItem}
-                            >
-                              <FiPaperclip size={14} aria-hidden />
-                              <span className={styles.attachmentName}>
-                                {attachment.name}
-                              </span>
-                              <span className={styles.attachmentSize}>
-                                {formatFileSize(attachment.size)}
-                              </span>
-                              <button
-                                type="button"
-                                className={styles.attachmentRemove}
-                                onClick={() =>
-                                  removeAttachment(attachment.id)
-                                }
-                                aria-label={labels.removeAttachment}
-                              >
-                                <FiX size={14} aria-hidden />
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <button
-                        type="button"
-                        className={styles.attachBtn}
-                        onClick={handleAttachClick}
-                      >
-                        <FiPaperclip size={14} aria-hidden />
-                        {labels.attachFile}
-                      </button>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        multiple
-                        className={styles.hiddenFileInput}
-                        onChange={handleFileChange}
+                <Sections.Section>
+                  <Sections.Section.Icon>
+                    <FiAlertTriangle size={15} aria-hidden />
+                  </Sections.Section.Icon>
+                  <Sections.Section.Title>
+                    {labels.sectionPriorityBudget}
+                  </Sections.Section.Title>
+                  <Sections.Section.Content>
+                    <div className={styles.row}>
+                      <MultiSelect
+                        label={labels.priority}
+                        icon={<FiAlertTriangle />}
+                        options={priorityOptions}
+                        selected={[form.priority.id]}
+                        onChange={(selected) => {
+                          const nextId = selected[0];
+                          if (!nextId || !isTaskPriorityId(nextId)) return;
+                          setForm({
+                            ...form,
+                            priority: TASK_PRIORITIES[nextId],
+                          });
+                        }}
+                        placeholder={labels.priorityPlaceholder}
+                        searchPlaceholder={labels.searchOptions}
+                        noResultsLabel={labels.noOptionsFound}
+                        multiple={false}
                       />
-                      {attachmentError && (
-                        <p className={styles.attachError} role="alert">
-                          {attachmentError}
-                        </p>
-                      )}
+                      <NumberInput
+                        label={labels.budget}
+                        icon={<FaMoneyBill />}
+                        currency="$"
+                        grouping
+                        fractionDigits={2}
+                        value={form.budget}
+                        onChange={(budget) => setForm({ ...form, budget })}
+                        placeholder={0}
+                      />
                     </div>
-                  </div>
+                  </Sections.Section.Content>
+                </Sections.Section>
 
-                  <label className={styles.checkboxField}>
-                    <input
-                      type="checkbox"
-                      checked={form.requiresResultReview}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          requiresResultReview: event.target.checked,
-                        })
-                      }
-                    />
-                    <span>{labels.requiresResultReview}</span>
-                  </label>
-                </div>
-              </section>
+                <Sections.Section>
+                  <Sections.Section.Icon>
+                    <FiPaperclip size={15} aria-hidden />
+                  </Sections.Section.Icon>
+                  <Sections.Section.Title>
+                    {labels.sectionAttachments}
+                  </Sections.Section.Title>
+                  <Sections.Section.Content>
+                    <div className={styles.stack}>
+                      <div className={inputStyles.field}>
+                        <span className={inputStyles.label}>
+                          {labels.attachments}
+                        </span>
+                        <Attachments
+                          items={form.attachments}
+                          onRemove={removeAttachment}
+                          removeLabel={labels.removeAttachment}
+                        />
+                        <Button
+                          onClick={handleAttachClick}
+                          className={styles.attachBtn}
+                          ariaLabel={labels.attachFile}
+                        >
+                          <Button.Icon>
+                            <FiPaperclip size={14} />
+                          </Button.Icon>
+                          <Button.Text>{labels.attachFile}</Button.Text>
+                        </Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          className={styles.hiddenFileInput}
+                          onChange={handleFileChange}
+                        />
+                        {attachmentError ? (
+                          <p className={styles.attachError} role="alert">
+                            {attachmentError}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <label className={styles.checkboxField}>
+                        <input
+                          type="checkbox"
+                          checked={form.requiresResultReview}
+                          onChange={(event) =>
+                            setForm({
+                              ...form,
+                              requiresResultReview: event.target.checked,
+                            })
+                          }
+                        />
+                        <span>{labels.requiresResultReview}</span>
+                      </label>
+                    </div>
+                  </Sections.Section.Content>
+                </Sections.Section>
+              </Sections>
             </Form.Body>
 
             <Form.Footer>
@@ -636,17 +579,21 @@ export function TaskCreationDrawer({
               >
                 {isEditMode ? (labels.save ?? labels.create) : labels.create}
               </Form.Button>
-              <Form.Button
-                type="button"
-                cancel
-              >
+              <Form.Button type="button" cancel>
                 {labels.cancel}
               </Form.Button>
             </Form.Footer>
-          </div>
           </Form.DrawerDismiss>
         </Form>
       </Drawer.Content>
+    </>
+  );
+}
+
+export function TaskCreationDrawer(props: TaskCreationDrawerProps) {
+  return (
+    <Drawer open={props.open} unSaveConfirmation>
+      <TaskCreationDrawerContent {...props} />
     </Drawer>
   );
 }

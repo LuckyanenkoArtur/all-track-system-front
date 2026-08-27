@@ -70,6 +70,24 @@
   color: #dc2626;
 }
 
+.compact {
+  gap: 0;
+  padding: 3px 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+
+  .label {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+}
+
+.badge.info.compact {
+  background: var(--color-accent-light);
+  border-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-accent);
+}
+
 :global([data-theme="dark"]) .badge.success .icon {
   background: rgba(34, 197, 94, 0.15);
   color: #86efac;

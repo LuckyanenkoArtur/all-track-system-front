@@ -9,10 +9,11 @@ import styles from "./Drawer.module.scss";
 import { Form } from "../../../../../components/ui/form/Form";
 import formStyles from "../../../../../components/ui/form/Form.module.scss";
 import { Drawer } from "../../../../../components/ui/drawer/Drawer";
+import Badge from "../../../../../components/ui/badge/Badge";
 import Title from "../../../../../components/ui/title/Title";
 import type { CompletionReportStep } from "../../../domain/step";
 import type { TaskStep } from "../../../domain/others";
-import { TaskStepsEditor } from "../../TaskStepsEditor";
+import { TaskStepsEditor } from "../../task-steps-editor/TaskStepsEditor";
 
 export type CompleteTaskDrawerLabels = {
   title: string;
@@ -119,7 +120,9 @@ export function CompleteTaskDrawer({
                 <label className={formStyles.field}>
                   <span className={formStyles.fieldLabel}>
                     {labels.description}
-                    <em>{labels.required}</em>
+                    <Badge variant="info" compact>
+                      <Badge.Label>{labels.required}</Badge.Label>
+                    </Badge>
                   </span>
                   <textarea
                     className={styles.textarea}

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 
-import { Button } from "../../../components/ui/button/Button";
-import StepCheckList from "../../../components/ui/step-check-list/StepCheckList";
-import { useTranslation } from "../../../i18n";
-import type { TaskStep } from "../domain/others";
+import { Button } from "../../../../components/ui/button/Button";
+import StepCheckList from "../../../../components/ui/step-check-list/StepCheckList";
+import type { TaskStep } from "../../domain/others";
 import styles from "./TaskStepsEditor.module.scss";
 
 type TaskStepsEditorLabels = {
@@ -32,14 +31,11 @@ export function TaskStepsEditor({
   onChange,
   labels,
 }: TaskStepsEditorProps) {
-  const { t } = useTranslation();
-  const [editable, setEditable] = useState(true);
   const [focusStepId, setFocusStepId] = useState<string | null>(null);
 
   const addStep = () => {
     const step = createStep();
     onChange([...steps, step]);
-    setEditable(true);
     setFocusStepId(step.id);
   };
 
@@ -51,30 +47,11 @@ export function TaskStepsEditor({
     onChange(steps.filter((step) => step.id !== id));
   };
 
-  const toggleEditable = () => {
-    setEditable((value) => !value);
-  };
-
   return (
     <div className={styles.root}>
-      <div className={styles.toolbar}>
-        <Button
-          onClick={toggleEditable}
-          active={editable}
-          className={`${styles.editSwitch} ${editable ? styles.editSwitchOn : ""}`}
-        >
-          <Button.Icon>
-            <span className={styles.editSwitchTrack}>
-              <span className={styles.editSwitchThumb} />
-            </span>
-          </Button.Icon>
-          <Button.Text>{t.tasks.dashboard.editSteps}</Button.Text>
-        </Button>
-      </div>
-
       {steps.length > 0 ? (
         <StepCheckList
-          editable={editable}
+          editable
           onChangeStep={updateStep}
           onRemoveStep={removeStep}
           stepPlaceholder={labels.stepPlaceholder}
@@ -89,18 +66,14 @@ export function TaskStepsEditor({
             />
           ))}
         </StepCheckList>
-      ) : !editable ? (
-        <p className={styles.empty}>{t.tasks.dashboard.stepsEditorEmpty}</p>
       ) : null}
 
-      {editable ? (
-        <Button onClick={addStep} className={styles.addBtn}>
-          <Button.Icon>
-            <FiPlus size={14} />
-          </Button.Icon>
-          <Button.Text>{labels.addStep}</Button.Text>
-        </Button>
-      ) : null}
+      <Button onClick={addStep} className={styles.addBtn}>
+        <Button.Icon>
+          <FiPlus size={14} />
+        </Button.Icon>
+        <Button.Text>{labels.addStep}</Button.Text>
+      </Button>
     </div>
   );
 }

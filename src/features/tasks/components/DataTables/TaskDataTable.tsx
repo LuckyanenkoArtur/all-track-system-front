@@ -1,10 +1,6 @@
 import { useMemo } from "react";
-import {
-  DataTable,
-  DataTablePagination,
-  TaskTableCollectionTabs,
-  type DataColumnProps,
-} from "../../../../components/ui/data-table/DataTable";
+
+import { DataTable } from "../../../../components/ui/data-table";
 import type {
   PageSize,
   SortField,
@@ -110,27 +106,17 @@ export function TaskDataTable({
     [taskColumns],
   );
 
-  const columns = useMemo<DataColumnProps[]>(
-    () =>
-      taskColumns
-        .filter((column) => isColumnVisible(column.id))
-        .map((column) => ({
-          field: column.field,
-          header: column.header,
-          align: column.align,
-          sortable: column.sortable,
-          className: column.className,
-          body: column.body
-            ? (row) => column.body!(row as Task)
-            : undefined,
-        })),
-    [taskColumns, isColumnVisible],
-  );
+  const handleDeleteCollection = (id: string) => {
+    onDeleteCollection(id);
+
+    if (activeCollectionId === id) {
+      onSelectAll();
+    }
+  };
 
   return (
     <DataTable
       value={tasks}
-      columns={columns}
       sort={sort}
       onSort={(field) => onSort(field as SortField)}
       emptyLabel={labels.noResults}
@@ -138,14 +124,8 @@ export function TaskDataTable({
       getRowKey={(task) => task.id}
       getRowAriaLabel={(task) => task.title}
     >
-      <TaskTableCollectionTabs
-        collections={collections}
-        activeCollectionId={activeCollectionId}
-        defaultItemLabel={labels.allTasks}
+      <DataTable.Tabulation
         ariaLabel={labels.allTasks}
-        onSelectAll={onSelectAll}
-        onSelectCollection={onSelectCollection}
-        onDeleteCollection={onDeleteCollection}
         actions={
           <TaskColumnVisibilityButton
             columns={columnOptions}
@@ -155,9 +135,43 @@ export function TaskDataTable({
             onShowAll={showAllColumns}
           />
         }
-      />
+      >
+        <DataTable.Tab
+          active={activeCollectionId === null}
+          onSelect={onSelectAll}
+        >
+          {labels.allTasks}
+        </DataTable.Tab>
 
-      <DataTablePagination
+        {collections.map((collection) => (
+          <DataTable.Tab
+            key={collection.id}
+            active={activeCollectionId === collection.id}
+            onSelect={() => onSelectCollection(collection.id)}
+            onDelete={() => handleDeleteCollection(collection.id)}
+          >
+            {collection.name}
+          </DataTable.Tab>
+        ))}
+      </DataTable.Tabulation>
+
+      {taskColumns
+        .filter((column) => isColumnVisible(column.id))
+        .map((column) => (
+          <DataTable.Column
+            key={column.id}
+            field={column.field}
+            header={column.header}
+            align={column.align}
+            sortable={column.sortable}
+            className={column.className}
+            body={
+              column.body ? (row) => column.body!(row as Task) : undefined
+            }
+          />
+        ))}
+
+      <DataTable.Pagination
         page={listResult.page}
         totalPages={listResult.totalPages}
         total={listResult.total}

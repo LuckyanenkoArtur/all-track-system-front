@@ -1,14 +1,23 @@
 import { type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 
-import { ColumnCell, ColumnHeader, type ColumnSort, type DataColumnProps } from "./column";
-
-import { parseDataTableChildren } from "./utils/parseDataTableChildren";
+import { ColumnCell } from "./column/ColumnCell";
+import { ColumnHeader } from "./column/ColumnHeader";
+import {
+  DataTableColumn,
+  type ColumnSort,
+  type DataTableColumnProps,
+} from "./column/DataTableColumn";
+import { DataTablePagination } from "./pagination/DataTablePagination";
+import { parseDataTableChildren } from "./parseDataTableChildren";
+import {
+  DataTableTab,
+  DataTableTabulation,
+} from "./tabulation/DataTableTabulation";
 
 import styles from "./DataTable.module.scss";
 
 type DataTableProps<T> = {
   value: T[];
-  columns?: DataColumnProps[];
   children: ReactNode;
   emptyLabel?: string;
   sort?: ColumnSort;
@@ -19,9 +28,59 @@ type DataTableProps<T> = {
   getRowAriaLabel?: (row: T) => string | undefined;
 };
 
-export function DataTable<T>({
+type DataTableRowProps<T> = {
+  row: T;
+  columns: DataTableColumnProps[];
+  onRowClick?: (row: T) => void;
+  onRowContextMenu?: (row: T, event: MouseEvent) => void;
+  ariaLabel?: string;
+};
+
+function DataTableRow<T>({
+  row,
+  columns,
+  onRowClick,
+  onRowContextMenu,
+  ariaLabel,
+}: DataTableRowProps<T>) {
+  const isClickable = Boolean(onRowClick);
+
+  return (
+    <tr
+      className={isClickable ? styles.clickableRow : undefined}
+      onClick={isClickable ? () => onRowClick?.(row) : undefined}
+      onContextMenu={
+        onRowContextMenu
+          ? (event) => onRowContextMenu(row, event)
+          : undefined
+      }
+      onKeyDown={
+        isClickable
+          ? (event: KeyboardEvent<HTMLTableRowElement>) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onRowClick?.(row);
+              }
+            }
+          : undefined
+      }
+      tabIndex={isClickable ? 0 : undefined}
+      role={isClickable ? "button" : undefined}
+      aria-label={isClickable ? ariaLabel : undefined}
+    >
+      {columns.map((column) => (
+        <ColumnCell
+          key={column.field ?? column.header}
+          column={column}
+          row={row}
+        />
+      ))}
+    </tr>
+  );
+}
+
+function DataTableRoot<T>({
   value = [],
-  columns: columnsProp,
   children,
   emptyLabel = "No results",
   sort,
@@ -31,16 +90,12 @@ export function DataTable<T>({
   getRowKey,
   getRowAriaLabel,
 }: DataTableProps<T>) {
-  const { tabs, columns: parsedColumns, pagination } =
-    parseDataTableChildren(children);
-
-  const columns = columnsProp ?? parsedColumns;
-
+  const { tabulation, columns, pagination } = parseDataTableChildren(children);
   const columnCount = columns.length;
 
   return (
     <div className={styles.tableCard}>
-      {tabs}
+      {tabulation}
 
       <div className={styles.tableWrapper}>
         <div className={styles.tableScroll}>
@@ -66,46 +121,16 @@ export function DataTable<T>({
                   </td>
                 </tr>
               ) : (
-                value.map((row, index) => {
-                  const rowKey = getRowKey?.(row) ?? String(index);
-
-                  return (
-                    <tr
-                      key={rowKey}
-                      className={onRowClick ? styles.clickableRow : undefined}
-                      onClick={onRowClick ? () => onRowClick(row) : undefined}
-                      onContextMenu={
-                        onRowContextMenu
-                          ? (event) => onRowContextMenu(row, event)
-                          : undefined
-                      }
-                      onKeyDown={
-                        onRowClick
-                          ? (event: KeyboardEvent<HTMLTableRowElement>) => {
-                              if (event.key === "Enter" || event.key === " ") {
-                                event.preventDefault();
-
-                                onRowClick(row);
-                              }
-                            }
-                          : undefined
-                      }
-                      tabIndex={onRowClick ? 0 : undefined}
-                      role={onRowClick ? "button" : undefined}
-                      aria-label={
-                        onRowClick ? getRowAriaLabel?.(row) : undefined
-                      }
-                    >
-                      {columns.map((column) => (
-                        <ColumnCell
-                          key={column.field ?? column.header}
-                          column={column}
-                          row={row}
-                        />
-                      ))}
-                    </tr>
-                  );
-                })
+                value.map((row, index) => (
+                  <DataTableRow
+                    key={getRowKey?.(row) ?? String(index)}
+                    row={row}
+                    columns={columns}
+                    onRowClick={onRowClick}
+                    onRowContextMenu={onRowContextMenu}
+                    ariaLabel={getRowAriaLabel?.(row)}
+                  />
+                ))
               )}
             </tbody>
           </table>
@@ -117,23 +142,18 @@ export function DataTable<T>({
   );
 }
 
-export { DataColumn } from "./column";
+type DataTableCompound = typeof DataTableRoot & {
+  Tabulation: typeof DataTableTabulation;
+  Tab: typeof DataTableTab;
+  Column: typeof DataTableColumn;
+  Pagination: typeof DataTablePagination;
+  displayName: string;
+};
 
-export type { DataColumnProps } from "./column";
+export const DataTable = DataTableRoot as DataTableCompound;
 
-export { DataTableTabs } from "./tabs";
-
-export type { DataTableTabItem, DataTableTabsProps } from "./tabs";
-
-export { DataTablePagination } from "./pagination";
-
-export type {
-  DataTablePaginationLabels,
-  DataTablePaginationProps,
-} from "./pagination";
-
-export {
-  TaskTableCollectionTabs,
-  type TaskTableCollection,
-  type TaskTableCollectionTabsProps,
-} from "./TaskTable";
+DataTable.Tabulation = DataTableTabulation;
+DataTable.Tab = DataTableTab;
+DataTable.Column = DataTableColumn;
+DataTable.Pagination = DataTablePagination;
+DataTable.displayName = "DataTable";

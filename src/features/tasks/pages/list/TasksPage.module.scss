@@ -18,7 +18,7 @@
   container-type: inline-size;
   container-name: tasks-page-header;
 
-  :global(.pageHeading) {
+  :global(.title) {
     flex-shrink: 0;
   }
 }
@@ -228,7 +228,6 @@
 .filterLabel {
   font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-text-muted);
 }

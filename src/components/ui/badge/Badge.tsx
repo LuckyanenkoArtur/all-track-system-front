@@ -6,12 +6,18 @@ export type BadgeVariant = "success" | "info" | "error" | "neutral" | "warning";
 type BadgeProps = PropsWithChildren & {
   variant: BadgeVariant;
   className?: string;
+  compact?: boolean;
 };
 
-const Badge = ({ children, variant, className }: BadgeProps) => {
+const Badge = ({
+  children,
+  variant,
+  className,
+  compact = false,
+}: BadgeProps) => {
   return (
     <span
-      className={`${styles.badge} ${styles[variant]} ${className ?? ""}`.trim()}
+      className={`${styles.badge} ${styles[variant]} ${compact ? styles.compact : ""} ${className ?? ""}`.trim()}
     >
       {children}
     </span>

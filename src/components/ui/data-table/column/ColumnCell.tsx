@@ -1,8 +1,8 @@
-import type { DataColumnProps } from "./column.types";
+import type { DataTableColumnProps } from "./DataTableColumn";
 import { getCellValue, getColumnClassName } from "./column.utils";
 
 type ColumnCellProps<T> = {
-  column: DataColumnProps;
+  column: DataTableColumnProps;
   row: T;
 };
 

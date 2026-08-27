@@ -1,14 +1,52 @@
 import { useMemo, type ReactNode } from "react";
 import { FiCalendar, FiClock, FiUser, FiUsers } from "react-icons/fi";
-import type { DataColumnProps } from "../../../../components/ui/data-table/DataTable";
+import type { DataTableColumnProps } from "../../../../components/ui/data-table";
 import columnStyles from "../../../../components/ui/data-table/column/DataColumn.module.scss";
 import PriorityBadge from "../badges/priority-badge/PriorityBadge.tsx";
 import StatusBadge from "../badges/status-badge/StatusBadge.tsx";
-import { TaskRowActions } from "../buttons/row-action-button/TaskRowActions.tsx";
+import { TaskRowActionsButton } from "../buttons/task-row-action-button/TaskRowActionsButton.tsx";
 import type { Task } from "../../domain/others";
 import { formatBudget, formatDate } from "../../utils/taskListUtils";
-import { UserBadgeList } from "./TaskDataTableCells";
 import styles from "./TaskDataTable.module.scss";
+
+const VISIBLE_PEOPLE_LIMIT = 3;
+
+type UserBadgeListProps = {
+  items: string[];
+  icon: typeof FiUser;
+  emptyLabel?: string;
+};
+
+function UserBadgeList({ items, icon: Icon, emptyLabel }: UserBadgeListProps) {
+  if (items.length === 0) {
+    return emptyLabel ? (
+      <span className={styles.emptyCell}>{emptyLabel}</span>
+    ) : null;
+  }
+
+  const visible = items.slice(0, VISIBLE_PEOPLE_LIMIT);
+  const hidden = items.slice(VISIBLE_PEOPLE_LIMIT);
+
+  return (
+    <div className={styles.badgeGroup}>
+      {visible.map((person) => (
+        <span key={person} className={styles.userBadge}>
+          <Icon size={12} aria-hidden />
+          {person}
+        </span>
+      ))}
+      {hidden.length > 0 && (
+        <span
+          className={styles.moreBadge}
+          title={hidden.join(", ")}
+          aria-label={hidden.join(", ")}
+        >
+          +{hidden.length}
+        </span>
+      )}
+    </div>
+  );
+}
 
 export type TaskDataTableLabels = {
   allTasks: string;
@@ -42,7 +80,7 @@ export type TaskDataTableLabels = {
 export type TaskColumnDef = {
   id: string;
   hideable?: boolean;
-} & Omit<DataColumnProps, "body"> & {
+} & Omit<DataTableColumnProps, "body"> & {
     body?: (task: Task) => ReactNode;
   };
 
@@ -200,7 +238,7 @@ export function useTaskDataTableColumns({
           const tracking = isTracking(task.id);
 
           return (
-            <TaskRowActions
+            <TaskRowActionsButton
               task={task}
               isTracking={tracking}
               labels={{

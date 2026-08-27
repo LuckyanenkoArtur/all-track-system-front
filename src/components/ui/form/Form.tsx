@@ -135,8 +135,6 @@ export const Form: FormComponent = ({
 
   useEffect(() => {
     setConfirmOpen(false);
-    setFormId(undefined);
-    submitHandlerRef.current = undefined;
   }, [resetKey]);
 
   const requestClose = useCallback(() => {
@@ -325,7 +323,7 @@ Form.Button = ({
       return;
     }
 
-    if (type === "button" && onSubmit) {
+    if (onSubmit) {
       event.preventDefault();
       runSubmit(event);
     }

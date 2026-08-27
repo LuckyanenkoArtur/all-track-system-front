@@ -14,6 +14,7 @@ import { createPortal } from "react-dom";
 import { FiMaximize2, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+import Title from "../title/Title";
 import styles from "./Drawer.module.scss";
 
 type DrawerContextValue = {
@@ -179,11 +180,10 @@ Drawer.Header = ({ children }) => {
 
 Drawer.Title = ({ children }) => {
   const { titleId } = useDrawerContext();
+  const text = typeof children === "string" ? children : "";
 
   return (
-    <h2 id={titleId} className={styles.headerTitle}>
-      {children}
-    </h2>
+    <Title as="h2" id={titleId} text={text} className={styles.headerTitle} />
   );
 };
 

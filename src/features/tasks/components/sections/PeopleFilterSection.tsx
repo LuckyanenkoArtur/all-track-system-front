@@ -109,7 +109,7 @@ export function PeopleFilterSection({
       </Sections.Section.Icon>
       <Sections.Section.Title>{t.tasks.filterSections.people}</Sections.Section.Title>
       <Sections.Section.Content>
-        <div className={styles.stack}>
+        <div className={styles.row}>
           {fields.map(({ key, label, options: fieldOptions, icon }) => (
             <MultiSelect
               key={key}

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import formStyles from "../../../../components/ui/form/Form.module.scss";
+import { NumberInput } from "../../../../components/ui/number-input/NumberInput";
 import { Sections } from "../../../../components/ui/sections/Sections";
 import { useTranslation } from "../../../../i18n";
 import type { TaskFilters } from "../../domain/others";
@@ -24,12 +24,12 @@ export function TimeFilterSection({
       {
         key: "timeMin" as const,
         label: t.tasks.timeMin,
-        placeholder: "0",
+        placeholder: 0,
       },
       {
         key: "timeMax" as const,
         label: t.tasks.timeMax,
-        placeholder: "480",
+        placeholder: 480,
       },
     ],
     [t],
@@ -44,17 +44,15 @@ export function TimeFilterSection({
       <Sections.Section.Content>
         <div className={styles.row}>
           {fields.map(({ key, label, placeholder }) => (
-            <label key={key} className={formStyles.field}>
-              <span className={formStyles.fieldLabelFilter}>{label}</span>
-              <input
-                className={formStyles.fieldInput}
-                type="number"
-                min={0}
-                value={filters[key]}
-                onChange={(event) => onChange({ [key]: event.target.value })}
-                placeholder={placeholder}
-              />
-            </label>
+            <NumberInput
+              key={key}
+              icon={<FiClock />}
+              label={label}
+              value={filters[key]}
+              onChange={(value) => onChange({ [key]: value })}
+              min={0}
+              placeholder={placeholder}
+            />
           ))}
         </div>
       </Sections.Section.Content>

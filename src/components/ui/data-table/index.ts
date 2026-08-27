@@ -1,19 +1,11 @@
-export {
-  DataColumn,
-  DataTable,
-  DataTablePagination,
-  DataTableTabs,
-  TaskTableCollectionTabs,
-} from "./DataTable";
+export { DataTable } from "./DataTable";
 
+export type { ColumnSort, DataTableColumnProps } from "./column/DataTableColumn";
 export type {
-  DataColumnProps,
   DataTablePaginationLabels,
   DataTablePaginationProps,
-  DataTableTabItem,
-  DataTableTabsProps,
-  TaskTableCollection,
-  TaskTableCollectionTabsProps,
-} from "./DataTable";
-
-export type { ColumnSort } from "./column";
+} from "./pagination/DataTablePagination";
+export type {
+  DataTableTabProps,
+  DataTableTabulationProps,
+} from "./tabulation/DataTableTabulation";
