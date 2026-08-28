@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { FiDollarSign } from "react-icons/fi";
 import type { BudgetTransaction } from "../../../domain/others.ts";
-import { Thread } from "../../../../../components/ui/thread/Thread";
-import { FeedItem } from "../../../../../components/ui/feed-item/FeedItem";
+import { Thread } from "@feed/thread/Thread";
+import { FeedItem } from "@feed/feed-item/FeedItem";
 import { formatCommentDate } from "../../../utils/commentUtils.ts";
 import { formatCurrency } from "../../../utils/taskDetailsUtils.ts";
 import { useTranslation } from "../../../../../i18n/index.ts";

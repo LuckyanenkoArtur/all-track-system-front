@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { FiDownload, FiMessageSquare, FiPaperclip } from "react-icons/fi";
 import type { TaskComment } from "../../../domain/others.ts";
-import { Thread } from "../../../../../components/ui/thread/Thread";
-import { FeedItem } from "../../../../../components/ui/feed-item/FeedItem";
+import { Thread } from "@feed/thread/Thread";
+import { FeedItem } from "@feed/feed-item/FeedItem";
 import {
   downloadAttachment,
   formatCommentDate,
   formatFileSize,
 } from "../../../utils/commentUtils.ts";
-import { RichText } from "../../../../../components/ui/rich-text/RichText";
+import { RichText } from "@input/rich-text/RichText";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import { TaskDetailsTabPlaceholder } from "../../placeholders/TaskDetailsTabPlaceholder.tsx";
 import styles from "./CommentsThread.module.scss";

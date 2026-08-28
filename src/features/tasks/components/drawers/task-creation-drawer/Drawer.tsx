@@ -1,5 +1,5 @@
-import { Form } from "../../../../../components/ui/form/Form";
-import { Drawer } from "../../../../../components/ui/drawer/Drawer";
+import { Form } from "@overlay/form/Form";
+import { Drawer } from "@overlay/drawer/Drawer";
 import {
   useCallback,
   useMemo,
@@ -27,18 +27,18 @@ import type {
   TaskStep,
 } from "../../../domain/others";
 import { TASK_PRIORITIES, isTaskPriorityId } from "../../../domain/priority";
-import { Attachments } from "../../../../../components/ui/attachments/Attachments";
-import { Button } from "../../../../../components/ui/button/Button";
-import { DatePicker } from "../../../../../components/ui/date-picker/DatePicker";
+import { Attachments } from "@primitive/attachments/Attachments";
+import { Button } from "@primitive/button/Button";
+import { DatePicker } from "@input/date-picker/DatePicker";
 import {
   MultiSelect,
   type MultiSelectOption,
-} from "../../../../../components/ui/multi-select/MultiSelect";
-import { NumberInput } from "../../../../../components/ui/number-input/NumberInput";
-import { Sections } from "../../../../../components/ui/sections/Sections";
-import { Textarea } from "../../../../../components/ui/textarea/Textarea";
-import { TextInput } from "../../../../../components/ui/text-input/TextInput";
-import inputStyles from "../../../../../components/ui/number-input/NumberInput.module.scss";
+} from "@input/multi-select/MultiSelect";
+import { NumberInput } from "@input/number-input/NumberInput";
+import { Sections } from "@layout/sections/Sections";
+import { Textarea } from "@input/textarea/Textarea";
+import { TextInput } from "@input/text-input/TextInput";
+import inputStyles from "@input/number-input/NumberInput.module.scss";
 import { toDateTimeLocalValue } from "../../../utils/dateUtils";
 import {
   createPendingAttachment,

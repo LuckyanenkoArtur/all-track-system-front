@@ -7,20 +7,26 @@ $transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   margin-block: 0;
   overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
   transition:
     grid-template-rows $transition-speed $transition-timing,
-    opacity 0.2s $transition-timing 0.05s,
-    margin-block $transition-speed $transition-timing;
+    opacity 0.2s $transition-timing,
+    margin-block $transition-speed $transition-timing,
+    visibility 0s linear $transition-speed;
 }
 
 .subMenuWrapOpen {
   grid-template-rows: 1fr;
   opacity: 1;
   margin-block: 2px 4px;
+  pointer-events: auto;
+  visibility: visible;
   transition:
     grid-template-rows $transition-speed $transition-timing 0.12s,
     opacity 0.2s $transition-timing 0.15s,
-    margin-block $transition-speed $transition-timing 0.12s;
+    margin-block $transition-speed $transition-timing 0.12s,
+    visibility 0s;
 }
 
 .subMenuInner {
@@ -66,15 +72,16 @@ $transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collapsed {
-  .subMenuWrap {
-    grid-template-rows: 0fr;
-    opacity: 0;
-    margin-block: 0;
-    transition:
-      grid-template-rows $transition-speed $transition-timing,
-      opacity 0.15s $transition-timing,
-      margin-block $transition-speed $transition-timing;
-  }
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-block: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    grid-template-rows $transition-speed $transition-timing,
+    opacity 0.15s $transition-timing,
+    margin-block $transition-speed $transition-timing,
+    visibility 0s linear $transition-speed;
 
   .subMenu {
     margin-left: 0;

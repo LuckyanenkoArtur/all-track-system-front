@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { FiClock } from "react-icons/fi";
 import type { TaskHistoryEntry } from "../../../domain/others.ts";
-import { Thread } from "../../../../../components/ui/thread/Thread.tsx";
-import { FeedItem } from "../../../../../components/ui/feed-item/FeedItem.tsx";
+import { Thread } from "@feed/thread/Thread.tsx";
+import { FeedItem } from "@feed/feed-item/FeedItem.tsx";
 import { formatCommentDate } from "../../../utils/commentUtils.ts";
 import { formatTimeSpent } from "../../../utils/timeTrackingUtils.ts";
 import { useTranslation } from "../../../../../i18n/index.ts";

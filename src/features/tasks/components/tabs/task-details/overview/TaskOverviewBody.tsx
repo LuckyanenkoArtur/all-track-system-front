@@ -20,13 +20,13 @@ import type {
 } from "../../../../domain/others.ts";
 import styles from "./TaskOverviewBody.module.scss";
 import { useTranslation } from "../../../../../../i18n/index.ts";
-import Badge from "../../../../../../components/ui/badge/Badge.tsx";
-import { Button } from "../../../../../../components/ui/button/Button.tsx";
-import buttonStyles from "../../../../../../components/ui/button/Button.module.scss";
-import Divider from "../../../../../../components/ui/divider/Divider.tsx";
-import { Sections } from "../../../../../../components/ui/sections/Sections.tsx";
-import ProgressBar from "../../../../../../components/ui/progress-bar/ProgressBar.tsx";
-import StepCheckList from "../../../../../../components/ui/step-check-list/StepCheckList.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
+import { Button } from "@primitive/button/Button.tsx";
+import buttonStyles from "@primitive/button/Button.module.scss";
+import Divider from "@primitive/divider/Divider.tsx";
+import { Sections } from "@layout/sections/Sections.tsx";
+import ProgressBar from "@primitive/progress-bar/ProgressBar.tsx";
+import StepCheckList from "@list/step-check-list/StepCheckList.tsx";
 
 import { BudgetCard } from "../../../cards/budget-card/BudgetCard.tsx";
 import { DueDateCard } from "../../../cards/due-date-card/DueDateCard.tsx";

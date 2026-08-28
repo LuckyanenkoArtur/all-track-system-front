@@ -6,6 +6,18 @@
     "module": "esnext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@primitive/*": ["src/components/ui/primitives/*"],
+      "@input/*": ["src/components/ui/inputs/*"],
+      "@layout/*": ["src/components/ui/layout/*"],
+      "@overlay/*": ["src/components/ui/overlays/*"],
+      "@table/*": ["src/components/ui/tables/*"],
+      "@nav/*": ["src/components/ui/navigation/*"],
+      "@feed/*": ["src/components/ui/feed/*"],
+      "@list/*": ["src/components/ui/lists/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 
-import { Button } from "../../../../components/ui/button/Button";
-import StepCheckList from "../../../../components/ui/step-check-list/StepCheckList";
+import { Button } from "@primitive/button/Button";
+import StepCheckList from "@list/step-check-list/StepCheckList";
 import type { TaskStep } from "../../domain/others";
 import styles from "./TaskStepsEditor.module.scss";
 

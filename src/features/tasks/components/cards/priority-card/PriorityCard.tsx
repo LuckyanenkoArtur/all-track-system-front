@@ -1,5 +1,5 @@
 import type { Task, TaskPriorityId } from "../../../domain/others.ts";
-import { Card } from "../../../../../components/ui/card/Card.tsx";
+import { Card } from "@layout/card/Card.tsx";
 import PriorityBadge from "../../badges/priority-badge/PriorityBadge.tsx";
 
 type PriorityCardProps = {

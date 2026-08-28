@@ -6,11 +6,11 @@ import {
 } from "react";
 
 import styles from "./Drawer.module.scss";
-import { Form } from "../../../../../components/ui/form/Form";
-import formStyles from "../../../../../components/ui/form/Form.module.scss";
-import { Drawer } from "../../../../../components/ui/drawer/Drawer";
-import Badge from "../../../../../components/ui/badge/Badge";
-import Title from "../../../../../components/ui/title/Title";
+import { Form } from "@overlay/form/Form";
+import formStyles from "@overlay/form/Form.module.scss";
+import { Drawer } from "@overlay/drawer/Drawer";
+import Badge from "@primitive/badge/Badge";
+import Title from "@primitive/title/Title";
 import type { CompletionReportStep } from "../../../domain/step";
 import type { TaskStep } from "../../../domain/others";
 import { TaskStepsEditor } from "../../task-steps-editor/TaskStepsEditor";

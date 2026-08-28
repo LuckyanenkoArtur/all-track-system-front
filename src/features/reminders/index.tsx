@@ -1,4 +1,4 @@
-import Title from "../../components/ui/title/Title.tsx";
+import Title from "@primitive/title/Title.tsx";
 import { useTranslation } from "../../i18n";
 
 export default function RemindersPage() {

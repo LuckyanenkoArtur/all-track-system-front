@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import Title from "../../components/ui/title/Title.tsx";
+import Title from "@primitive/title/Title.tsx";
 import styles from "./finance.module.scss";
 
 export function FinanceLayout() {

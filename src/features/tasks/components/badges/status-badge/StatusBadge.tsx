@@ -9,8 +9,8 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 
-import type { BadgeVariant } from "../../../../../components/ui/badge/Badge.tsx";
-import Badge from "../../../../../components/ui/badge/Badge.tsx";
+import type { BadgeVariant } from "@primitive/badge/Badge.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import type { TaskStatus } from "../../../domain/others.ts";
 import {

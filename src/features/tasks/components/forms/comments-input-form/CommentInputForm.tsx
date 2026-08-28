@@ -1,8 +1,8 @@
 import { useId, useState, type FormEvent, type KeyboardEvent } from "react";
 import { FiSend } from "react-icons/fi";
-import { Attachments } from "../../../../../components/ui/attachments/Attachments.tsx";
-import { Button } from "../../../../../components/ui/button/Button.tsx";
-import { Textarea } from "../../../../../components/ui/textarea/Textarea.tsx";
+import { Attachments } from "@primitive/attachments/Attachments.tsx";
+import { Button } from "@primitive/button/Button.tsx";
+import { Textarea } from "@input/textarea/Textarea";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import {
   createPendingAttachment,

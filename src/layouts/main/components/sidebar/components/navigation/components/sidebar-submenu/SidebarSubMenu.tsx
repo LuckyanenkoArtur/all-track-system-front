@@ -15,6 +15,8 @@ export default function SidebarSubMenu({
   collapsed,
   depth,
 }: SidebarSubMenuProps) {
+  const hidden = !isOpen || collapsed;
+
   return (
     <div
       className={[
@@ -24,19 +26,18 @@ export default function SidebarSubMenu({
       ]
         .filter(Boolean)
         .join(" ")}
-      aria-hidden={!isOpen || collapsed}
+      aria-hidden={hidden}
+      inert={hidden}
     >
-      {isOpen && (
-        <div className={styles.subMenuInner}>
-          <div
-            className={`${styles.subMenu} ${depth > 0 ? styles.subMenuNested : ""}`}
-          >
-            {children.map((child) => (
-              <SidebarNode key={child.id} item={child} depth={depth + 1} />
-            ))}
-          </div>
+      <div className={styles.subMenuInner}>
+        <div
+          className={`${styles.subMenu} ${depth > 0 ? styles.subMenuNested : ""}`}
+        >
+          {children.map((child) => (
+            <SidebarNode key={child.id} item={child} depth={depth + 1} />
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from "react";
-import { Sections } from "../../../../components/ui/sections/Sections";
-import { MultiSelect } from "../../../../components/ui/multi-select/MultiSelect";
+import { Sections } from "@layout/sections/Sections";
+import { MultiSelect } from "@input/multi-select/MultiSelect";
 import { useTranslation } from "../../../../i18n";
 import type { TaskFilters, TaskStatus } from "../../domain/others";
 import {
@@ -8,7 +8,7 @@ import {
   TASK_PRIORITIES,
   type TaskPriorityId,
 } from "../../domain/priority";
-import type { MultiSelectOption } from "../../../../components/ui/multi-select/MultiSelect";
+import type { MultiSelectOption } from "@input/multi-select/MultiSelect";
 import { FiActivity, FiAlertTriangle } from "react-icons/fi";
 import styles from "../drawers/task-filter-drawer/Drawer.module.scss";
 

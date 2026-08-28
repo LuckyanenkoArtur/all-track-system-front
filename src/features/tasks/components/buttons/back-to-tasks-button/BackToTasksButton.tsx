@@ -2,7 +2,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "../../../../../i18n";
-import { Button } from "../../../../../components/ui/button/Button";
+import { Button } from "@primitive/button/Button";
 
 import styles from "./BackToTasksButton.module.scss";
 
@@ -12,7 +12,7 @@ export function BackToTasksButton() {
 
   return (
     <Button
-      onClick={() => navigate("/app/tasks/tasks")}
+      onClick={() => navigate("/app/tasks")}
       className={styles.button}
     >
       <Button.Icon>

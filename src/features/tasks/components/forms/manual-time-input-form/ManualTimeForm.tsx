@@ -1,8 +1,8 @@
 import { useCallback, useState, type FormEvent } from "react";
 import { FiPlus } from "react-icons/fi";
-import { Form } from "../../../../../components/ui/form/Form.tsx";
-import { NumberInput } from "../../../../../components/ui/number-input/NumberInput.tsx";
-import { Textarea } from "../../../../../components/ui/textarea/Textarea.tsx";
+import { Form } from "@overlay/form/Form.tsx";
+import { NumberInput } from "@input/number-input/NumberInput";
+import { Textarea } from "@input/textarea/Textarea";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import styles from "./ManualTimeForm.module.scss";
 

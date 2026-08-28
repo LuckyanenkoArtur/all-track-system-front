@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { Button } from "../../../../../components/ui/button/Button";
+import { Button } from "@primitive/button/Button";
 import { useTranslation } from "../../../../../i18n";
 import type { CreateTaskInput } from "../../../domain/others";
 import { TaskCreationDrawer } from "../../drawers/task-creation-drawer/Drawer";

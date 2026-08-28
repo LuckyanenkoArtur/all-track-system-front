@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
-import { Form } from "../../../../../components/ui/form/Form";
-import { Sections } from "../../../../../components/ui/sections/Sections";
-import { Drawer } from "../../../../../components/ui/drawer/Drawer";
+import { Form } from "@overlay/form/Form";
+import { Sections } from "@layout/sections/Sections";
+import { Drawer } from "@overlay/drawer/Drawer";
 import { useTranslation } from "../../../../../i18n";
 import Dialog from "../../../../user-profile/components/dialogs/Dialog";
 import type { TaskFilters } from "../../../domain/others";

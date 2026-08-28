@@ -1,6 +1,6 @@
 import { FiEye } from "react-icons/fi";
 
-import Badge from "../../../../../components/ui/badge/Badge.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
 import { useTranslation } from "../../../../../i18n/index.ts";
 
 import styles from "./RequiresResultReviewBadge.module.scss";

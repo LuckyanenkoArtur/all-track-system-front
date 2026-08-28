@@ -5,13 +5,10 @@ import GuestRoute from "./features/login/auth/GuestRoute";
 import ProtectedRoute from "./features/login/auth/ProtectedRoute";
 import MainLayout from "./layouts/main";
 
-import OverviewPage from "./features/overview";
-import {
-  TasksLayout,
-  TasksPage,
-  TasksOverviewPage,
-  TaskDetailsPage,
-} from "./features/tasks";
+import OverviewPage, { OverviewLayout } from "./features/overview";
+import { TasksLayout } from "./features/tasks/layouts/TasksLayout";
+import TasksPage from "./features/tasks/pages/tasks/TasksPage";
+import { TaskDetailsPage } from "./features/tasks/pages/task-details/TaskDetailsPage";
 import CalendarPage from "./features/calendar";
 import RemindersPage from "./features/reminders";
 import TimingPage from "./features/timing";
@@ -52,14 +49,14 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/app/overview",
-            element: <OverviewPage />,
+            element: <OverviewLayout />,
+            children: [{ index: true, element: <OverviewPage /> }],
           },
           {
             path: "/app/tasks",
             element: <TasksLayout />,
             children: [
-              { index: true, element: <TasksOverviewPage /> },
-              { path: "tasks", element: <TasksPage /> },
+              { index: true, element: <TasksPage /> },
               { path: ":id", element: <TaskDetailsPage /> },
             ],
           },

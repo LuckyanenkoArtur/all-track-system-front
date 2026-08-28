@@ -1,6 +1,6 @@
 import { FiCalendar } from "react-icons/fi";
 
-import Badge from "../../../../../components/ui/badge/Badge.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
 import { formatDate } from "../../../utils/taskListUtils.ts";
 
 import styles from "./DateTimeBadge.module.scss";

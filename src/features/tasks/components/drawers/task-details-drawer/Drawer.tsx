@@ -1,7 +1,7 @@
 import { useTranslation } from "../../../../../i18n/index.ts";
 import type { Task } from "../../../domain/others.ts";
 import TaskDetailsTabulator from "../../tabulator/details/Tabulator.tsx";
-import { Drawer } from "../../../../../components/ui/drawer/Drawer.tsx";
+import { Drawer } from "@overlay/drawer/Drawer.tsx";
 
 type TaskDetailsDrawerProps = {
   task: Task | null;

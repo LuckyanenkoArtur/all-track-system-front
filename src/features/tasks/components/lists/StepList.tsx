@@ -1,6 +1,6 @@
-import type { CheckListStep } from "../../../../components/ui/step-check-list/step";
-import ProgressBar from "../../../../components/ui/progress-bar/ProgressBar.tsx";
-import StepCheckList from "../../../../components/ui/step-check-list/StepCheckList.tsx";
+import type { CheckListStep } from "@list/step-check-list/step";
+import ProgressBar from "@primitive/progress-bar/ProgressBar.tsx";
+import StepCheckList from "@list/step-check-list/StepCheckList.tsx";
 import { useTranslation } from "../../../../i18n/index.ts";
 import styles from "./StepList.module.scss";
 

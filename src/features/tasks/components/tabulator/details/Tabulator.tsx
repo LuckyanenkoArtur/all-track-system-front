@@ -1,5 +1,5 @@
 import type { Task } from "../../../domain/task";
-import { Tabulator } from "../../../../../components/ui/tabulator/Tabulator.tsx";
+import { Tabulator } from "@nav/tabulator/Tabulator.tsx";
 import { useTranslation } from "../../../../../i18n/index.ts";
 
 import { AiOutlineDashboard } from "react-icons/ai";

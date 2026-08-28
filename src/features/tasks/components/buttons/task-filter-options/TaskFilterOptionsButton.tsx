@@ -1,5 +1,5 @@
 import { FiFilter } from "react-icons/fi";
-import { Button } from "../../../../../components/ui/button/Button";
+import { Button } from "@primitive/button/Button";
 import { useTranslation } from "../../../../../i18n";
 import type { TaskFilters } from "../../../domain/filters";
 import { TaskFilterDrawer } from "../../drawers/task-filter-drawer/Drawer";

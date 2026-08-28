@@ -1,6 +1,6 @@
 import { FiUser } from "react-icons/fi";
 
-import Badge from "../../../../../components/ui/badge/Badge.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
 
 import styles from "./AuthorBadge.module.scss";
 

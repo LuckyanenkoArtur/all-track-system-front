@@ -2,8 +2,8 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiArrowDown, FiArrowUp, FiCheck, FiMinus } from "react-icons/fi";
 
-import type { BadgeVariant } from "../../../../../components/ui/badge/Badge.tsx";
-import Badge from "../../../../../components/ui/badge/Badge.tsx";
+import type { BadgeVariant } from "@primitive/badge/Badge.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import type { TaskPriority, TaskPriorityId } from "../../../domain/priority.ts";
 import {

@@ -7,7 +7,7 @@ import {
   FiPlus,
 } from "react-icons/fi";
 
-import { Button } from "../../../../../components/ui/button/Button";
+import { Button } from "@primitive/button/Button";
 import type { Task } from "../../../domain/others";
 import { isTerminalTaskStatus } from "../../../utils/taskStatusUtils";
 import styles from "./TaskRowActionsButton.module.scss";

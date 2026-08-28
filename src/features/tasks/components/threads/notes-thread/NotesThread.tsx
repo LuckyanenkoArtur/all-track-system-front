@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { FiClipboard } from "react-icons/fi";
 import type { TaskHistoryEntry } from "../../../domain/others.ts";
-import { Thread } from "../../../../../components/ui/thread/Thread.tsx";
-import { FeedItem } from "../../../../../components/ui/feed-item/FeedItem.tsx";
+import { Thread } from "@feed/thread/Thread.tsx";
+import { FeedItem } from "@feed/feed-item/FeedItem.tsx";
 import { formatCommentDate } from "../../../utils/commentUtils.ts";
-import { RichText } from "../../../../../components/ui/rich-text/RichText.tsx";
+import { RichText } from "@input/rich-text/RichText";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import { TaskDetailsTabPlaceholder } from "../../placeholders/TaskDetailsTabPlaceholder.tsx";
 import styles from "./NotesThread.module.scss";

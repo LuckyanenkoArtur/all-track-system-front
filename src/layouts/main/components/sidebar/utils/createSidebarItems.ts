@@ -17,25 +17,11 @@ export function createSidebarItems(t: TFunction): SidebarNavItemData[] {
       icon: RxDashboard,
     },
     {
-      kind: "group",
+      kind: "link",
       id: "tasks",
+      to: "/app/tasks",
       label: t.sidebar.tasks,
       icon: FiCheckSquare,
-      children: [
-        {
-          kind: "link",
-          id: "tasks-overview",
-          to: "/app/tasks",
-          label: t.sidebar.tasksOverview,
-          end: true,
-        },
-        {
-          kind: "link",
-          id: "tasks-queue",
-          to: "/app/tasks/tasks",
-          label: t.sidebar.workQueue,
-        },
-      ],
     },
     {
       kind: "link",

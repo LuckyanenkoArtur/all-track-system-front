@@ -1,7 +1,7 @@
 import { FiDollarSign } from "react-icons/fi";
 import type { Task } from "../../../domain/others.ts";
-import Badge from "../../../../../components/ui/badge/Badge.tsx";
-import { Card } from "../../../../../components/ui/card/Card.tsx";
+import Badge from "@primitive/badge/Badge.tsx";
+import { Card } from "@layout/card/Card.tsx";
 import { formatBudget } from "../../../utils/taskListUtils.ts";
 
 type BudgetCardProps = {

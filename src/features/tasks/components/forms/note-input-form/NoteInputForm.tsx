@@ -1,7 +1,7 @@
 import { useId, useState, type FormEvent, type KeyboardEvent } from "react";
 import { FiSend } from "react-icons/fi";
-import { Button } from "../../../../../components/ui/button/Button.tsx";
-import { Textarea } from "../../../../../components/ui/textarea/Textarea.tsx";
+import { Button } from "@primitive/button/Button.tsx";
+import { Textarea } from "@input/textarea/Textarea";
 import { useTranslation } from "../../../../../i18n/index.ts";
 import styles from "./NoteInputForm.module.scss";
 

@@ -1,5 +1,5 @@
 import type { Task, TaskStatus } from "../../../domain/others.ts";
-import { Card } from "../../../../../components/ui/card/Card.tsx";
+import { Card } from "@layout/card/Card.tsx";
 import StatusBadge from "../../badges/status-badge/StatusBadge.tsx";
 
 type StatusCardProps = {

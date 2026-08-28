@@ -1,7 +1,7 @@
 import { useRef, type ChangeEvent } from "react";
 import { FiPaperclip } from "react-icons/fi";
 
-import { Button } from "../../../../../components/ui/button/Button";
+import { Button } from "@primitive/button/Button";
 
 export type FileAttachmentButtonProps = {
   onFilesSelected: (files: File[]) => void;
@@ -44,7 +44,7 @@ export function FileAttachmentButton({
         disabled={disabled}
       >
         <Button.Icon>
-          <FiPaperclip size={18} />
+          <FiPaperclip size={14} />
         </Button.Icon>
         {title ? (
           <Button.Tooltip position="top">{title}</Button.Tooltip>

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { DatePicker } from "../../../../components/ui/date-picker/DatePicker";
-import { Sections } from "../../../../components/ui/sections/Sections";
+import { DatePicker } from "@input/date-picker/DatePicker";
+import { Sections } from "@layout/sections/Sections";
 import { useTranslation } from "../../../../i18n";
 import type { TaskFilters } from "../../domain/others";
 import { FiCalendar } from "react-icons/fi";

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { TasksProvider } from "../context/TasksContext";
-import styles from "../tasks.module.scss";
+import styles from "./TasksLayout.module.scss";
 
 export function TasksLayout() {
   return (

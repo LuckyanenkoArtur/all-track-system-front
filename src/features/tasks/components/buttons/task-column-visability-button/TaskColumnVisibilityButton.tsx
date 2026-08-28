@@ -8,7 +8,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { BiColumns } from "react-icons/bi";
-import { Button } from "../../../../../components/ui/button/Button";
+import { Button } from "@primitive/button/Button";
 import { useTranslation } from "../../../../../i18n";
 import styles from "./TaskColumnVisibilityButton.module.scss";
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { NumberInput } from "../../../../components/ui/number-input/NumberInput";
-import { Sections } from "../../../../components/ui/sections/Sections";
+import { NumberInput } from "@input/number-input/NumberInput";
+import { Sections } from "@layout/sections/Sections";
 import { useTranslation } from "../../../../i18n";
 import type { TaskFilters } from "../../domain/others";
 import { FaMoneyBill } from "react-icons/fa6";
