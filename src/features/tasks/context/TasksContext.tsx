@@ -5,10 +5,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { MOCK_TASKS } from "../data/mockTasks";
-import { MOCK_TASK_COMMENTS } from "../data/mockTaskComments";
+import {
+  taskService,
+  type TaskTracking,
+} from "../api/task-service";
 import type { BudgetTransaction } from "../domain/others";
-
 import type {
   CreateTaskInput,
   UpdateTaskInput,
@@ -19,38 +20,20 @@ import type {
   AddTaskNoteInput,
   TrackingMeta,
 } from "../domain/inputs";
-
 import type { Task } from "../domain/task";
 import type { TaskStep } from "../domain/step";
 import type { TaskStatus } from "../domain/status";
 import type { TaskComment } from "../domain/comment";
-import { resolveTaskPriority, type TaskPriorityId } from "../domain/priority";
-
-import {
-  addElapsedToTimeSpent,
-  formatTimeSpent,
-} from "../utils/timeTrackingUtils";
-import { parseTimeMinutes } from "../utils/taskListUtils";
-import { normalizeTaskStatus } from "../utils/taskStatusUtils";
+import type { TaskPriorityId } from "../domain/priority";
 import type { TaskHistoryEntry } from "../domain/history-entry";
 
-const STORAGE_KEY = "alltrack-tasks";
-const COMMENTS_STORAGE_KEY = "alltrack-task-comments";
-const HISTORY_STORAGE_KEY = "alltrack-task-history";
-const TRACKING_STORAGE_KEY = "alltrack-task-tracking";
-const BUDGET_TRANSACTIONS_STORAGE_KEY = "alltrack-task-budget-transactions";
-
-export interface TaskTracking {
-  taskId: string;
-  startedAt: number;
-  author?: string;
-  authorInitials?: string;
-}
+export type { TaskTracking };
 
 interface TasksContextValue {
   tasks: Task[];
   tracking: TaskTracking | null;
   budgetTransactions: BudgetTransaction[];
+  getTaskById: (id: string) => Task | undefined;
   addTask: (input: CreateTaskInput) => Task;
   updateTask: (id: string, input: UpdateTaskInput) => void;
   updateTaskSteps: (id: string, steps: TaskStep[]) => void;
@@ -80,485 +63,52 @@ const TasksContext = createContext<TasksContextValue | null>(null);
 
 export { TasksContext };
 
-function normalizeTask(task: Task): Task {
-  return {
-    ...task,
-    status: normalizeTaskStatus(task.status),
-    priority: resolveTaskPriority(task.priority),
-    observables: task.observables ?? [],
-    startDate: task.startDate ?? task.createdAt,
-    steps: task.steps ?? [],
-    attachments: task.attachments ?? [],
-    requiresResultReview: task.requiresResultReview ?? false,
-  };
-}
-
-function loadTasks(): Task[] {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as Task[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map(normalizeTask);
-      }
-    }
-  } catch {
-    /* use seed data */
-  }
-  return MOCK_TASKS.map(normalizeTask);
-}
-
-function loadTracking(): TaskTracking | null {
-  try {
-    const stored = localStorage.getItem(TRACKING_STORAGE_KEY);
-    if (!stored) return null;
-    const parsed = JSON.parse(stored) as TaskTracking;
-    if (parsed?.taskId && parsed?.startedAt) {
-      return parsed;
-    }
-  } catch {
-    /* ignore */
-  }
-  return null;
-}
-
-function loadComments(): TaskComment[] {
-  try {
-    const stored = localStorage.getItem(COMMENTS_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as TaskComment[];
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    }
-  } catch {
-    /* use seed data */
-  }
-  return MOCK_TASK_COMMENTS;
-}
-
-function persistComments(comments: TaskComment[]) {
-  localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(comments));
-}
-
-function loadHistory(): TaskHistoryEntry[] {
-  try {
-    const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as TaskHistoryEntry[];
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    }
-  } catch {
-    /* use empty history */
-  }
-  return [];
-}
-
-function persistHistory(history: TaskHistoryEntry[]) {
-  localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
-}
-
-function loadBudgetTransactions(): BudgetTransaction[] {
-  try {
-    const stored = localStorage.getItem(BUDGET_TRANSACTIONS_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as BudgetTransaction[];
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    }
-  } catch {
-    /* use empty list */
-  }
-  return [];
-}
-
-function persistBudgetTransactions(transactions: BudgetTransaction[]) {
-  localStorage.setItem(
-    BUDGET_TRANSACTIONS_STORAGE_KEY,
-    JSON.stringify(transactions),
-  );
-}
-
-function persistTasks(tasks: Task[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-}
-
-function persistTracking(tracking: TaskTracking | null) {
-  if (tracking) {
-    localStorage.setItem(TRACKING_STORAGE_KEY, JSON.stringify(tracking));
-  } else {
-    localStorage.removeItem(TRACKING_STORAGE_KEY);
-  }
-}
-
-function createTaskId(tasks: Task[]) {
-  const maxId = tasks.reduce((max, task) => {
-    const numeric = Number(task.id.replace(/\D/g, ""));
-    return Number.isFinite(numeric) ? Math.max(max, numeric) : max;
-  }, 0);
-
-  return `TSK-${String(maxId + 1).padStart(3, "0")}`;
-}
-
-function createCommentId(comments: TaskComment[]) {
-  const maxId = comments.reduce((max, comment) => {
-    const numeric = Number(comment.id.replace(/\D/g, ""));
-    return Number.isFinite(numeric) ? Math.max(max, numeric) : max;
-  }, 0);
-
-  return `CMT-${String(maxId + 1).padStart(3, "0")}`;
-}
-
-function createHistoryId(history: TaskHistoryEntry[]) {
-  const maxId = history.reduce((max, entry) => {
-    const numeric = Number(entry.id.replace(/\D/g, ""));
-    return Number.isFinite(numeric) ? Math.max(max, numeric) : max;
-  }, 0);
-
-  return `HIS-${String(maxId + 1).padStart(3, "0")}`;
-}
-
-function createBudgetTransactionId(transactions: BudgetTransaction[]) {
-  const maxId = transactions.reduce((max, entry) => {
-    const numeric = Number(entry.id.replace(/\D/g, ""));
-    return Number.isFinite(numeric) ? Math.max(max, numeric) : max;
-  }, 0);
-
-  return `BTX-${String(maxId + 1).padStart(3, "0")}`;
-}
-
-function createAttachmentId() {
-  return `ATT-${crypto.randomUUID().slice(0, 8)}`;
-}
-
-function getTrackingMinutes(
-  tracking: TaskTracking,
-  endedAt = Date.now(),
-): number {
-  return Math.round((endedAt - tracking.startedAt) / 60000);
-}
-
-function applyTrackingElapsed(tasks: Task[], tracking: TaskTracking): Task[] {
-  const elapsedMs = Date.now() - tracking.startedAt;
-  return tasks.map((task) =>
-    task.id === tracking.taskId
-      ? { ...task, timeSpent: addElapsedToTimeSpent(task.timeSpent, elapsedMs) }
-      : task,
-  );
-}
-
 export function TasksProvider({ children }: { children: ReactNode }) {
-  const [tasks, setTasks] = useState<Task[]>(loadTasks);
-  const [comments, setComments] = useState<TaskComment[]>(loadComments);
-  const [history, setHistory] = useState<TaskHistoryEntry[]>(loadHistory);
+  const [tasks, setTasks] = useState<Task[]>(() => taskService.getTasks());
+  const [tracking, setTracking] = useState<TaskTracking | null>(() =>
+    taskService.getTracking(),
+  );
   const [budgetTransactions, setBudgetTransactions] = useState<
     BudgetTransaction[]
-  >(loadBudgetTransactions);
-  const [tracking, setTracking] = useState<TaskTracking | null>(() => {
-    const saved = loadTracking();
-    if (!saved) return null;
-    const taskExists = loadTasks().some((task) => task.id === saved.taskId);
-    return taskExists ? saved : null;
-  });
+  >(() => taskService.getAllBudgetTransactions());
+  const [tick, setTick] = useState(0);
 
-  const commitTrackingSession = useCallback((session: TaskTracking) => {
-    const minutesAdded = getTrackingMinutes(session);
-
-    setTasks((prev) => {
-      const next = applyTrackingElapsed(prev, session);
-      persistTasks(next);
-      return next;
-    });
-
-    if (minutesAdded > 0 && session.author) {
-      const now = new Date().toISOString();
-      setHistory((prev) => {
-        const entry: TaskHistoryEntry = {
-          id: createHistoryId(prev),
-          taskId: session.taskId,
-          type: "time_tracked",
-          author: session.author!,
-          authorInitials: session.authorInitials ?? session.author!.slice(0, 2),
-          description: "",
-          steps: [],
-          createdAt: now,
-          minutesAdded,
-        };
-
-        const next = [...prev, entry];
-        persistHistory(next);
-        return next;
-      });
-    }
+  const sync = useCallback(() => {
+    setTasks(taskService.getTasks());
+    setTracking(taskService.getTracking());
+    setBudgetTransactions(taskService.getAllBudgetTransactions());
+    setTick((value) => value + 1);
   }, []);
 
-  const flushTracking = useCallback(
-    (currentTracking: TaskTracking | null) => {
-      if (!currentTracking) return;
-
-      commitTrackingSession(currentTracking);
-      setTracking(null);
-      persistTracking(null);
-    },
-    [commitTrackingSession],
+  const getTaskById = useCallback(
+    (id: string) => taskService.getTaskById(id),
+    [tick],
   );
 
-  const startTracking = useCallback(
-    (taskId: string, meta?: TrackingMeta) => {
-      if (tracking?.taskId === taskId) return;
-
-      if (tracking) {
-        commitTrackingSession(tracking);
-      }
-
-      setTasks((prev) => {
-        const next = prev.map((task) => {
-          if (task.id !== taskId) return task;
-          if (task.status === "open") {
-            return { ...task, status: "inProgress" as const };
-          }
-          return task;
-        });
-
-        persistTasks(next);
-        return next;
-      });
-
-      const nextTracking: TaskTracking = {
-        taskId,
-        startedAt: Date.now(),
-        ...(meta && {
-          author: meta.author,
-          authorInitials: meta.authorInitials,
-        }),
-      };
-      setTracking(nextTracking);
-      persistTracking(nextTracking);
+  const addTask = useCallback(
+    (input: CreateTaskInput) => {
+      const created = taskService.addTask(input);
+      sync();
+      return created;
     },
-    [tracking, commitTrackingSession],
+    [sync],
   );
 
-  const stopTracking = useCallback(() => {
-    if (!tracking) return;
-    flushTracking(tracking);
-  }, [flushTracking, tracking]);
-
-  const toggleTracking = useCallback(
-    (taskId: string, meta?: TrackingMeta) => {
-      if (tracking?.taskId === taskId) {
-        stopTracking();
-        return;
-      }
-      startTracking(taskId, meta);
+  const updateTask = useCallback(
+    (id: string, input: UpdateTaskInput) => {
+      taskService.updateTask(id, input);
+      sync();
     },
-    [startTracking, stopTracking, tracking],
+    [sync],
   );
 
-  const completeTask = useCallback(
-    (taskId: string) => {
-      if (tracking?.taskId === taskId) {
-        commitTrackingSession(tracking);
-        setTracking(null);
-        persistTracking(null);
-      }
-
-      setTasks((prev) => {
-        const next = prev.map((task) =>
-          task.id === taskId ? { ...task, status: "completed" as const } : task,
-        );
-        persistTasks(next);
-        return next;
-      });
+  const updateTaskSteps = useCallback(
+    (id: string, steps: TaskStep[]) => {
+      taskService.updateTaskSteps(id, steps);
+      sync();
     },
-    [tracking, commitTrackingSession],
+    [sync],
   );
-
-  const completeTaskWithReport = useCallback(
-    (input: CompleteTaskReportInput) => {
-      const description = input.description.trim();
-      const steps = input.steps
-        .map((step) => ({ ...step, text: step.text.trim() }))
-        .filter((step) => step.text.length > 0);
-      const now = new Date().toISOString();
-
-      if (tracking?.taskId === input.taskId) {
-        commitTrackingSession(tracking);
-        setTracking(null);
-        persistTracking(null);
-      }
-
-      setTasks((prev) => {
-        const next = prev.map((task) =>
-          task.id === input.taskId
-            ? { ...task, status: "completed" as const }
-            : task,
-        );
-        persistTasks(next);
-        return next;
-      });
-
-      setComments((prev) => {
-        const createdComment: TaskComment = {
-          id: createCommentId(prev),
-          taskId: input.taskId,
-          author: input.author,
-          authorInitials: input.authorInitials,
-          body: description,
-          createdAt: now,
-          attachments: [],
-          kind: "completion",
-          completionSteps: steps.length > 0 ? steps : undefined,
-        };
-
-        const next = [...prev, createdComment];
-        persistComments(next);
-        return next;
-      });
-
-      setHistory((prev) => {
-        const entry: TaskHistoryEntry = {
-          id: createHistoryId(prev),
-          taskId: input.taskId,
-          type: "task_completed",
-          author: input.author,
-          authorInitials: input.authorInitials,
-          description,
-          steps,
-          createdAt: now,
-        };
-
-        const next = [...prev, entry];
-        persistHistory(next);
-        return next;
-      });
-    },
-    [tracking, commitTrackingSession],
-  );
-
-  const addTask = useCallback((input: CreateTaskInput) => {
-    let created: Task | undefined;
-    const now = new Date().toISOString();
-
-    setTasks((prev) => {
-      created = {
-        id: createTaskId(prev),
-        title: input.title.trim(),
-        status: "open",
-        priority: resolveTaskPriority(input.priority),
-        groups: input.groups.filter(Boolean),
-        observables: input.observables.filter(Boolean),
-        createdAt: now,
-        startDate: input.startDate
-          ? new Date(input.startDate).toISOString()
-          : now,
-        dueDate: new Date(input.dueDate).toISOString(),
-        initiator: input.initiator.trim(),
-        responsible: input.responsible.filter(Boolean),
-        budget: input.budget.trim() || "$0",
-        timeSpent: "0h 00m",
-        description: input.description?.trim() || undefined,
-        steps: input.steps ?? [],
-        attachments: (input.attachments ?? []).map((attachment) => ({
-          name: attachment.name,
-          size: attachment.size,
-          mimeType: attachment.mimeType,
-          dataUrl: attachment.dataUrl,
-          id: attachment.id?.startsWith("ATT-")
-            ? attachment.id
-            : createAttachmentId(),
-        })),
-        requiresResultReview: input.requiresResultReview,
-      };
-
-      const next = [created, ...prev];
-      persistTasks(next);
-      return next;
-    });
-
-    if (!created) {
-      throw new Error("Failed to create task");
-    }
-
-    return created;
-  }, []);
-
-  const updateTask = useCallback((id: string, input: UpdateTaskInput) => {
-    const now = new Date().toISOString();
-    const author = input.initiator.trim();
-    const authorInitials = author
-      .split(/\s+/)
-      .map((part) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
-    setTasks((prev) => {
-      const next = prev.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              title: input.title.trim(),
-              priority: resolveTaskPriority(input.priority),
-              groups: input.groups.filter(Boolean),
-              observables: input.observables.filter(Boolean),
-              startDate: input.startDate
-                ? new Date(input.startDate).toISOString()
-                : task.startDate,
-              dueDate: new Date(input.dueDate).toISOString(),
-              initiator: input.initiator.trim(),
-              responsible: input.responsible.filter(Boolean),
-              budget: input.budget.trim() || "$0",
-              description: input.description?.trim() || undefined,
-              steps: input.steps ?? task.steps ?? [],
-              attachments: input.attachments
-                ? input.attachments.map((attachment) => ({
-                    name: attachment.name,
-                    size: attachment.size,
-                    mimeType: attachment.mimeType,
-                    dataUrl: attachment.dataUrl,
-                    id: attachment.id?.startsWith("ATT-")
-                      ? attachment.id
-                      : createAttachmentId(),
-                  }))
-                : (task.attachments ?? []),
-              requiresResultReview: input.requiresResultReview,
-            }
-          : task,
-      );
-      persistTasks(next);
-      return next;
-    });
-
-    setHistory((prev) => {
-      const entry: TaskHistoryEntry = {
-        id: createHistoryId(prev),
-        taskId: id,
-        type: "task_updated",
-        author,
-        authorInitials,
-        description: input.description?.trim() || input.title.trim(),
-        steps: [],
-        createdAt: now,
-      };
-
-      const next = [...prev, entry];
-      persistHistory(next);
-      return next;
-    });
-  }, []);
-
-  const updateTaskSteps = useCallback((id: string, steps: TaskStep[]) => {
-    setTasks((prev) => {
-      const next = prev.map((task) =>
-        task.id === id ? { ...task, steps } : task,
-      );
-      persistTasks(next);
-      return next;
-    });
-  }, []);
 
   const updateTaskStatus = useCallback(
     (
@@ -566,268 +116,122 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       status: TaskStatus,
       changeAuthor?: { author: string; authorInitials: string },
     ) => {
-      const now = new Date().toISOString();
-
-      setTasks((prev) => {
-        const task = prev.find((item) => item.id === id);
-        if (!task || task.status === status) return prev;
-
-        if (changeAuthor) {
-          setHistory((historyPrev) => {
-            const entry: TaskHistoryEntry = {
-              id: createHistoryId(historyPrev),
-              taskId: id,
-              type: "status_changed",
-              author: changeAuthor.author,
-              authorInitials: changeAuthor.authorInitials,
-              description: "",
-              steps: [],
-              createdAt: now,
-              statusFrom: task.status,
-              statusTo: status,
-            };
-
-            const nextHistory = [...historyPrev, entry];
-            persistHistory(nextHistory);
-            return nextHistory;
-          });
-        }
-
-        const next = prev.map((item) =>
-          item.id === id ? { ...item, status } : item,
-        );
-        persistTasks(next);
-        return next;
-      });
+      taskService.updateTaskStatus(id, status, changeAuthor);
+      sync();
     },
-    [],
+    [sync],
   );
 
   const updateTaskPriority = useCallback(
     (id: string, priority: TaskPriorityId) => {
-      const resolved = resolveTaskPriority(priority);
-
-      setTasks((prev) => {
-        const task = prev.find((item) => item.id === id);
-        if (!task || task.priority.id === resolved.id) return prev;
-
-        const next = prev.map((item) =>
-          item.id === id ? { ...item, priority: resolved } : item,
-        );
-        persistTasks(next);
-        return next;
-      });
+      taskService.updateTaskPriority(id, priority);
+      sync();
     },
-    [],
+    [sync],
   );
 
-  const isTracking = useCallback(
-    (taskId: string) => tracking?.taskId === taskId,
-    [tracking],
+  const startTracking = useCallback(
+    (taskId: string, meta?: TrackingMeta) => {
+      taskService.startTracking(taskId, meta);
+      sync();
+    },
+    [sync],
   );
 
-  const getTrackingElapsedMs = useCallback(() => {
-    if (!tracking) return 0;
-    return Date.now() - tracking.startedAt;
-  }, [tracking]);
+  const stopTracking = useCallback(() => {
+    taskService.stopTracking();
+    sync();
+  }, [sync]);
 
-  const getTaskComments = useCallback(
-    (taskId: string) =>
-      comments
-        .filter((comment) => comment.taskId === taskId)
-        .sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        ),
-    [comments],
+  const toggleTracking = useCallback(
+    (taskId: string, meta?: TrackingMeta) => {
+      taskService.toggleTracking(taskId, meta);
+      sync();
+    },
+    [sync],
   );
 
-  const addTaskComment = useCallback((input: AddTaskCommentInput) => {
-    let createdComment: TaskComment | null = null;
-    const now = new Date().toISOString();
+  const completeTask = useCallback(
+    (taskId: string) => {
+      taskService.completeTask(taskId);
+      sync();
+    },
+    [sync],
+  );
 
-    setComments((prev) => {
-      createdComment = {
-        id: createCommentId(prev),
-        taskId: input.taskId,
-        author: input.author,
-        authorInitials: input.authorInitials,
-        body: input.body,
-        createdAt: now,
-        attachments: input.attachments.map((attachment) => ({
-          ...attachment,
-          id: createAttachmentId(),
-        })),
-        kind: input.kind ?? "default",
-        completionSteps: input.completionSteps,
-      };
+  const completeTaskWithReport = useCallback(
+    (input: CompleteTaskReportInput) => {
+      taskService.completeTaskWithReport(input);
+      sync();
+    },
+    [sync],
+  );
 
-      const next = [...prev, createdComment];
-      persistComments(next);
-      return next;
-    });
+  const addManualTime = useCallback(
+    (input: AddManualTimeInput) => {
+      taskService.addManualTime(input);
+      sync();
+    },
+    [sync],
+  );
 
-    if (input.kind !== "completion") {
-      setHistory((prev) => {
-        const entry: TaskHistoryEntry = {
-          id: createHistoryId(prev),
-          taskId: input.taskId,
-          type: "comment_added",
-          author: input.author,
-          authorInitials: input.authorInitials,
-          description: input.body.trim(),
-          steps: [],
-          createdAt: now,
-        };
-
-        const next = [...prev, entry];
-        persistHistory(next);
-        return next;
-      });
-    }
-
-    return createdComment!;
-  }, []);
-
-  const addTaskNote = useCallback((input: AddTaskNoteInput) => {
-    const body = input.body.trim();
-    if (!body) {
-      throw new Error("Note body is required");
-    }
-
-    const now = new Date().toISOString();
-    let createdEntry: TaskHistoryEntry | null = null;
-
-    setHistory((prev) => {
-      createdEntry = {
-        id: createHistoryId(prev),
-        taskId: input.taskId,
-        type: "note_added",
-        author: input.author,
-        authorInitials: input.authorInitials,
-        description: body,
-        steps: [],
-        createdAt: now,
-      };
-
-      const next = [...prev, createdEntry];
-      persistHistory(next);
-      return next;
-    });
-
-    return createdEntry!;
-  }, []);
-
-  const getTaskHistory = useCallback(
-    (taskId: string) =>
-      history
-        .filter((entry) => entry.taskId === taskId)
-        .sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        ),
-    [history],
+  const addBudgetExpense = useCallback(
+    (input: AddBudgetExpenseInput) => {
+      taskService.addBudgetExpense(input);
+      sync();
+    },
+    [sync],
   );
 
   const getBudgetTransactions = useCallback(
-    (taskId: string) =>
-      budgetTransactions
-        .filter((entry) => entry.taskId === taskId)
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        ),
-    [budgetTransactions],
+    (taskId: string) => taskService.getBudgetTransactions(taskId),
+    [tick],
   );
 
-  const addManualTime = useCallback((input: AddManualTimeInput) => {
-    const totalMinutes =
-      Math.max(0, input.hours) * 60 + Math.max(0, input.minutes);
-    if (totalMinutes <= 0) return;
+  const isTracking = useCallback(
+    (taskId: string) => taskService.isTracking(taskId),
+    [tick],
+  );
 
-    const note = input.note?.trim() ?? "";
-    const now = new Date().toISOString();
+  const getTrackingElapsedMs = useCallback(
+    () => taskService.getTrackingElapsedMs(),
+    [tick],
+  );
 
-    setTasks((prev) => {
-      const next = prev.map((task) =>
-        task.id === input.taskId
-          ? {
-              ...task,
-              timeSpent: formatTimeSpent(
-                parseTimeMinutes(task.timeSpent) + totalMinutes,
-              ),
-            }
-          : task,
-      );
-      persistTasks(next);
-      return next;
-    });
+  const getTaskComments = useCallback(
+    (taskId: string) => taskService.getTaskComments(taskId),
+    [tick],
+  );
 
-    setHistory((prev) => {
-      const entry: TaskHistoryEntry = {
-        id: createHistoryId(prev),
-        taskId: input.taskId,
-        type: "manual_time_added",
-        author: input.author,
-        authorInitials: input.authorInitials,
-        description: note,
-        steps: [],
-        createdAt: now,
-        minutesAdded: totalMinutes,
-      };
+  const getTaskHistory = useCallback(
+    (taskId: string) => taskService.getTaskHistory(taskId),
+    [tick],
+  );
 
-      const next = [...prev, entry];
-      persistHistory(next);
-      return next;
-    });
-  }, []);
+  const addTaskComment = useCallback(
+    (input: AddTaskCommentInput) => {
+      const created = taskService.addTaskComment(input);
+      sync();
+      return created;
+    },
+    [sync],
+  );
 
-  const addBudgetExpense = useCallback((input: AddBudgetExpenseInput) => {
-    const amount = Math.max(0, input.amount);
-    const description = input.description.trim();
-    if (amount <= 0 || !description) return;
-
-    const now = new Date().toISOString();
-
-    setBudgetTransactions((prev) => {
-      const created: BudgetTransaction = {
-        id: createBudgetTransactionId(prev),
-        taskId: input.taskId,
-        amount,
-        description,
-        createdAt: now,
-        author: input.author,
-      };
-
-      const next = [...prev, created];
-      persistBudgetTransactions(next);
-      return next;
-    });
-
-    setHistory((prev) => {
-      const entry: TaskHistoryEntry = {
-        id: createHistoryId(prev),
-        taskId: input.taskId,
-        type: "budget_expense_added",
-        author: input.author,
-        authorInitials: input.authorInitials,
-        description,
-        steps: [],
-        createdAt: now,
-        amount,
-      };
-
-      const next = [...prev, entry];
-      persistHistory(next);
-      return next;
-    });
-  }, []);
+  const addTaskNote = useCallback(
+    (input: AddTaskNoteInput) => {
+      const created = taskService.addTaskNote(input);
+      sync();
+      return created;
+    },
+    [sync],
+  );
 
   const value = useMemo(
     () => ({
       tasks,
       tracking,
       budgetTransactions,
+      getTaskById,
       addTask,
       updateTask,
       updateTaskSteps,
@@ -852,6 +256,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       tasks,
       tracking,
       budgetTransactions,
+      getTaskById,
       addTask,
       updateTask,
       updateTaskSteps,
