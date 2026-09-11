@@ -6,7 +6,7 @@ import { Button } from "@primitive/button/Button";
 
 import styles from "./BackToTasksButton.module.scss";
 
-export function BackToTasksButton() {
+export default function BackToTasksButton() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 

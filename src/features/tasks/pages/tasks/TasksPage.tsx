@@ -32,6 +32,7 @@ export default function TaskPage() {
   const { bio } = useUserProfile();
   const navigate = useNavigate();
   const location = useLocation();
+  
   const {
     tasks,
     addTask,
@@ -39,6 +40,7 @@ export default function TaskPage() {
     toggleTracking,
     completeTaskWithReport,
   } = useTasks();
+
   const { getDisplayTimeSpent } = useTaskTrackingDisplay();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [detailsInitialTab, setDetailsInitialTab] = useState<string | undefined>();

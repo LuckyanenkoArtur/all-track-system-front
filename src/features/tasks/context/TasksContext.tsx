@@ -27,13 +27,9 @@ import type { TaskComment } from "../domain/comment";
 import type { TaskPriorityId } from "../domain/priority";
 import type { TaskHistoryEntry } from "../domain/history-entry";
 
-export type { TaskTracking };
-
 interface TasksContextValue {
   tasks: Task[];
   tracking: TaskTracking | null;
-  budgetTransactions: BudgetTransaction[];
-  getTaskById: (id: string) => Task | undefined;
   addTask: (input: CreateTaskInput) => Task;
   updateTask: (id: string, input: UpdateTaskInput) => void;
   updateTaskSteps: (id: string, steps: TaskStep[]) => void;
@@ -43,10 +39,8 @@ interface TasksContextValue {
     changeAuthor?: { author: string; authorInitials: string },
   ) => void;
   updateTaskPriority: (id: string, priority: TaskPriorityId) => void;
-  startTracking: (taskId: string, meta?: TrackingMeta) => void;
   stopTracking: () => void;
   toggleTracking: (taskId: string, meta?: TrackingMeta) => void;
-  completeTask: (taskId: string) => void;
   completeTaskWithReport: (input: CompleteTaskReportInput) => void;
   addManualTime: (input: AddManualTimeInput) => void;
   addBudgetExpense: (input: AddBudgetExpenseInput) => void;
@@ -68,22 +62,13 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const [tracking, setTracking] = useState<TaskTracking | null>(() =>
     taskService.getTracking(),
   );
-  const [budgetTransactions, setBudgetTransactions] = useState<
-    BudgetTransaction[]
-  >(() => taskService.getAllBudgetTransactions());
   const [tick, setTick] = useState(0);
 
   const sync = useCallback(() => {
     setTasks(taskService.getTasks());
     setTracking(taskService.getTracking());
-    setBudgetTransactions(taskService.getAllBudgetTransactions());
     setTick((value) => value + 1);
   }, []);
-
-  const getTaskById = useCallback(
-    (id: string) => taskService.getTaskById(id),
-    [tick],
-  );
 
   const addTask = useCallback(
     (input: CreateTaskInput) => {
@@ -130,14 +115,6 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     [sync],
   );
 
-  const startTracking = useCallback(
-    (taskId: string, meta?: TrackingMeta) => {
-      taskService.startTracking(taskId, meta);
-      sync();
-    },
-    [sync],
-  );
-
   const stopTracking = useCallback(() => {
     taskService.stopTracking();
     sync();
@@ -146,14 +123,6 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const toggleTracking = useCallback(
     (taskId: string, meta?: TrackingMeta) => {
       taskService.toggleTracking(taskId, meta);
-      sync();
-    },
-    [sync],
-  );
-
-  const completeTask = useCallback(
-    (taskId: string) => {
-      taskService.completeTask(taskId);
       sync();
     },
     [sync],
@@ -230,17 +199,13 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     () => ({
       tasks,
       tracking,
-      budgetTransactions,
-      getTaskById,
       addTask,
       updateTask,
       updateTaskSteps,
       updateTaskStatus,
       updateTaskPriority,
-      startTracking,
       stopTracking,
       toggleTracking,
-      completeTask,
       completeTaskWithReport,
       addManualTime,
       addBudgetExpense,
@@ -255,17 +220,13 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     [
       tasks,
       tracking,
-      budgetTransactions,
-      getTaskById,
       addTask,
       updateTask,
       updateTaskSteps,
       updateTaskStatus,
       updateTaskPriority,
-      startTracking,
       stopTracking,
       toggleTracking,
-      completeTask,
       completeTaskWithReport,
       addManualTime,
       addBudgetExpense,

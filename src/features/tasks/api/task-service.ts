@@ -197,9 +197,9 @@ export class TaskServiceTested {
     return this.tasks;
   }
 
-  getTaskById(id: string) {
-    return this.tasks.find((task) => task.id === id);
-  }
+  // getTaskById(id: string) {
+  //   return this.tasks.find((task) => task.id === id);
+  // }
 
   getComments() {
     return this.comments;
@@ -730,3 +730,25 @@ export class TaskServiceTested {
 export const taskService = new TaskServiceTested();
 
 export default TaskServiceTested;
+
+
+// UPDATE VERSION OF TASK SERVICE TO USE THE NEW API
+interface TaskServiceContract {
+  getTasks(): Task[];
+  getTaskById(id: string): Promise<Task | null>;
+}
+
+class TaskService implements TaskServiceContract {
+  getTasks(): Task[] {
+    return MOCK_TASKS.map(normalizeTask);
+  }
+
+  async getTaskById(id: string): Promise<Task | null> {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const found = MOCK_TASKS.find((task) => task.id === id);
+    return found ? normalizeTask(found) : null;
+  }
+}
+
+export const taskServiceNew = new TaskService();
+

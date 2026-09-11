@@ -29,6 +29,9 @@
       "nextMonth": "Next month",
       "hour": "Hour",
       "minute": "Minute"
+    },
+    "loader": {
+      "label": "Loading. Balancing time, budget, and energy."
     }
   },
   "sidebar": {

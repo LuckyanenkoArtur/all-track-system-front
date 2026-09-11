@@ -1,13 +1,39 @@
 import { create } from "zustand";
+import { taskService as taskServiceOld, taskServiceNew } from "../api/task-service";
 
 // 1. Create a Tasks store
 // 2. Create a TaskCollenctionStore
 
-const useTasksStore = create(() => ({
+const taskService = taskServiceNew
+
+const useTasksStore = create((set) => ({
   tasks: [],
-  //   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  //   removeAllBears: () => set({ bears: 0 }),
-  //   updateBears: (newBears) => set({ bears: newBears }),
+  task: null,
+  loading: false,
+
+  getTasks: async () => {
+    set({ loading: true });
+
+    const tasks = await taskService.getTasks();
+
+    set({
+      tasks,
+      loading: false,
+    });
+  },
+
+  getTaskById: async (id: string) => {
+    set({ loading: true });
+
+    const task = await taskService.getTaskById(id);
+
+    set({
+      task,
+      loading: false,
+    });
+  },
+
+  
 }));
 
 export default useTasksStore;
