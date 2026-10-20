@@ -13,6 +13,7 @@
 .colStatus,
 .colPriority,
 .colGroups,
+.colProject,
 .colDate,
 .colInitiator,
 .colPeople,
@@ -32,6 +33,11 @@
 
 .colGroups {
   min-width: 8.75rem;
+}
+
+.colProject {
+  min-width: 9.5rem;
+  white-space: nowrap;
 }
 
 .colDate {
@@ -93,6 +99,25 @@
   font-weight: 500;
   line-height: 1.35;
   overflow-wrap: break-word;
+}
+
+.projectBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.35;
+
+  svg {
+    color: var(--color-text-subtle);
+    flex-shrink: 0;
+  }
 }
 
 .initiator {

@@ -6,6 +6,7 @@ import type {
   SortField,
   TaskPriorityId,
 } from "../domain/others";
+import { getProjectName } from "../data/mockProjects";
 import { normalizeTaskStatus } from "./taskStatusUtils";
 
 const STATUS_ORDER: Record<
@@ -66,6 +67,7 @@ export function matchesSearch(task: Task, search: string): boolean {
     task.status,
     task.priority.id,
     task.priority.name,
+    getProjectName(task.project) ?? "",
     ...task.groups,
     ...task.responsible,
     ...task.observables,
@@ -91,6 +93,13 @@ export function matchesFilters(task: Task, filters: TaskFilters): boolean {
   }
 
   if (!includesAny(task.groups, filters.groups)) return false;
+  const projectFilters = filters.projects ?? [];
+  if (
+    projectFilters.length > 0 &&
+    (!task.project || !projectFilters.includes(task.project))
+  ) {
+    return false;
+  }
   if (
     filters.initiators.length > 0 &&
     !filters.initiators.includes(task.initiator)
@@ -134,6 +143,8 @@ function compareField(a: Task, b: Task, field: SortField): number {
       return PRIORITY_ORDER[a.priority.id] - PRIORITY_ORDER[b.priority.id];
     case "groups":
       return a.groups.join(", ").localeCompare(b.groups.join(", "));
+    case "project":
+      return (a.project ?? "").localeCompare(b.project ?? "");
     case "createdAt":
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     case "dueDate":
@@ -223,6 +234,7 @@ export function areFiltersEqual(a: TaskFilters, b: TaskFilters): boolean {
       b.priorities.map((priority) => priority.id),
     ) &&
     arraysEqual(a.groups, b.groups) &&
+    arraysEqual(a.projects ?? [], b.projects ?? []) &&
     arraysEqual(a.initiators, b.initiators) &&
     arraysEqual(a.responsible, b.responsible) &&
     arraysEqual(a.observables, b.observables) &&
@@ -245,6 +257,7 @@ export function hasDrawerFilters(filters: TaskFilters): boolean {
     filters.statuses.length > 0 ||
     filters.priorities.length > 0 ||
     filters.groups.length > 0 ||
+    (filters.projects ?? []).length > 0 ||
     filters.initiators.length > 0 ||
     filters.responsible.length > 0 ||
     filters.observables.length > 0 ||
@@ -262,6 +275,7 @@ export function countDrawerFilters(filters: TaskFilters): number {
   if (filters.statuses.length) count += 1;
   if (filters.priorities.length) count += 1;
   if (filters.groups.length) count += 1;
+  if ((filters.projects ?? []).length) count += 1;
   if (filters.initiators.length) count += 1;
   if (filters.responsible.length) count += 1;
   if (filters.observables.length) count += 1;
@@ -277,6 +291,7 @@ export function hasActiveFilters(filters: TaskFilters): boolean {
     filters.statuses.length > 0 ||
     filters.priorities.length > 0 ||
     filters.groups.length > 0 ||
+    (filters.projects ?? []).length > 0 ||
     filters.initiators.length > 0 ||
     filters.responsible.length > 0 ||
     filters.observables.length > 0 ||
@@ -295,6 +310,7 @@ export function countActiveFilters(filters: TaskFilters): number {
   if (filters.statuses.length) count += 1;
   if (filters.priorities.length) count += 1;
   if (filters.groups.length) count += 1;
+  if ((filters.projects ?? []).length) count += 1;
   if (filters.initiators.length) count += 1;
   if (filters.responsible.length) count += 1;
   if (filters.observables.length) count += 1;

@@ -5,9 +5,9 @@ import {
   FiClock,
   FiDollarSign,
   FiEdit2,
+  FiEye,
   FiFileText,
   FiFlag,
-  FiLayers,
   FiPlayCircle,
   FiUser,
   FiUsers,
@@ -20,22 +20,23 @@ import type {
 } from "../../../../domain/others.ts";
 import styles from "./TaskOverviewBody.module.scss";
 import { useTranslation } from "../../../../../../i18n/index.ts";
-import Badge from "@primitive/badge/Badge.tsx";
 import { Button } from "@primitive/button/Button.tsx";
 import buttonStyles from "@primitive/button/Button.module.scss";
 import Divider from "@primitive/divider/Divider.tsx";
 import { Sections } from "@layout/sections/Sections.tsx";
 import ProgressBar from "@primitive/progress-bar/ProgressBar.tsx";
 import StepCheckList from "@list/step-check-list/StepCheckList.tsx";
-
 import { BudgetCard } from "../../../cards/budget-card/BudgetCard.tsx";
 import { DueDateCard } from "../../../cards/due-date-card/DueDateCard.tsx";
+import { ObservablesCard } from "../../../cards/observables-card/ObservablesCard.tsx";
 import { PriorityCard } from "../../../cards/priority-card/PriorityCard.tsx";
+import { ProjectCard } from "../../../cards/project-card/ProjectCard.tsx";
+import { RelatedGroupsCard } from "../../../cards/related-groups-card/RelatedGroupsCard.tsx";
+import { ResponsibleCard } from "../../../cards/responsible-card/ResponsibleCard.tsx";
 import { StartDateCard } from "../../../cards/start-date-card/StartDateCard.tsx";
 import { StatusCard } from "../../../cards/status-card/StatusCard.tsx";
 import { TaskTrackingBar } from "../../../tracking/TaskTrackingBar.tsx";
 
-import { Initials } from "../../utils/Initials.ts";
 import { isTerminalTaskStatus } from "../../../../utils/taskStatusUtils.ts";
 
 export type TaskOverviewBodyProps = {
@@ -98,43 +99,33 @@ export function TaskOverviewBody({
 
         <Sections.Section>
           <Sections.Section.Icon>
-            <FiUser size={15} aria-hidden />
-          </Sections.Section.Icon>
-          <Sections.Section.Title>{t.tasks.responsible}</Sections.Section.Title>
-          <Sections.Section.Content>
-            {task.responsible.length > 0 ? (
-              <div className={styles.assigneeList}>
-                {task.responsible.map((person) => (
-                  <Badge key={person} variant="info">
-                    <Badge.Icon>{new Initials(person).get()}</Badge.Icon>
-                    <Badge.Label>{person}</Badge.Label>
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <span className={styles.emptyValue}>—</span>
-            )}
-          </Sections.Section.Content>
-        </Sections.Section>
-
-        <Sections.Section>
-          <Sections.Section.Icon>
             <FiUsers size={15} aria-hidden />
           </Sections.Section.Icon>
-          <Sections.Section.Title>{t.tasks.observables}</Sections.Section.Title>
+          <Sections.Section.Title>
+            {t.tasks.filterSections.people}
+          </Sections.Section.Title>
           <Sections.Section.Content>
-            {task.observables.length > 0 ? (
-              <div className={styles.assigneeList}>
-                {task.observables.map((person) => (
-                  <Badge key={person} variant="info">
-                    <Badge.Icon>{new Initials(person).get()}</Badge.Icon>
-                    <Badge.Label>{person}</Badge.Label>
-                  </Badge>
-                ))}
+            <div className={styles.fieldGrid}>
+              <div className={styles.splitFields}>
+                <ProjectCard title={t.tasks.project} project={task.project} />
+                <Divider icon={<FiUser size={11} aria-hidden />} />
+                <ResponsibleCard
+                  title={t.tasks.responsible}
+                  responsible={task.responsible}
+                />
               </div>
-            ) : (
-              <span className={styles.emptyValue}>—</span>
-            )}
+              <div className={styles.splitFields}>
+                <ObservablesCard
+                  title={t.tasks.observables}
+                  observables={task.observables}
+                />
+                <Divider icon={<FiEye size={11} aria-hidden />} />
+                <RelatedGroupsCard
+                  title={t.tasks.groups}
+                  groups={task.groups}
+                />
+              </div>
+            </div>
           </Sections.Section.Content>
         </Sections.Section>
 
@@ -164,31 +155,6 @@ export function TaskOverviewBody({
             <BudgetCard title={t.tasks.budget} budget={task.budget} />
           </Sections.Section.Content>
         </Sections.Section>
-
-        {task.groups.length > 0 && (
-          <Sections.Section>
-            <Sections.Section.Icon>
-              <FiLayers size={15} aria-hidden />
-            </Sections.Section.Icon>
-            <Sections.Section.Title>{t.tasks.groups}</Sections.Section.Title>
-            <Sections.Section.Content>
-              <div className={styles.groupList}>
-                {task.groups.map((group) => (
-                  <Badge
-                    key={group}
-                    variant="info"
-                    className={styles.groupBadge}
-                  >
-                    <Badge.Icon>
-                      <FiLayers size={16} aria-hidden />
-                    </Badge.Icon>
-                    <Badge.Label>{group}</Badge.Label>
-                  </Badge>
-                ))}
-              </div>
-            </Sections.Section.Content>
-          </Sections.Section>
-        )}
       </Sections>
 
       <Sections className={styles.sidebar}>

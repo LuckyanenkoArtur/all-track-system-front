@@ -25,6 +25,7 @@ type MultiSelectProps = {
   noResultsLabel?: string;
   clearLabel?: string;
   multiple?: boolean;
+  searchable?: boolean;
 };
 
 export function MultiSelect({
@@ -38,6 +39,7 @@ export function MultiSelect({
   noResultsLabel = "No options found",
   clearLabel = "Clear",
   multiple = true,
+  searchable = true,
 }: MultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -58,9 +60,11 @@ export function MultiSelect({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  const filtered = options.filter((option) =>
-    option.label.toLowerCase().includes(query.trim().toLowerCase()),
-  );
+  const filtered = searchable
+    ? options.filter((option) =>
+        option.label.toLowerCase().includes(query.trim().toLowerCase()),
+      )
+    : options;
 
   const toggle = (value: string) => {
     if (!multiple) {
@@ -139,17 +143,19 @@ export function MultiSelect({
 
       {open && (
         <div className={styles.dropdown}>
-          <div className={styles.searchBox}>
-            <FiSearch size={14} aria-hidden />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={searchPlaceholder}
-              aria-label={searchPlaceholder}
-              autoFocus
-            />
-          </div>
+          {searchable ? (
+            <div className={styles.searchBox}>
+              <FiSearch size={14} aria-hidden />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
+                autoFocus
+              />
+            </div>
+          ) : null}
           <ul
             className={styles.options}
             role="listbox"

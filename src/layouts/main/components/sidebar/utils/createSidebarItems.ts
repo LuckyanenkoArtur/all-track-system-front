@@ -1,7 +1,7 @@
 import type { SidebarNavItemData } from "../components/navigation/types/navigation-item";
 
 import { RxDashboard } from "react-icons/rx";
-import { FiCheckSquare, FiClock, FiCalendar, FiDollarSign, FiBell } from "react-icons/fi";
+import { FiCheckSquare, FiFolder, FiCalendar, FiDollarSign, FiBell } from "react-icons/fi";
 
 type TFunction = {
   sidebar: Record<string, string>;
@@ -25,24 +25,10 @@ export function createSidebarItems(t: TFunction): SidebarNavItemData[] {
     },
     {
       kind: "link",
-      id: "timing",
-      to: "/app/timing",
-      label: t.sidebar.timeTracking,
-      icon: FiClock,
-    },
-    {
-      kind: "link",
-      id: "calendar",
-      to: "/app/calendar",
-      label: t.sidebar.calendar,
-      icon: FiCalendar,
-    },
-    {
-      kind: "link",
-      id: "reminders",
-      to: "/app/reminders",
-      label: t.sidebar.reminders,
-      icon: FiBell,
+      id: "projects",
+      to: "/app/projects",
+      label: t.sidebar.projects,
+      icon: FiFolder,
     },
     {
       kind: "group",
@@ -107,6 +93,20 @@ export function createSidebarItems(t: TFunction): SidebarNavItemData[] {
           label: t.sidebar.financeInvestments,
         },
       ],
+    },
+    {
+      kind: "link",
+      id: "calendar",
+      to: "/app/calendar",
+      label: t.sidebar.calendar,
+      icon: FiCalendar,
+    },
+    {
+      kind: "link",
+      id: "reminders",
+      to: "/app/reminders",
+      label: t.sidebar.reminders,
+      icon: FiBell,
     },
   ];
 }

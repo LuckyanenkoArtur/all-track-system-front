@@ -39,6 +39,7 @@ interface TasksContextValue {
     changeAuthor?: { author: string; authorInitials: string },
   ) => void;
   updateTaskPriority: (id: string, priority: TaskPriorityId) => void;
+  updateTaskProject: (id: string, project: string | null) => void;
   stopTracking: () => void;
   toggleTracking: (taskId: string, meta?: TrackingMeta) => void;
   completeTaskWithReport: (input: CompleteTaskReportInput) => void;
@@ -110,6 +111,14 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const updateTaskPriority = useCallback(
     (id: string, priority: TaskPriorityId) => {
       taskService.updateTaskPriority(id, priority);
+      sync();
+    },
+    [sync],
+  );
+
+  const updateTaskProject = useCallback(
+    (id: string, project: string | null) => {
+      taskService.updateTaskProject(id, project);
       sync();
     },
     [sync],
@@ -204,6 +213,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       updateTaskSteps,
       updateTaskStatus,
       updateTaskPriority,
+      updateTaskProject,
       stopTracking,
       toggleTracking,
       completeTaskWithReport,
@@ -225,6 +235,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       updateTaskSteps,
       updateTaskStatus,
       updateTaskPriority,
+      updateTaskProject,
       stopTracking,
       toggleTracking,
       completeTaskWithReport,

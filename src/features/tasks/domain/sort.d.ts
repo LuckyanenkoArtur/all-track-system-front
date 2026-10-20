@@ -3,6 +3,7 @@ export type SortField =
   | "status"
   | "priority"
   | "groups"
+  | "project"
   | "createdAt"
   | "dueDate"
   | "initiator"

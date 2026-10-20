@@ -10,6 +10,7 @@ import {
 } from "react";
 import {
   FiAlertTriangle,
+  FiFolder,
   FiCalendar,
   FiEye,
   FiFileText,
@@ -30,6 +31,10 @@ import { TASK_PRIORITIES, isTaskPriorityId } from "../../../domain/priority";
 import { Attachments } from "@primitive/attachments/Attachments";
 import { Button } from "@primitive/button/Button";
 import { DatePicker } from "@input/date-picker/DatePicker";
+import {
+  DropDown,
+  type DropDownOption,
+} from "@input/drop-down/DropDown";
 import {
   MultiSelect,
   type MultiSelectOption,
@@ -55,6 +60,7 @@ type FormState = {
   description: string;
   steps: TaskStep[];
   groups: string[];
+  project: string | null;
   observables: string[];
   startDate: string;
   dueDate: string;
@@ -78,6 +84,8 @@ type CreateTaskDialogLabels = {
   removeStep: string;
   initiator: string;
   groups: string;
+  project: string;
+  selectProject: string;
   observables: string;
   startDate: string;
   dueDate: string;
@@ -94,6 +102,7 @@ type CreateTaskDialogLabels = {
   create: string;
   save?: string;
   cancel: string;
+  clear: string;
   searchOptions: string;
   noOptionsFound: string;
   selectPlaceholder: string;
@@ -115,6 +124,7 @@ type TaskCreationDrawerProps = {
   initiatorName: string;
   groupOptions: MultiSelectOption[];
   userOptions: MultiSelectOption[];
+  projectOptions: DropDownOption[];
   labels: CreateTaskDialogLabels;
 };
 
@@ -130,6 +140,7 @@ function createEmptyForm(): FormState {
     description: "",
     steps: [],
     groups: [],
+    project: null,
     observables: [],
     startDate: "",
     dueDate: "",
@@ -146,6 +157,7 @@ function taskToForm(task: Task): FormState {
     description: task.description ?? "",
     steps: task.steps ?? [],
     groups: task.groups,
+    project: task.project ?? null,
     observables: task.observables,
     startDate: toDateTimeLocalValue(new Date(task.startDate)),
     dueDate: toDateTimeLocalValue(new Date(task.dueDate)),
@@ -172,6 +184,7 @@ function isFormDirty(form: FormState, baseline: FormState): boolean {
     form.budget.trim() !== baseline.budget.trim() ||
     form.requiresResultReview !== baseline.requiresResultReview ||
     form.groups.join("|") !== baseline.groups.join("|") ||
+    form.project !== baseline.project ||
     form.observables.join("|") !== baseline.observables.join("|") ||
     form.steps.length !== baseline.steps.length ||
     form.steps.some(
@@ -195,6 +208,7 @@ function TaskCreationDrawerContent({
   initiatorName,
   groupOptions,
   userOptions,
+  projectOptions,
   labels,
 }: TaskCreationDrawerProps) {
   const isEditMode = task != null;
@@ -252,6 +266,7 @@ function TaskCreationDrawerContent({
       steps: filteredSteps,
       priority: form.priority,
       groups: form.groups.length > 0 ? form.groups : ["General"],
+      project: form.project,
       observables: form.observables,
       startDate: form.startDate || undefined,
       dueDate: form.dueDate,
@@ -434,6 +449,19 @@ function TaskCreationDrawerContent({
                           {...multiSelectLabels}
                         />
                       </div>
+                      <DropDown
+                        label={labels.project}
+                        icon={<FiFolder aria-hidden />}
+                        options={projectOptions}
+                        value={form.project}
+                        onChange={(project) => setForm({ ...form, project })}
+                        placeholder={labels.selectProject}
+                        searchPlaceholder={labels.searchOptions}
+                        noResultsLabel={labels.noOptionsFound}
+                        clearLabel={labels.clear}
+                        searchable
+                        clearable
+                      />
                     </div>
                   </Sections.Section.Content>
                 </Sections.Section>

@@ -1,34 +1,20 @@
 import { Navigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
-import BalanceLoader from "@primitive/loader/BalanceLoader.tsx";
+import { useMemo } from "react";
 
 import BackToTasksButton from "../../components/buttons/back-to-tasks-button/BackToTasksButton.tsx";
 import TaskDetailsTabulator from "../../components/tabulator/details/Tabulator.tsx";
-
-import useTasksStore from "../../store/tasks.store.ts";
+import { useTasks } from "../../hooks/useTasks.ts";
 
 import styles from "./TaskDetailsPage.module.scss";
 
 export function TaskDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const { tasks } = useTasks();
 
-  const task = useTasksStore((state: any) => state.task);
-  const loading = useTasksStore((state: any) => state.loading);
-  const getTaskById = useTasksStore((state: any) => state.getTaskById);
-
-  useEffect(() => {
-    if (id) {
-      getTaskById(id);
-    }
-  }, [id, getTaskById]);
-
-  if (loading) {
-    return (
-      <div className={styles.page}>
-        <BalanceLoader />
-      </div>
-    );
-  }
+  const task = useMemo(
+    () => tasks.find((item) => item.id === id) ?? null,
+    [tasks, id],
+  );
 
   if (!task) {
     return <Navigate to="/404" replace />;

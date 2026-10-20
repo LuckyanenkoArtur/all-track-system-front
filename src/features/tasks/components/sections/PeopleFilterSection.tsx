@@ -4,7 +4,15 @@ import { MultiSelect } from "@input/multi-select/MultiSelect";
 import { useTranslation } from "../../../../i18n";
 import type { TaskFilters } from "../../domain/others";
 import type { MultiSelectOption } from "@input/multi-select/MultiSelect";
-import { FiEye, FiGrid, FiUser, FiUserCheck, FiUsers } from "react-icons/fi";
+import {
+  FiFolder,
+  FiEye,
+  FiGrid,
+  FiUser,
+  FiUserCheck,
+  FiUsers,
+} from "react-icons/fi";
+import { getProjectSelectOptions } from "../../data/mockProjects";
 import styles from "../drawers/task-filter-drawer/Drawer.module.scss";
 
 export type PeopleFilterOptions = {
@@ -14,7 +22,12 @@ export type PeopleFilterOptions = {
   observables: string[];
 };
 
-type PeopleFilterKey = "groups" | "initiators" | "responsible" | "observables";
+type PeopleFilterKey =
+  | "groups"
+  | "projects"
+  | "initiators"
+  | "responsible"
+  | "observables";
 
 type MultiSelectFieldConfig = {
   key: PeopleFilterKey;
@@ -40,6 +53,8 @@ export function PeopleFilterSection({
     () => options.groups.map((group) => ({ value: group, label: group })),
     [options.groups],
   );
+
+  const projectOptions = useMemo(() => getProjectSelectOptions(), []);
 
   const initiatorOptions = useMemo(
     () =>
@@ -73,7 +88,18 @@ export function PeopleFilterSection({
 
   const fields = useMemo<MultiSelectFieldConfig[]>(
     () => [
-      { key: "groups", label: t.tasks.groups, options: groupOptions, icon: <FiGrid /> },
+      {
+        key: "projects",
+        label: t.tasks.project,
+        options: projectOptions,
+        icon: <FiFolder />,
+      },
+      {
+        key: "groups",
+        label: t.tasks.groups,
+        options: groupOptions,
+        icon: <FiGrid />,
+      },
       {
         key: "initiators",
         label: t.tasks.initiator,
@@ -95,6 +121,7 @@ export function PeopleFilterSection({
     ],
     [
       t,
+      projectOptions,
       groupOptions,
       initiatorOptions,
       responsibleOptions,
@@ -107,7 +134,9 @@ export function PeopleFilterSection({
       <Sections.Section.Icon>
         <FiUsers size={15} aria-hidden />
       </Sections.Section.Icon>
-      <Sections.Section.Title>{t.tasks.filterSections.people}</Sections.Section.Title>
+      <Sections.Section.Title>
+        {t.tasks.filterSections.people}
+      </Sections.Section.Title>
       <Sections.Section.Content>
         <div className={styles.row}>
           {fields.map(({ key, label, options: fieldOptions, icon }) => (

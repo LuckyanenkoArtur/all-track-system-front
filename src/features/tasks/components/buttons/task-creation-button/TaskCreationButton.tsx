@@ -3,6 +3,7 @@ import { FiPlus } from "react-icons/fi";
 import { Button } from "@primitive/button/Button";
 import { useTranslation } from "../../../../../i18n";
 import type { CreateTaskInput } from "../../../domain/others";
+import { getProjectSelectOptions } from "../../../data/mockProjects";
 import { TaskCreationDrawer } from "../../drawers/task-creation-drawer/Drawer";
 
 type FilterOptions = {
@@ -50,6 +51,8 @@ export function TaskCreationButton({
     initiatorName,
   ]);
 
+  const projectSelectOptions = useMemo(() => getProjectSelectOptions(), []);
+
   return (
     <>
       <Button onClick={() => setOpen(true)}>
@@ -69,6 +72,7 @@ export function TaskCreationButton({
         initiatorName={initiatorName}
         groupOptions={groupSelectOptions}
         userOptions={userSelectOptions}
+        projectOptions={projectSelectOptions}
         labels={{
           title: labels.createTask,
           subtitle: labels.createTaskSubtitle,
@@ -83,6 +87,8 @@ export function TaskCreationButton({
           removeStep: labels.removeStep,
           initiator: taskLabels.initiator,
           groups: taskLabels.groups,
+          project: taskLabels.project,
+          selectProject: taskLabels.selectProject,
           observables: taskLabels.observables,
           startDate: taskLabels.startDate,
           dueDate: taskLabels.dueDate,
@@ -98,6 +104,7 @@ export function TaskCreationButton({
           requiresResultReview: labels.requiresResultReview,
           create: labels.create,
           cancel: t.common.cancel,
+          clear: t.common.datePicker.clear,
           searchOptions: taskLabels.searchOptions,
           noOptionsFound: taskLabels.noOptionsFound,
           selectPlaceholder: taskLabels.selectPlaceholder,

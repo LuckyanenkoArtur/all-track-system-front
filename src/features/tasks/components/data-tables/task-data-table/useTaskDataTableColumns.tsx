@@ -1,11 +1,12 @@
 import { useMemo, type ReactNode } from "react";
-import { FiCalendar, FiClock, FiUser, FiUsers } from "react-icons/fi";
+import { FiCalendar, FiClock, FiFolder, FiUser, FiUsers } from "react-icons/fi";
 import type { DataTableColumnProps } from "@table/data-table/index.ts";
 import columnStyles from "@table/data-table/column/DataColumn.module.scss";
 import PriorityBadge from "../../badges/priority-badge/PriorityBadge.tsx";
 import StatusBadge from "../../badges/status-badge/StatusBadge.tsx";
 import { TaskRowActionsButton } from "../../buttons/task-row-action-button/TaskRowActionsButton.tsx";
 import type { Task } from "../../../domain/others.ts";
+import { getProjectName } from "../../../data/mockProjects.ts";
 import { formatBudget, formatDate } from "../../../utils/taskListUtils.ts";
 import styles from "./TaskDataTable.module.scss";
 
@@ -55,6 +56,7 @@ export type TaskDataTableLabels = {
   status: string;
   priority: string;
   groups: string;
+  project: string;
   createdAt: string;
   dueDate: string;
   initiator: string;
@@ -141,6 +143,25 @@ export function useTaskDataTableColumns({
             ))}
           </div>
         ),
+      },
+      {
+        id: "project",
+        field: "project",
+        header: labels.project,
+        className: styles.colProject,
+        body: (task) => {
+          const projectName = getProjectName(task.project);
+          if (!projectName) {
+            return <span className={styles.emptyCell}>—</span>;
+          }
+
+          return (
+            <span className={styles.projectBadge}>
+              <FiFolder size={12} aria-hidden />
+              {projectName}
+            </span>
+          );
+        },
       },
       {
         id: "createdAt",

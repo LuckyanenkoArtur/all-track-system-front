@@ -51,6 +51,7 @@ const DEFAULT_COLLECTIONS: TaskCollection[] = [
       statuses: ["inProgress"],
       priorities: [TASK_PRIORITIES.high],
       groups: [],
+      projects: [],
       initiators: [],
       responsible: [],
       observables: [],
@@ -73,6 +74,7 @@ const DEFAULT_COLLECTIONS: TaskCollection[] = [
       statuses: ["open"],
       priorities: [],
       groups: [],
+      projects: [],
       initiators: [],
       responsible: [],
       observables: [],
@@ -130,6 +132,7 @@ function normalizeTask(task: Task): Task {
     ...task,
     status: normalizeTaskStatus(task.status),
     priority: resolveTaskPriority(task.priority),
+    project: task.project ?? null,
     observables: task.observables ?? [],
     startDate: task.startDate ?? task.createdAt,
     steps: task.steps ?? [],
@@ -141,6 +144,7 @@ function normalizeTask(task: Task): Task {
 function normalizeFilters(filters: TaskFilters): TaskFilters {
   return {
     ...filters,
+    projects: filters.projects ?? [],
     observables: filters.observables ?? [],
     priorities: (filters.priorities ?? []).map(resolveTaskPriority),
   };
@@ -265,6 +269,7 @@ export class TaskServiceTested {
       status: "open",
       priority: resolveTaskPriority(input.priority),
       groups: input.groups.filter(Boolean),
+      project: input.project ?? null,
       observables: input.observables.filter(Boolean),
       createdAt: now,
       startDate: input.startDate ? new Date(input.startDate).toISOString() : now,
@@ -296,6 +301,8 @@ export class TaskServiceTested {
             title: input.title.trim(),
             priority: resolveTaskPriority(input.priority),
             groups: input.groups.filter(Boolean),
+            project:
+              input.project !== undefined ? input.project : (task.project ?? null),
             observables: input.observables.filter(Boolean),
             startDate: input.startDate
               ? new Date(input.startDate).toISOString()
@@ -370,6 +377,16 @@ export class TaskServiceTested {
 
     this.tasks = this.tasks.map((item) =>
       item.id === id ? { ...item, priority: resolved } : item,
+    );
+    this.persistTasks();
+  }
+
+  updateTaskProject(id: string, project: string | null) {
+    const task = this.tasks.find((item) => item.id === id);
+    if (!task || (task.project ?? null) === project) return;
+
+    this.tasks = this.tasks.map((item) =>
+      item.id === id ? { ...item, project } : item,
     );
     this.persistTasks();
   }

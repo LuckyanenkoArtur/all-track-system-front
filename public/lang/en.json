@@ -38,8 +38,8 @@
     "dashboard": "Dashboard",
     "tasks": "Tasks",
     "tasksOverview": "Overview",
+    "projects": "Projects",
     "workQueue": "Tasks",
-    "timeTracking": "Time Tracking",
     "calendar": "Calendar",
     "reminders": "Reminders",
     "finance": "Finance",
@@ -72,7 +72,7 @@
     "noOptionsFound": "No options found",
     "selectPlaceholder": "Select…",
     "filterSections": {
-      "people": "People & groups",
+      "people": "People & Workspaces",
       "taskState": "Status & priority",
       "dueDate": "Due date",
       "budget": "Budget",
@@ -87,6 +87,8 @@
     "status": "Status",
     "priority": "Priority",
     "groups": "Related Groups",
+    "project": "Project",
+    "selectProject": "Select project…",
     "createdAt": "Created",
     "dueDate": "Due Date",
     "dueDateFrom": "Due from",
@@ -276,7 +278,7 @@
       "unsavedNo": "No",
       "sections": {
         "taskDetails": "Task details",
-        "people": "People & groups",
+        "people": "People & Workspaces",
         "schedule": "Schedule",
         "priorityBudget": "Priority & budget",
         "attachments": "Attachments & review"

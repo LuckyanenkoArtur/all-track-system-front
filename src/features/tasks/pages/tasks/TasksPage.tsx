@@ -217,6 +217,7 @@ export default function TaskPage() {
             status: t.tasks.status,
             priority: t.tasks.priority,
             groups: t.tasks.groups,
+            project: t.tasks.project,
             createdAt: t.tasks.createdAt,
             dueDate: t.tasks.dueDate,
             initiator: t.tasks.initiator,

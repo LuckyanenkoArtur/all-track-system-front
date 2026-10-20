@@ -32,6 +32,7 @@ import { TaskDetailsTabPlaceholder } from "../../placeholders/TaskDetailsTabPlac
 import { isUserTaskResponsible } from "../../../utils/taskDetailsUtils.ts";
 import { isTerminalTaskStatus } from "../../../utils/taskStatusUtils.ts";
 import { CompleteTaskDrawer } from "../../drawers/task-complete-drawer/Drawer.tsx";
+import { getProjectSelectOptions } from "../../../data/mockProjects.ts";
 
 interface TaskDetailsTabulatorProps {
   task: Task;
@@ -178,6 +179,8 @@ export default function TaskDetailsTabulator({
     () => filterOptions.groups.map((group) => ({ value: group, label: group })),
     [filterOptions.groups],
   );
+
+  const projectSelectOptions = useMemo(() => getProjectSelectOptions(), []);
 
   const userSelectOptions = useMemo(() => {
     const users = new Set<string>([
@@ -406,6 +409,7 @@ export default function TaskDetailsTabulator({
         initiatorName={initiatorName}
         groupOptions={groupSelectOptions}
         userOptions={userSelectOptions}
+        projectOptions={projectSelectOptions}
         labels={{
           title: detailLabels.editTask,
           subtitle: dashboardLabels.createTaskSubtitle,
@@ -420,6 +424,8 @@ export default function TaskDetailsTabulator({
           removeStep: dashboardLabels.removeStep,
           initiator: taskLabels.initiator,
           groups: taskLabels.groups,
+          project: taskLabels.project,
+          selectProject: taskLabels.selectProject,
           observables: taskLabels.observables,
           startDate: taskLabels.startDate,
           dueDate: taskLabels.dueDate,
@@ -436,6 +442,7 @@ export default function TaskDetailsTabulator({
           create: dashboardLabels.create,
           save: detailLabels.saveChanges,
           cancel: t.common.cancel,
+          clear: t.common.datePicker.clear,
           searchOptions: taskLabels.searchOptions,
           noOptionsFound: taskLabels.noOptionsFound,
           selectPlaceholder: taskLabels.selectPlaceholder,

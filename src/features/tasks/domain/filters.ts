@@ -6,6 +6,7 @@ export interface TaskFilters {
   statuses: TaskStatus[];
   priorities: TaskPriority[];
   groups: string[];
+  projects: string[];
   initiators: string[];
   responsible: string[];
   observables: string[];
@@ -23,6 +24,7 @@ export const DEFAULT_FILTERS: TaskFilters = {
   statuses: [],
   priorities: [],
   groups: [],
+  projects: [],
   initiators: [],
   responsible: [],
   observables: [],

@@ -1,0 +1,17 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+
+  > * {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+.empty {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
