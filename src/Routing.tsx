@@ -11,7 +11,8 @@ import TasksPage from "./features/tasks/pages/tasks/TasksPage";
 import { TaskDetailsPage } from "./features/tasks/pages/task-details/TaskDetailsPage";
 import CalendarPage from "./features/calendar";
 import RemindersPage from "./features/reminders";
-import ProjectsPage from "./features/projects";
+import ProjectsPage from "./features/projects/ProjectsPage";
+import { ProjectDetailsPage } from "./features/projects/pages/project-details/ProjectDetailsPage";
 
 import {
   FinanceLayout,
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
           {
             path: "/app/projects",
             element: <ProjectsPage />,
+          },
+          {
+            path: "/app/projects/:id",
+            element: <ProjectDetailsPage />,
           },
           {
             path: "/app/calendar",

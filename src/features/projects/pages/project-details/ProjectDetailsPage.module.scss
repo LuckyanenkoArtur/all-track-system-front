@@ -1,0 +1,45 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-header-gap, 16px);
+  height: 100%;
+  min-height: 0;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.backButton {
+  width: fit-content;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.placeholder {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}

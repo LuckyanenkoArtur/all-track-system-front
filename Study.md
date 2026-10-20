@@ -6,4 +6,8 @@ UI\UX design for projects
  - https://dribbble.com/shots/27107108-TaskFlow-Project-Management-Dashboard-SaaS-Web-App
  - Dashboard of projects - https://dribbble.com/shots/27054769-Synchro-Project-Management-Dashboard
 
+
+[] Related Groups:
+    1. Rename to Catogory
+    2. Can be selected only one Category per task
  

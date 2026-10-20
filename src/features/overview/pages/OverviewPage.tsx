@@ -13,11 +13,14 @@ import { getAuthorInitials } from "../../tasks/utils/commentUtils";
 import styles from "./OverviewPage.module.scss";
 import TaskTabulator from "../components/tabulator/Tabulator.tsx";
 import { CompleteTaskDrawer } from "../../tasks/components/drawers/task-complete-drawer/Drawer.tsx";
+import { ProjectSummaryCards } from "../../projects/components/project-summary/ProjectSummaryCards.tsx";
+import { useProjects } from "../../projects/store/projects.store.ts";
 
 export function OverviewPage() {
   const { t } = useTranslation();
   const { bio } = useUserProfile();
   const { tasks, addTask, completeTaskWithReport } = useTasks();
+  const projects = useProjects();
   const { filterOptions } = useTaskListState();
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [detailsInitialTab, setDetailsInitialTab] = useState<string | undefined>();
@@ -65,6 +68,8 @@ export function OverviewPage() {
         </header>
 
         {/*! Is the Tracking Card displayed when task is tracking */}
+        <ProjectSummaryCards projects={projects} />
+
         <ActiveTrackingCard
           labels={{
             title: t.tasks.trackingActive,

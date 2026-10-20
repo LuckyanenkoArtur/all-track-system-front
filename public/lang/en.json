@@ -425,6 +425,43 @@
       "statusPending": "Pending"
     }
   },
+  "projects": {
+    "searchPlaceholder": "Search projects…",
+    "newProject": "New Project",
+    "newProjectHint": "Create a project",
+    "newProjectSubtitle": "Add a project to the workspace.",
+    "projectName": "Name",
+    "projectNamePlaceholder": "Project name",
+    "progress": "Progress",
+    "due": "Due",
+    "category": "Category",
+    "files": "Files",
+    "totalTime": "Total time",
+    "totalSpend": "Total spend",
+    "stats": "Project stats",
+    "cardsView": "Cards",
+    "listView": "List",
+    "tableView": "Table",
+    "kanbanView": "Kanban",
+    "kanbanEmpty": "Drop projects here",
+    "noResults": "No projects match your search or filters.",
+    "actions": "Project actions",
+    "allStatuses": "All statuses",
+    "allPriorities": "All priorities",
+    "members": "Members",
+    "clear": "Clear",
+    "openProject": "Open project",
+    "summary": {
+      "active": "Active projects",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "atRisk": "At risk"
+    },
+    "details": {
+      "backToProjects": "Back to projects",
+      "placeholder": "Project details will appear here."
+    }
+  },
   "notFound": {
     "brandAriaLabel": "AllTrack home",
     "title": "Route not tracked",

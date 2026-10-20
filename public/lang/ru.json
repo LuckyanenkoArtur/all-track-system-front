@@ -425,6 +425,43 @@
       "statusPending": "Ожидает"
     }
   },
+  "projects": {
+    "searchPlaceholder": "Поиск проектов…",
+    "newProject": "Новый проект",
+    "newProjectHint": "Создать проект",
+    "newProjectSubtitle": "Добавьте проект в рабочее пространство.",
+    "projectName": "Название",
+    "projectNamePlaceholder": "Название проекта",
+    "progress": "Прогресс",
+    "due": "Срок",
+    "category": "Категория",
+    "files": "Файлы",
+    "totalTime": "Всего времени",
+    "totalSpend": "Всего затрат",
+    "stats": "Статистика проекта",
+    "cardsView": "Карточки",
+    "listView": "Список",
+    "tableView": "Таблица",
+    "kanbanView": "Канбан",
+    "kanbanEmpty": "Перетащите проекты сюда",
+    "noResults": "Нет проектов по вашему поиску или фильтрам.",
+    "actions": "Действия проекта",
+    "allStatuses": "Все статусы",
+    "allPriorities": "Все приоритеты",
+    "members": "Участники",
+    "clear": "Очистить",
+    "openProject": "Открыть проект",
+    "summary": {
+      "active": "Активные проекты",
+      "inProgress": "В работе",
+      "completed": "Завершено",
+      "atRisk": "Под риском"
+    },
+    "details": {
+      "backToProjects": "К проектам",
+      "placeholder": "Сведения о проекте появятся здесь."
+    }
+  },
   "notFound": {
     "brandAriaLabel": "AllTrack — главная",
     "title": "Маршрут не отслежен",

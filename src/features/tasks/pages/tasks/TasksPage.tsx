@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FiCalendar, FiList } from "react-icons/fi";
 import { BiAbacus, BiTable } from "react-icons/bi";
 import { useUserProfile } from "../../../../context/UserProfileContext.tsx";
 import { useTranslation } from "../../../../i18n/index.ts";
@@ -119,13 +118,6 @@ export default function TaskPage() {
     () => [
       { id: "table", label: t.tasks.tableView, icon: BiTable },
       { id: "kanban", label: "Kanban", icon: BiAbacus, disabled: true },
-      {
-        id: "calendar",
-        label: "Calendar",
-        icon: FiCalendar,
-        disabled: true,
-      },
-      { id: "list", label: "List", icon: FiList, disabled: true },
     ],
     [t.tasks.tableView],
   );
