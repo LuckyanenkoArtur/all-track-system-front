@@ -7,7 +7,17 @@ UI\UX design for projects
  - Dashboard of projects - https://dribbble.com/shots/27054769-Synchro-Project-Management-Dashboard
 
 
-[] Related Groups:
-    1. Rename to Catogory
-    2. Can be selected only one Category per task
- 
+# TODO
+
+- [ ] **Task Categories**
+  - [ ] Rename `Related Groups` to `Category`.
+  - [ ] Allow only one category per task.
+
+- [ ] **User Profile**
+  - [ ] Display the user's projects.
+  - [ ] Display the user's transactions.
+  - [ ] Display the user's tasks:
+    - [ ] Opened
+    - [ ] Closed
+    - [ ] Created
+    - [ ] Working On
