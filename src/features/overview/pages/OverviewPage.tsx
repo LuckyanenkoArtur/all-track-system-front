@@ -4,7 +4,6 @@ import { useTranslation } from "../../../i18n";
 import Title from "@primitive/title/Title.tsx";
 
 import { TaskCreationButton } from "../../tasks/components/buttons/task-creation-button/TaskCreationButton";
-import { ActiveTrackingCard } from "../../tasks/components/cards/active-tracking-card/ActiveTrackingCard.tsx";
 import { TaskDetailsDrawer } from "../../tasks/components/drawers/task-details-drawer/Drawer.tsx";
 import { DrawerDismissContext } from "@overlay/drawer/Drawer.tsx";
 import { useTasks } from "../../tasks/hooks/useTasks";
@@ -67,17 +66,7 @@ export function OverviewPage() {
           />
         </header>
 
-        {/*! Is the Tracking Card displayed when task is tracking */}
         <ProjectSummaryCards projects={projects} />
-
-        <ActiveTrackingCard
-          labels={{
-            title: t.tasks.trackingActive,
-            session: t.tasks.session,
-            totalTime: t.tasks.totalTime,
-            stop: t.tasks.stopTracking,
-          }}
-        />
 
         <TaskTabulator
           onTaskClick={(taskId) => {

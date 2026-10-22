@@ -82,6 +82,16 @@
     "saveCollection": "Save collection",
     "collectionName": "Collection name",
     "tableView": "Table",
+    "kanbanView": "Kanban",
+    "kanbanEmpty": "Drop tasks here",
+    "kanban": {
+      "todo": "To Do",
+      "overdue": "Overdue",
+      "doing": "Doing",
+      "completed": "Completed",
+      "subtasks": "subtasks",
+      "comments": "Comments"
+    },
     "noResults": "No tasks match your search or filters.",
     "taskDetails": "Task Details",
     "status": "Status",

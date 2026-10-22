@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "../../../../i18n";
 import { useUserProfile } from "../../../../context/UserProfileContext";
+import { ActiveTrackingCard } from "../../../../features/tasks/components/cards/active-tracking-card/ActiveTrackingCard";
 import "./TopBar.scss";
 
 export default function TopBar() {
@@ -54,6 +55,16 @@ export default function TopBar() {
       </div>
 
       <div className="actions-container">
+        <ActiveTrackingCard
+          compact
+          labels={{
+            title: t.tasks.trackingActive,
+            session: t.tasks.session,
+            totalTime: t.tasks.totalTime,
+            stop: t.tasks.stopTracking,
+          }}
+        />
+
         <div className="notification-wrapper" ref={notifRef}>
           <button
             className={`action-btn ${isNotifOpen ? "active" : ""}`}

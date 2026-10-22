@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { FiSquare } from "react-icons/fi";
+
 import { useTasks } from "../../../hooks/useTasks";
 import { useTrackingTimer } from "../../../hooks/useTrackingTimer";
 import {
@@ -14,10 +16,15 @@ type ActiveTrackingCardProps = {
     totalTime: string;
     stop: string;
   };
+  compact?: boolean;
 };
 
-export function ActiveTrackingCard({ labels }: ActiveTrackingCardProps) {
+export function ActiveTrackingCard({
+  labels,
+  compact = false,
+}: ActiveTrackingCardProps) {
   useTrackingTimer();
+  const navigate = useNavigate();
   const { tracking, tasks, stopTracking, getTrackingElapsedMs } = useTasks();
 
   if (!tracking) return null;
@@ -26,6 +33,38 @@ export function ActiveTrackingCard({ labels }: ActiveTrackingCardProps) {
   if (!task) return null;
 
   const elapsedMs = getTrackingElapsedMs();
+  const session = formatSessionTimer(elapsedMs);
+
+  if (compact) {
+    return (
+      <div className={styles.compact} aria-live="polite">
+        <button
+          type="button"
+          className={styles.compactMain}
+          onClick={() => navigate(`/app/tasks/${task.id}`)}
+          title={task.title}
+        >
+          <span className={styles.compactIndicator} aria-hidden>
+            <span className={styles.compactPulse} />
+          </span>
+          <span className={styles.compactText}>
+            <span className={styles.compactEyebrow}>{labels.title}</span>
+            <span className={styles.compactTitle}>{task.title}</span>
+          </span>
+          <strong className={styles.compactTimer}>{session}</strong>
+        </button>
+        <button
+          type="button"
+          className={styles.compactStop}
+          onClick={stopTracking}
+          aria-label={labels.stop}
+          title={labels.stop}
+        >
+          <FiSquare size={12} aria-hidden />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <section className={styles.card} aria-live="polite">
@@ -39,9 +78,7 @@ export function ActiveTrackingCard({ labels }: ActiveTrackingCardProps) {
         <div className={styles.metrics}>
           <div className={styles.metric}>
             <span className={styles.metricLabel}>{labels.session}</span>
-            <strong className={styles.sessionTimer}>
-              {formatSessionTimer(elapsedMs)}
-            </strong>
+            <strong className={styles.sessionTimer}>{session}</strong>
           </div>
           <div className={styles.metric}>
             <span className={styles.metricLabel}>{labels.totalTime}</span>

@@ -82,6 +82,16 @@
     "saveCollection": "Сохранить подборку",
     "collectionName": "Название подборки",
     "tableView": "Таблица",
+    "kanbanView": "Канбан",
+    "kanbanEmpty": "Перетащите задачи сюда",
+    "kanban": {
+      "todo": "К выполнению",
+      "overdue": "Просрочено",
+      "doing": "В работе",
+      "completed": "Завершено",
+      "subtasks": "шагов",
+      "comments": "Комментарии"
+    },
     "noResults": "Нет задач по вашему запросу или фильтрам.",
     "taskDetails": "Детали задачи",
     "status": "Статус",

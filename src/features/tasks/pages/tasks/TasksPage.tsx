@@ -15,34 +15,48 @@ import { useTaskTrackingDisplay } from "../../hooks/useTaskTrackingDisplay.ts";
 import { useTaskListState } from "../../hooks/useTaskListState.ts";
 
 import { TaskDataTable } from "../../components/data-tables/task-data-table/TaskDataTable.tsx";
+import { TaskKanbanBoard } from "../../components/kanban/TaskKanbanBoard.tsx";
 
 import {
   DEFAULT_FILTERS,
+  type TaskStatus,
   type TasksPageNavigationState,
 } from "../../domain/others.ts";
 import { getAuthorInitials } from "../../utils/commentUtils.ts";
+import {
+  matchesFilters,
+  matchesSearch,
+  sortTasks,
+} from "../../utils/taskListUtils.ts";
 import styles from "./TasksPage.module.scss";
 import Title from "@primitive/title/Title.tsx";
 import { SearchBar } from "@input/search-bar/SearchBar";
 import { CompleteTaskDrawer } from "../../components/drawers/task-complete-drawer/Drawer.tsx";
+
+type TasksView = "table" | "kanban";
 
 export default function TaskPage() {
   const { t } = useTranslation();
   const { bio } = useUserProfile();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const {
     tasks,
     addTask,
     isTracking,
     toggleTracking,
     completeTaskWithReport,
+    updateTaskStatus,
+    getTaskComments,
   } = useTasks();
 
   const { getDisplayTimeSpent } = useTaskTrackingDisplay();
+  const [view, setView] = useState<TasksView>("table");
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const [detailsInitialTab, setDetailsInitialTab] = useState<string | undefined>();
+  const [detailsInitialTab, setDetailsInitialTab] = useState<
+    string | undefined
+  >();
   const [completeTaskId, setCompleteTaskId] = useState<string | null>(null);
 
   const {
@@ -99,6 +113,19 @@ export default function TaskPage() {
     [tasks, selectedTaskId],
   );
 
+  const kanbanTasks = useMemo(
+    () =>
+      sortTasks(
+        tasks.filter(
+          (task) =>
+            matchesSearch(task, filters.search) &&
+            matchesFilters(task, filters),
+        ),
+        sort,
+      ),
+    [tasks, filters, sort],
+  );
+
   const handleCompleteTask = (input: {
     description: string;
     steps: { id: string; text: string }[];
@@ -114,12 +141,19 @@ export default function TaskPage() {
     });
   };
 
+  const handleStatusChange = (taskId: string, status: TaskStatus) => {
+    updateTaskStatus(taskId, status, {
+      author: authorName,
+      authorInitials,
+    });
+  };
+
   const taskViewSwitcherItems = useMemo(
     () => [
       { id: "table", label: t.tasks.tableView, icon: BiTable },
-      { id: "kanban", label: "Kanban", icon: BiAbacus, disabled: true },
+      { id: "kanban", label: t.tasks.kanbanView, icon: BiAbacus },
     ],
-    [t.tasks.tableView],
+    [t.tasks.tableView, t.tasks.kanbanView],
   );
 
   return (
@@ -157,7 +191,13 @@ export default function TaskPage() {
               }
             />
 
-            <ViewSwitcher value="table" items={taskViewSwitcherItems} />
+            <ViewSwitcher
+              value={view}
+              items={taskViewSwitcherItems}
+              onChange={(id) => {
+                if (id === "table" || id === "kanban") setView(id);
+              }}
+            />
 
             <TaskCreationButton
               onSubmit={addTask}
@@ -167,71 +207,104 @@ export default function TaskPage() {
           </div>
         </header>
 
-        <TaskDataTable
-          collections={collections}
-          tasks={listResult.tasks}
-          activeCollectionId={activeCollectionId}
-          onSelectAll={resetFilters}
-          onSelectCollection={applyCollection}
-          onDeleteCollection={deleteCollection}
-          listResult={{
-            page: listResult.page,
-            totalPages: listResult.totalPages,
-            total: listResult.total,
-            startIndex: listResult.startIndex,
-            endIndex: listResult.endIndex,
-          }}
-          sort={sort}
-          onSort={toggleSort}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={setPageSize}
-          onTaskClick={(taskId) => {
-            setDetailsInitialTab(undefined);
-            setSelectedTaskId(taskId);
-          }}
-          onCompleteTask={setCompleteTaskId}
-          onAddManualTime={(taskId) => {
-            setDetailsInitialTab("time");
-            setSelectedTaskId(taskId);
-          }}
-          onLogBudgetExpense={(taskId) => {
-            setDetailsInitialTab("transactions");
-            setSelectedTaskId(taskId);
-          }}
-          isTracking={isTracking}
-          getDisplayTimeSpent={getDisplayTimeSpent}
-          onToggleTracking={toggleTracking}
-          labels={{
-            allTasks: t.tasks.allTasks,
-            noResults: t.tasks.noResults,
-            taskDetails: t.tasks.taskDetails,
-            status: t.tasks.status,
-            priority: t.tasks.priority,
-            groups: t.tasks.groups,
-            project: t.tasks.project,
-            createdAt: t.tasks.createdAt,
-            dueDate: t.tasks.dueDate,
-            initiator: t.tasks.initiator,
-            responsible: t.tasks.responsible,
-            observables: t.tasks.observables,
-            budget: t.tasks.budget,
-            totalTime: t.tasks.totalTime,
-            actions: t.tasks.actions,
-            startTracking: t.tasks.startTracking,
-            stopTracking: t.tasks.stopTracking,
-            finishTracking: t.tasks.finishTracking,
-            completeTask: t.tasks.completeTask,
-            addManualTime: t.tasks.addManualTime,
-            logBudgetExpense: t.tasks.logBudgetExpense,
-            showing: t.tasks.showing,
-            rowsPerPage: t.tasks.rowsPerPage,
-            page: t.tasks.page,
-            of: t.tasks.of,
-            previous: t.tasks.previous,
-            next: t.tasks.next,
-          }}
-        />
+        {view === "table" ? (
+          <div className={styles.tableView}>
+            <TaskDataTable
+              collections={collections}
+              tasks={listResult.tasks}
+              activeCollectionId={activeCollectionId}
+              onSelectAll={resetFilters}
+              onSelectCollection={applyCollection}
+              onDeleteCollection={deleteCollection}
+              listResult={{
+                page: listResult.page,
+                totalPages: listResult.totalPages,
+                total: listResult.total,
+                startIndex: listResult.startIndex,
+                endIndex: listResult.endIndex,
+              }}
+              sort={sort}
+              onSort={toggleSort}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+              onTaskClick={(taskId) => {
+                setDetailsInitialTab(undefined);
+                setSelectedTaskId(taskId);
+              }}
+              onCompleteTask={setCompleteTaskId}
+              onAddManualTime={(taskId) => {
+                setDetailsInitialTab("time");
+                setSelectedTaskId(taskId);
+              }}
+              onLogBudgetExpense={(taskId) => {
+                setDetailsInitialTab("transactions");
+                setSelectedTaskId(taskId);
+              }}
+              isTracking={isTracking}
+              getDisplayTimeSpent={getDisplayTimeSpent}
+              onToggleTracking={toggleTracking}
+              labels={{
+                allTasks: t.tasks.allTasks,
+                noResults: t.tasks.noResults,
+                taskDetails: t.tasks.taskDetails,
+                status: t.tasks.status,
+                priority: t.tasks.priority,
+                groups: t.tasks.groups,
+                project: t.tasks.project,
+                createdAt: t.tasks.createdAt,
+                dueDate: t.tasks.dueDate,
+                initiator: t.tasks.initiator,
+                responsible: t.tasks.responsible,
+                observables: t.tasks.observables,
+                budget: t.tasks.budget,
+                totalTime: t.tasks.totalTime,
+                actions: t.tasks.actions,
+                startTracking: t.tasks.startTracking,
+                stopTracking: t.tasks.stopTracking,
+                finishTracking: t.tasks.finishTracking,
+                completeTask: t.tasks.completeTask,
+                addManualTime: t.tasks.addManualTime,
+                logBudgetExpense: t.tasks.logBudgetExpense,
+                showing: t.tasks.showing,
+                rowsPerPage: t.tasks.rowsPerPage,
+                page: t.tasks.page,
+                of: t.tasks.of,
+                previous: t.tasks.previous,
+                next: t.tasks.next,
+              }}
+            />
+          </div>
+        ) : null}
+
+        {view === "kanban" ? (
+          <div className={styles.kanbanView}>
+            {kanbanTasks.length === 0 ? (
+              <p className={styles.empty}>{t.tasks.noResults}</p>
+            ) : (
+              <TaskKanbanBoard
+                tasks={kanbanTasks}
+                getCommentCount={(taskId) => getTaskComments(taskId).length}
+                onTaskClick={(taskId) => {
+                  setDetailsInitialTab(undefined);
+                  setSelectedTaskId(taskId);
+                }}
+                onStatusChange={handleStatusChange}
+                onCompleteTask={setCompleteTaskId}
+                onAddManualTime={(taskId) => {
+                  setDetailsInitialTab("time");
+                  setSelectedTaskId(taskId);
+                }}
+                onLogBudgetExpense={(taskId) => {
+                  setDetailsInitialTab("transactions");
+                  setSelectedTaskId(taskId);
+                }}
+                isTracking={isTracking}
+                onToggleTracking={toggleTracking}
+              />
+            )}
+          </div>
+        ) : null}
 
         <TaskDetailsDrawer task={selectedTask} initialTab={detailsInitialTab} />
 
@@ -254,7 +327,6 @@ export default function TaskPage() {
             cancel: t.common.cancel,
           }}
         />
-
       </div>
     </DrawerDismissContext.Provider>
   );

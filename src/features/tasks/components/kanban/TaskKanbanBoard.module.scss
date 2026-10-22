@@ -1,0 +1,172 @@
+.board {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  gap: 14px;
+  padding-block: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 8px;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  align-self: stretch;
+  width: 100%;
+  min-width: 240px;
+  min-height: 0;
+  height: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-surface-secondary) 55%, var(--color-surface));
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.columnActive {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 12px 14px;
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.columnTitleGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.columnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.columnTitle {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.columnCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.todoHeader {
+  background: color-mix(in srgb, var(--color-text-muted) 12%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-text-muted);
+  }
+}
+
+.overdueHeader {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-danger);
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, var(--color-danger) 75%, var(--color-text));
+  }
+}
+
+.doingHeader {
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-accent);
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, var(--color-accent) 70%, var(--color-text));
+  }
+}
+
+.completedHeader {
+  background: color-mix(in srgb, #16a34a 12%, var(--color-surface));
+
+  .columnIcon {
+    color: #16a34a;
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, #16a34a 70%, var(--color-text));
+  }
+}
+
+.columnBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 12px;
+  padding: 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 6px;
+  }
+}
+
+.columnEmpty {
+  margin: 0;
+  padding: 20px 8px;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-text-subtle);
+}
+
+.cardSlot {
+  touch-action: none;
+}
