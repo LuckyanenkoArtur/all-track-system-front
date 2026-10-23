@@ -469,7 +469,13 @@
     },
     "details": {
       "backToProjects": "К проектам",
-      "placeholder": "Сведения о проекте появятся здесь."
+      "placeholder": "Сведения о проекте появятся здесь.",
+      "tabs": {
+        "overview": "Обзор",
+        "members": "Участники",
+        "tasks": "Задачи",
+        "finance": "Финансы"
+      }
     }
   },
   "notFound": {

@@ -469,7 +469,13 @@
     },
     "details": {
       "backToProjects": "Back to projects",
-      "placeholder": "Project details will appear here."
+      "placeholder": "Project details will appear here.",
+      "tabs": {
+        "overview": "Overview",
+        "members": "Members",
+        "tasks": "Tasks",
+        "finance": "Finance"
+      }
     }
   },
   "notFound": {

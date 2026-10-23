@@ -1,11 +1,44 @@
-import { useMemo, useState, type DragEvent } from "react";
+import { useMemo, useState, type DragEvent, type ReactNode } from "react";
+import {
+  FiCheckCircle,
+  FiClock,
+  FiPauseCircle,
+  FiPlayCircle,
+  FiXCircle,
+} from "react-icons/fi";
 
 import { useTranslation } from "../../../../i18n/index.ts";
 import { TASK_STATUS_IDS } from "../../../tasks/utils/taskStatusUtils.ts";
 import type { Project, ProjectStatus } from "../../domain/project.ts";
 import { updateProjectStatus } from "../../store/projects.store.ts";
-import { ProjectCard } from "../project-card/ProjectCard.tsx";
+import { ProjectKanbanCard } from "./ProjectKanbanCard.tsx";
 import styles from "./ProjectKanbanBoard.module.scss";
+
+const COLUMN_CHROME: Record<
+  ProjectStatus,
+  { icon: ReactNode; headerClass: string }
+> = {
+  open: {
+    icon: <FiClock size={15} aria-hidden />,
+    headerClass: styles.openHeader,
+  },
+  onHold: {
+    icon: <FiPauseCircle size={15} aria-hidden />,
+    headerClass: styles.onHoldHeader,
+  },
+  inProgress: {
+    icon: <FiPlayCircle size={15} aria-hidden />,
+    headerClass: styles.inProgressHeader,
+  },
+  completed: {
+    icon: <FiCheckCircle size={15} aria-hidden />,
+    headerClass: styles.completedHeader,
+  },
+  cancelled: {
+    icon: <FiXCircle size={15} aria-hidden />,
+    headerClass: styles.cancelledHeader,
+  },
+};
 
 const PROJECT_DRAG_MIME = "application/x-alltrack-project-id";
 
@@ -82,8 +115,15 @@ export function ProjectKanbanBoard({ projects }: ProjectKanbanBoardProps) {
           onDragLeave={(event) => handleDragLeave(event, column.status)}
           onDrop={(event) => handleDrop(event, column.status)}
         >
-          <header className={styles.columnHeader}>
-            <h3 className={styles.columnTitle}>{column.label}</h3>
+          <header
+            className={`${styles.columnHeader} ${COLUMN_CHROME[column.status].headerClass}`}
+          >
+            <div className={styles.columnTitleGroup}>
+              <span className={styles.columnIcon}>
+                {COLUMN_CHROME[column.status].icon}
+              </span>
+              <h3 className={styles.columnTitle}>{column.label}</h3>
+            </div>
             <span className={styles.columnCount}>{column.projects.length}</span>
           </header>
 
@@ -94,15 +134,16 @@ export function ProjectKanbanBoard({ projects }: ProjectKanbanBoardProps) {
               column.projects.map((project) => (
                 <div
                   key={project.id}
-                  className={`${styles.cardSlot} ${
-                    draggingId === project.id ? styles.cardDragging : ""
-                  }`}
+                  className={styles.cardSlot}
                   role="listitem"
                   draggable
                   onDragStart={(event) => handleDragStart(event, project.id)}
                   onDragEnd={handleDragEnd}
                 >
-                  <ProjectCard project={project} hideStatus />
+                  <ProjectKanbanCard
+                    project={project}
+                    dragging={draggingId === project.id}
+                  />
                 </div>
               ))
             )}

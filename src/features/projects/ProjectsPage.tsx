@@ -195,11 +195,13 @@ export default function ProjectsPage() {
       ) : null}
 
       {view === "kanban" ? (
-        filteredProjects.length === 0 ? (
-          <p className={styles.empty}>{t.projects.noResults}</p>
-        ) : (
-          <ProjectKanbanBoard projects={filteredProjects} />
-        )
+        <div className={styles.kanbanView}>
+          {filteredProjects.length === 0 ? (
+            <p className={styles.empty}>{t.projects.noResults}</p>
+          ) : (
+            <ProjectKanbanBoard projects={filteredProjects} />
+          )}
+        </div>
       ) : null}
 
       {view === "table" ? (

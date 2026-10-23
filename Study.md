@@ -10,6 +10,10 @@ UI\UX design for projects
  - https://cdn.dribbble.com/userupload/43959764/file/original-abc4cec4500831ed655195436f011287.png?resize=752x&vertical=center
  - https://dribbble.com/shots/23887515-Projectify-Dashboard-Project-Management
 
+- The project page desing examples: 
+   - https://dribbble.com/shots/25202475-CRM-Dashboard-Project-Page
+   - https://dribbble.com/shots/26618390-QuickSuite-Project-Page
+
 
 # TODO
 
@@ -25,3 +29,20 @@ UI\UX design for projects
     - [ ] Closed
     - [ ] Created
     - [ ] Working On
+
+
+Projects:
+
+ - Members
+    - Actual is work-in on
+    - 
+ - Steps of project
+
+ - Сроки
+
+
+ 
+ anime.js - Библетека анимаций
+ motion.dev - анимации для сайтов
+ Kokonut Ui - Components UI
+ Bklit UI - Diagrams and Charts UI

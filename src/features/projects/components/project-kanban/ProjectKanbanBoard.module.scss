@@ -1,8 +1,12 @@
 .board {
   display: flex;
   flex: 1;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
   min-height: 0;
-  gap: 12px;
+  min-width: 0;
+  gap: 14px;
   padding-block: 4px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -21,13 +25,15 @@
 .column {
   display: flex;
   flex-direction: column;
-  flex: 1 0 280px;
-  min-width: 260px;
-  max-width: 340px;
+  flex: 1 1 0;
+  align-self: stretch;
+  width: 100%;
+  min-width: 240px;
   min-height: 0;
+  height: 100%;
   border: 1px solid var(--color-border);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--color-surface-secondary) 70%, var(--color-surface));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-surface-secondary) 55%, var(--color-surface));
   transition:
     border-color 0.2s ease,
     background 0.2s ease,
@@ -36,7 +42,6 @@
 
 .columnActive {
   border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
-  background: color-mix(in srgb, var(--color-accent-light) 35%, var(--color-surface));
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent);
 }
 
@@ -46,14 +51,29 @@
   justify-content: space-between;
   gap: 10px;
   flex-shrink: 0;
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  padding: 12px 14px;
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.columnTitleGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.columnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .columnTitle {
   margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--color-text);
 }
@@ -72,6 +92,62 @@
   font-weight: 700;
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
+}
+
+.openHeader {
+  background: color-mix(in srgb, var(--color-text-muted) 12%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-text-muted);
+  }
+}
+
+.onHoldHeader {
+  background: color-mix(in srgb, #d97706 12%, var(--color-surface));
+
+  .columnIcon {
+    color: #d97706;
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, #d97706 75%, var(--color-text));
+  }
+}
+
+.inProgressHeader {
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-accent);
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, var(--color-accent) 70%, var(--color-text));
+  }
+}
+
+.completedHeader {
+  background: color-mix(in srgb, #16a34a 12%, var(--color-surface));
+
+  .columnIcon {
+    color: #16a34a;
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, #16a34a 70%, var(--color-text));
+  }
+}
+
+.cancelledHeader {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-danger);
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, var(--color-danger) 75%, var(--color-text));
+  }
 }
 
 .columnBody {
@@ -104,14 +180,5 @@
 }
 
 .cardSlot {
-  cursor: grab;
   touch-action: none;
-
-  &:active {
-    cursor: grabbing;
-  }
-}
-
-.cardDragging {
-  opacity: 0.55;
 }
