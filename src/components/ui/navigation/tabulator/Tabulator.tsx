@@ -24,6 +24,8 @@ interface TabulatorComponent extends FC<TabulatorProps> {
 
 type TabulatorProps = PropsWithChildren & {
   defaultValue: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   header?: ReactNode;
 };
 
@@ -38,9 +40,19 @@ type TabulatorPanelProps = PropsWithChildren & {
 export const Tabulator: TabulatorComponent = ({
   children,
   defaultValue,
+  value,
+  onValueChange,
   header,
 }) => {
-  const [active, setActive] = useState(defaultValue);
+  const [uncontrolledActive, setUncontrolledActive] = useState(defaultValue);
+  const active = value ?? uncontrolledActive;
+
+  const setActive = (next: string) => {
+    if (value === undefined) {
+      setUncontrolledActive(next);
+    }
+    onValueChange?.(next);
+  };
 
   return (
     <TabContext.Provider value={{ active, setActive }}>

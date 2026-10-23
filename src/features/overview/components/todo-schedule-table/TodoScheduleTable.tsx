@@ -70,11 +70,11 @@ export function TodoScheduleTable({
                   </td>
                   <td>
                     <div className={styles.groupList}>
-                      {task.groups.map((group) => (
-                        <span key={group} className={styles.groupTag}>
-                          {group}
-                        </span>
-                      ))}
+                      {task.category ? (
+                        <span className={styles.groupTag}>{task.category}</span>
+                      ) : (
+                        <span>—</span>
+                      )}
                     </div>
                   </td>
                   <td>

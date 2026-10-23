@@ -175,9 +175,13 @@ export default function TaskDetailsTabulator({
     });
   };
 
-  const groupSelectOptions = useMemo(
-    () => filterOptions.groups.map((group) => ({ value: group, label: group })),
-    [filterOptions.groups],
+  const categorySelectOptions = useMemo(
+    () =>
+      filterOptions.categories.map((category) => ({
+        value: category,
+        label: category,
+      })),
+    [filterOptions.categories],
   );
 
   const projectSelectOptions = useMemo(() => getProjectSelectOptions(), []);
@@ -407,7 +411,7 @@ export default function TaskDetailsTabulator({
         task={task}
         onSubmit={(input) => updateTask(task.id, input)}
         initiatorName={initiatorName}
-        groupOptions={groupSelectOptions}
+        categoryOptions={categorySelectOptions}
         userOptions={userSelectOptions}
         projectOptions={projectSelectOptions}
         labels={{
@@ -423,7 +427,8 @@ export default function TaskDetailsTabulator({
           stepPlaceholder: dashboardLabels.stepPlaceholder,
           removeStep: dashboardLabels.removeStep,
           initiator: taskLabels.initiator,
-          groups: taskLabels.groups,
+          categories: taskLabels.categories,
+          selectCategory: taskLabels.selectCategory,
           project: taskLabels.project,
           selectProject: taskLabels.selectProject,
           observables: taskLabels.observables,

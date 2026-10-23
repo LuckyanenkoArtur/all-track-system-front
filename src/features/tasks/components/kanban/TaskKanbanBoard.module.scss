@@ -94,7 +94,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.todoHeader {
+.openHeader {
   background: color-mix(in srgb, var(--color-text-muted) 12%, var(--color-surface));
 
   .columnIcon {
@@ -102,19 +102,19 @@
   }
 }
 
-.overdueHeader {
-  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+.onHoldHeader {
+  background: color-mix(in srgb, #d97706 12%, var(--color-surface));
 
   .columnIcon {
-    color: var(--color-danger);
+    color: #d97706;
   }
 
   .columnTitle {
-    color: color-mix(in srgb, var(--color-danger) 75%, var(--color-text));
+    color: color-mix(in srgb, #d97706 75%, var(--color-text));
   }
 }
 
-.doingHeader {
+.inProgressHeader {
   background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
 
   .columnIcon {
@@ -135,6 +135,18 @@
 
   .columnTitle {
     color: color-mix(in srgb, #16a34a 70%, var(--color-text));
+  }
+}
+
+.cancelledHeader {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+
+  .columnIcon {
+    color: var(--color-danger);
+  }
+
+  .columnTitle {
+    color: color-mix(in srgb, var(--color-danger) 75%, var(--color-text));
   }
 }
 

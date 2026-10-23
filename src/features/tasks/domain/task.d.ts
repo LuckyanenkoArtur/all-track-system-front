@@ -8,7 +8,7 @@ export interface Task {
   title: string;
   status: TaskStatus;
   priority: TaskPriority;
-  groups: string[];
+  category: string;
   project?: string | null;
   observables: string[];
   createdAt: string;

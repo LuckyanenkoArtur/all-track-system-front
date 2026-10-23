@@ -11,14 +11,10 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--page-header-gap, 16px);
   flex-shrink: 0;
   min-width: 0;
-
-  :global(.title) {
-    flex-shrink: 0;
-  }
 }
 
 @media (max-width: 640px) {

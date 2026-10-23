@@ -59,7 +59,7 @@ type FormState = {
   title: string;
   description: string;
   steps: TaskStep[];
-  groups: string[];
+  category: string | null;
   project: string | null;
   observables: string[];
   startDate: string;
@@ -83,7 +83,8 @@ type CreateTaskDialogLabels = {
   stepPlaceholder: string;
   removeStep: string;
   initiator: string;
-  groups: string;
+  categories: string;
+  selectCategory: string;
   project: string;
   selectProject: string;
   observables: string;
@@ -122,7 +123,7 @@ type TaskCreationDrawerProps = {
   onSubmit: (input: CreateTaskInput) => void;
   task?: Task | null;
   initiatorName: string;
-  groupOptions: MultiSelectOption[];
+  categoryOptions: DropDownOption[];
   userOptions: MultiSelectOption[];
   projectOptions: DropDownOption[];
   labels: CreateTaskDialogLabels;
@@ -139,7 +140,7 @@ function createEmptyForm(): FormState {
     title: "",
     description: "",
     steps: [],
-    groups: [],
+    category: null,
     project: null,
     observables: [],
     startDate: "",
@@ -156,7 +157,7 @@ function taskToForm(task: Task): FormState {
     title: task.title,
     description: task.description ?? "",
     steps: task.steps ?? [],
-    groups: task.groups,
+    category: task.category || null,
     project: task.project ?? null,
     observables: task.observables,
     startDate: toDateTimeLocalValue(new Date(task.startDate)),
@@ -183,7 +184,7 @@ function isFormDirty(form: FormState, baseline: FormState): boolean {
     form.priority.id !== baseline.priority.id ||
     form.budget.trim() !== baseline.budget.trim() ||
     form.requiresResultReview !== baseline.requiresResultReview ||
-    form.groups.join("|") !== baseline.groups.join("|") ||
+    form.category !== baseline.category ||
     form.project !== baseline.project ||
     form.observables.join("|") !== baseline.observables.join("|") ||
     form.steps.length !== baseline.steps.length ||
@@ -206,7 +207,7 @@ function TaskCreationDrawerContent({
   onSubmit,
   task = null,
   initiatorName,
-  groupOptions,
+  categoryOptions,
   userOptions,
   projectOptions,
   labels,
@@ -265,7 +266,7 @@ function TaskCreationDrawerContent({
       description: form.description.trim() || undefined,
       steps: filteredSteps,
       priority: form.priority,
-      groups: form.groups.length > 0 ? form.groups : ["General"],
+      category: form.category?.trim() || "General",
       project: form.project,
       observables: form.observables,
       startDate: form.startDate || undefined,
@@ -430,13 +431,20 @@ function TaskCreationDrawerContent({
                         readOnly
                       />
                       <div className={styles.row}>
-                        <MultiSelect
-                          label={labels.groups}
-                          icon={<FiGrid />}
-                          options={groupOptions}
-                          selected={form.groups}
-                          onChange={(groups) => setForm({ ...form, groups })}
-                          {...multiSelectLabels}
+                        <DropDown
+                          label={labels.categories}
+                          icon={<FiGrid aria-hidden />}
+                          options={categoryOptions}
+                          value={form.category}
+                          onChange={(category) =>
+                            setForm({ ...form, category })
+                          }
+                          placeholder={labels.selectCategory}
+                          searchPlaceholder={labels.searchOptions}
+                          noResultsLabel={labels.noOptionsFound}
+                          clearLabel={labels.clear}
+                          searchable
+                          clearable
                         />
                         <MultiSelect
                           label={labels.observables}

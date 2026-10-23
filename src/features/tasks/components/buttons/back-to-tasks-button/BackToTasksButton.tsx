@@ -14,11 +14,14 @@ export default function BackToTasksButton() {
     <Button
       onClick={() => navigate("/app/tasks")}
       className={styles.button}
+      ariaLabel={t.tasks.details.backToTasks}
     >
       <Button.Icon>
         <FiArrowLeft size={18} />
       </Button.Icon>
-      <Button.Text>{t.tasks.details.backToTasks}</Button.Text>
+      <Button.Tooltip position="bottom">
+        {t.tasks.details.backToTasks}
+      </Button.Tooltip>
     </Button>
   );
 }

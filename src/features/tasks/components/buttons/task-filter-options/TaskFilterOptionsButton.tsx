@@ -6,7 +6,7 @@ import { TaskFilterDrawer } from "../../drawers/task-filter-drawer/Drawer";
 import styles from "./TaskFilterOptionsButton.module.scss";
 
 type FilterOptions = {
-  groups: string[];
+  categories: string[];
   initiators: string[];
   responsible: string[];
   observables: string[];

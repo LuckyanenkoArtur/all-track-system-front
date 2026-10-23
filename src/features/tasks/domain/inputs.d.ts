@@ -8,7 +8,7 @@ export interface CreateTaskInput {
   description?: string;
   steps?: TaskStep[];
   priority: TaskPriority;
-  groups: string[];
+  category: string;
   project?: string | null;
   observables: string[];
   startDate?: string;

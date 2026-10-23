@@ -55,7 +55,7 @@ export type TaskDataTableLabels = {
   taskDetails: string;
   status: string;
   priority: string;
-  groups: string;
+  categories: string;
   project: string;
   createdAt: string;
   dueDate: string;
@@ -130,19 +130,18 @@ export function useTaskDataTableColumns({
         body: (task) => <PriorityBadge priority={task.priority} />,
       },
       {
-        id: "groups",
-        field: "groups",
-        header: labels.groups,
+        id: "category",
+        field: "category",
+        header: labels.categories,
         className: styles.colGroups,
-        body: (task) => (
-          <div className={styles.badgeGroup}>
-            {task.groups.map((group) => (
-              <span key={group} className={styles.groupTag}>
-                {group}
-              </span>
-            ))}
-          </div>
-        ),
+        body: (task) =>
+          task.category ? (
+            <div className={styles.badgeGroup}>
+              <span className={styles.groupTag}>{task.category}</span>
+            </div>
+          ) : (
+            <span className={styles.emptyCell}>—</span>
+          ),
       },
       {
         id: "project",

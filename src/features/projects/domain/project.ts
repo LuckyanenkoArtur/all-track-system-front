@@ -7,6 +7,8 @@ export type ProjectPriority = TaskPriorityId;
 export type ProjectMember = {
   id: string;
   initials: string;
+  name: string;
+  role: string;
 };
 
 export type Project = {
@@ -23,6 +25,7 @@ export type Project = {
   /** Total money spent in major currency units. */
   moneySpent: number;
   members: ProjectMember[];
+  startDate: string;
   dueDate: string;
 };
 

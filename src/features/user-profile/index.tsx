@@ -56,7 +56,6 @@ export default function UserProfilePage() {
   return (
     <div className="user-page">
       <header className="user-page__header">
-        <h1 className="user-page__title">{t.userPage.title}</h1>
         <p className="user-page__subtitle">{t.userPage.subtitle}</p>
       </header>
 

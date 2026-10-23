@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-import Title from "@primitive/title/Title.tsx";
 import styles from "./finance.module.scss";
 
 export function FinanceLayout() {
@@ -11,10 +10,9 @@ export function FinanceLayout() {
   );
 }
 
-export function FinanceSection({ title }: { title: string }) {
+export function FinanceSection() {
   return (
     <div className={styles.sectionPage}>
-      <Title text={title} />
       <p className={styles.pageHint}>In development...</p>
     </div>
   );

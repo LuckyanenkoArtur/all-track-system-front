@@ -1,3 +1,13 @@
+When are you create the projects
+  We need to ask user what kind of the project template should be
+     For Development we can follow different Agile convension (Kanban, Scrum, Agile and etc)
+
+In the user settings user also can selecte prefered display 
+ - Dates
+ - Times
+ - Currency like Code (USD, EUR) or usign symbols ($)
+
+
 Learn about Fragment component in React
 
 
@@ -15,12 +25,10 @@ UI\UX design for projects
    - https://dribbble.com/shots/26618390-QuickSuite-Project-Page
 
 
+   https://dribbble.com/shots/25202475-CRM-Dashboard-Project-Page - Here the design of The Documents sections and show file progresion
+
+
 # TODO
-
-- [ ] **Task Categories**
-  - [ ] Rename `Related Groups` to `Category`.
-  - [ ] Allow only one category per task.
-
 - [ ] **User Profile**
   - [ ] Display the user's projects.
   - [ ] Display the user's transactions.
@@ -46,3 +54,28 @@ Projects:
  motion.dev - анимации для сайтов
  Kokonut Ui - Components UI
  Bklit UI - Diagrams and Charts UI
+
+
+---------------------SIDEBAR Sturucturee---------------------------
+ Planning
+Organize time, schedule events, and track commitments.
+
+Recommended
+
+
+
+Planners
+
+Long-term goals, weekly plans, and yearly planning.
+
+
+
+Events
+
+Meetings, appointments, and scheduled activities.
+
+
+
+Reminders
+
+Things to remember or complete, until they are done.

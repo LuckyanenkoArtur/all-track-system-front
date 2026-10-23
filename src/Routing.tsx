@@ -11,6 +11,7 @@ import TasksPage from "./features/tasks/pages/tasks/TasksPage";
 import { TaskDetailsPage } from "./features/tasks/pages/task-details/TaskDetailsPage";
 import CalendarPage from "./features/calendar";
 import RemindersPage from "./features/reminders";
+import PlannersPage from "./features/planners";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import { ProjectDetailsPage } from "./features/projects/pages/project-details/ProjectDetailsPage";
 
@@ -20,6 +21,7 @@ import {
   FinanceSection,
 } from "./features/finance";
 import LoginPage from "./features/login";
+import RegisterPage from "./features/register";
 import NotFoundPage from "./pages/not-found";
 import UserProfilePage from "./features/user-profile";
 
@@ -40,6 +42,10 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
       },
     ],
   },
@@ -71,6 +77,10 @@ export const router = createBrowserRouter([
             element: <ProjectDetailsPage />,
           },
           {
+            path: "/app/planners",
+            element: <PlannersPage />,
+          },
+          {
             path: "/app/calendar",
             element: <CalendarPage />,
           },
@@ -78,7 +88,7 @@ export const router = createBrowserRouter([
             path: "/app/reminders",
             element: <RemindersPage />,
           },
-          
+
           {
             path: "/app/finance",
             element: <FinanceLayout />,
@@ -86,31 +96,31 @@ export const router = createBrowserRouter([
               { index: true, element: <FinanceDashboard /> },
               {
                 path: "accounts",
-                element: <FinanceSection title="Accounts" />,
+                element: <FinanceSection />,
               },
               {
                 path: "transactions/history",
-                element: <FinanceSection title="Transaction history" />,
+                element: <FinanceSection />,
               },
               {
                 path: "transactions/integration",
-                element: <FinanceSection title="Integration" />,
+                element: <FinanceSection />,
               },
               {
                 path: "transactions/reports",
-                element: <FinanceSection title="Reports" />,
+                element: <FinanceSection />,
               },
               {
                 path: "cashflow",
-                element: <FinanceSection title="Cash flow" />,
+                element: <FinanceSection />,
               },
               {
                 path: "budget",
-                element: <FinanceSection title="Budget" />,
+                element: <FinanceSection />,
               },
               {
                 path: "investments",
-                element: <FinanceSection title="Investments" />,
+                element: <FinanceSection />,
               },
             ],
           },

@@ -19,10 +19,6 @@
   min-width: 0;
   container-type: inline-size;
   container-name: tasks-page-header;
-
-  :global(.title) {
-    flex-shrink: 0;
-  }
 }
 
 .pageToolbar {

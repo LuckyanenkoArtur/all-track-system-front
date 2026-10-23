@@ -1,7 +1,7 @@
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--topbar-gap, 16px);
   padding: var(--topbar-pad-y, 16px) var(--topbar-pad-x, 24px);
   background: var(--color-surface);
@@ -19,8 +19,9 @@
 .search-container {
   display: flex;
   align-items: center;
-  flex: 1;
-  min-width: 0;
+  flex: 0 1 320px;
+  width: 320px;
+  min-width: 180px;
   max-width: 320px;
   background: var(--color-surface-secondary);
   border-radius: 20px;
@@ -72,8 +73,9 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--topbar-gap, 16px);
-  flex: 1;
+  margin-left: auto;
   min-width: 0;
+  flex: 0 1 auto;
 }
 
 .notification-wrapper {

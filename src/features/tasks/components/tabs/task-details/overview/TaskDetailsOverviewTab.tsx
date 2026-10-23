@@ -6,7 +6,6 @@ import type {
 import styles from "./TaskDetailsOverviewTab.module.scss";
 
 import { TaskOverviewBody } from "./TaskOverviewBody.tsx";
-import { TaskOverviewHeader } from "./TaskOverviewHeader.tsx";
 
 type TaskDetailsOverviewTabProps = {
   task: Task; //! This should be done using the TaskService for getting the task details
@@ -35,13 +34,6 @@ export function TaskDetailsOverviewTab({
 }: TaskDetailsOverviewTabProps) {
   return (
     <div className={styles.overview}>
-      <TaskOverviewHeader
-        id={task.id}
-        title={task.title}
-        requiresResultReview={task.requiresResultReview}
-        initiator={task.initiator}
-        createdAt={task.createdAt}
-      />
       <TaskOverviewBody
         task={task}
         onToggleStep={onToggleStep}

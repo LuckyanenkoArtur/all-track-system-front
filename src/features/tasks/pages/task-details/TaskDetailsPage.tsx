@@ -2,6 +2,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
 
 import BackToTasksButton from "../../components/buttons/back-to-tasks-button/BackToTasksButton.tsx";
+import { TaskOverviewHeader } from "../../components/tabs/task-details/overview/TaskOverviewHeader.tsx";
 import TaskDetailsTabulator from "../../components/tabulator/details/Tabulator.tsx";
 import { useTasks } from "../../hooks/useTasks.ts";
 
@@ -24,6 +25,13 @@ export function TaskDetailsPage() {
     <div className={styles.page}>
       <header className={styles.pageHeader}>
         <BackToTasksButton />
+        <TaskOverviewHeader
+          id={task.id}
+          title={task.title}
+          requiresResultReview={task.requiresResultReview}
+          initiator={task.initiator}
+          createdAt={task.createdAt}
+        />
       </header>
 
       <TaskDetailsTabulator task={task} />

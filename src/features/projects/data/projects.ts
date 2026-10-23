@@ -1,8 +1,15 @@
 import type { Project, ProjectMember } from "../domain/project.ts";
 
-const member = (id: string, initials: string): ProjectMember => ({
+const member = (id: string, name: string, role: string): ProjectMember => ({
   id,
-  initials,
+  name,
+  role,
+  initials: name
+    .split(" ")
+    .map((part) => part[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase(),
 });
 
 export const INITIAL_PROJECTS: Project[] = [
@@ -17,13 +24,14 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 28,
     timeSpentMinutes: 2550,
     moneySpent: 4280,
+    startDate: "2026-01-06",
     dueDate: "2026-03-15",
     members: [
-      member("m1", "AM"),
-      member("m2", "LK"),
-      member("m3", "SR"),
-      member("m4", "JT"),
-      member("m5", "PN"),
+      member("m1", "Alex Morgan", "UI Designer"),
+      member("m2", "Lena Kovacs", "Brand Designer"),
+      member("m3", "Sofia Reed", "UX Researcher"),
+      member("m4", "Jordan Tate", "QA Tester"),
+      member("m5", "Priya Nair", "Web Developer"),
     ],
   },
   {
@@ -37,8 +45,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 64,
     timeSpentMinutes: 6120,
     moneySpent: 18650,
+    startDate: "2026-01-12",
     dueDate: "2026-04-30",
-    members: [member("m6", "DV"), member("m7", "EK"), member("m8", "MR")],
+    members: [
+      member("m6", "Dana Volkov", "Product Designer"),
+      member("m7", "Elena Kim", "Frontend Developer"),
+      member("m8", "Marcus Reid", "Product Manager"),
+    ],
   },
   {
     id: "PRJ-003",
@@ -51,8 +64,12 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 19,
     timeSpentMinutes: 1845,
     moneySpent: 3120,
+    startDate: "2026-01-08",
     dueDate: "2026-02-20",
-    members: [member("m9", "OS"), member("m10", "NI")],
+    members: [
+      member("m9", "Omar Said", "Systems Engineer"),
+      member("m10", "Nina Ivanova", "Network Engineer"),
+    ],
   },
   {
     id: "PRJ-004",
@@ -65,8 +82,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 42,
     timeSpentMinutes: 3960,
     moneySpent: 9740,
+    startDate: "2025-11-03",
     dueDate: "2026-03-15",
-    members: [member("m11", "HB"), member("m12", "CL"), member("m13", "YA")],
+    members: [
+      member("m11", "Helen Berg", "Automation Engineer"),
+      member("m12", "Chris Lang", "Controls Engineer"),
+      member("m13", "Yara Ali", "QA Tester"),
+    ],
   },
   {
     id: "PRJ-005",
@@ -79,12 +101,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 15,
     timeSpentMinutes: 980,
     moneySpent: 1560,
+    startDate: "2025-12-01",
     dueDate: "2026-02-05",
     members: [
-      member("m14", "QT"),
-      member("m15", "WF"),
-      member("m16", "BG"),
-      member("m17", "IZ"),
+      member("m14", "Quinn Torres", "iOS Developer"),
+      member("m15", "Will Foster", "Android Developer"),
+      member("m16", "Bianca Greco", "UI Designer"),
+      member("m17", "Ivan Zhao", "QA Tester"),
     ],
   },
   {
@@ -98,8 +121,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 7,
     timeSpentMinutes: 120,
     moneySpent: 240,
+    startDate: "2026-02-10",
     dueDate: "2026-03-25",
-    members: [member("m18", "RK"), member("m19", "UM"), member("m20", "LP")],
+    members: [
+      member("m18", "Ravi Kapoor", "Security Engineer"),
+      member("m19", "Uma Malik", "AppSec Analyst"),
+      member("m20", "Leo Park", "QA Tester"),
+    ],
   },
   {
     id: "PRJ-007",
@@ -112,8 +140,12 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 33,
     timeSpentMinutes: 1410,
     moneySpent: 5280,
+    startDate: "2026-02-02",
     dueDate: "2026-05-12",
-    members: [member("m21", "SC"), member("m22", "AD")],
+    members: [
+      member("m21", "Sara Chen", "Finance Analyst"),
+      member("m22", "Adam Doyle", "Accountant"),
+    ],
   },
   {
     id: "PRJ-008",
@@ -126,12 +158,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 51,
     timeSpentMinutes: 2780,
     moneySpent: 8410,
+    startDate: "2026-03-01",
     dueDate: "2026-06-01",
     members: [
-      member("m23", "GN"),
-      member("m24", "TV"),
-      member("m25", "EJ"),
-      member("m26", "KO"),
+      member("m23", "Grace Nguyen", "Data Engineer"),
+      member("m24", "Tom Vogel", "Analytics Engineer"),
+      member("m25", "Eva Johansson", "Data Analyst"),
+      member("m26", "Kenji Oda", "Backend Developer"),
     ],
   },
   {
@@ -145,8 +178,12 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 11,
     timeSpentMinutes: 640,
     moneySpent: 980,
+    startDate: "2026-04-06",
     dueDate: "2026-07-18",
-    members: [member("m27", "FW"), member("m28", "BX")],
+    members: [
+      member("m27", "Fiona Walsh", "Frontend Developer"),
+      member("m28", "Ben Xu", "UI Designer"),
+    ],
   },
   {
     id: "PRJ-010",
@@ -159,8 +196,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 24,
     timeSpentMinutes: 1680,
     moneySpent: 2450,
+    startDate: "2025-11-17",
     dueDate: "2026-01-28",
-    members: [member("m29", "HC"), member("m30", "QL"), member("m31", "ZS")],
+    members: [
+      member("m29", "Hannah Cole", "Data Analyst"),
+      member("m30", "Quinn Li", "BI Developer"),
+      member("m31", "Zara Shah", "QA Tester"),
+    ],
   },
   {
     id: "PRJ-011",
@@ -173,8 +215,9 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 5,
     timeSpentMinutes: 310,
     moneySpent: 450,
+    startDate: "2026-01-20",
     dueDate: "2026-04-09",
-    members: [member("m32", "DP")],
+    members: [member("m32", "Diego Perez", "Operations Lead")],
   },
   {
     id: "PRJ-012",
@@ -187,12 +230,13 @@ export const INITIAL_PROJECTS: Project[] = [
     fileCount: 38,
     timeSpentMinutes: 450,
     moneySpent: 720,
+    startDate: "2026-05-04",
     dueDate: "2026-08-03",
     members: [
-      member("m33", "VY"),
-      member("m34", "NM"),
-      member("m35", "IA"),
-      member("m36", "CT"),
+      member("m33", "Vera Young", "Support Lead"),
+      member("m34", "Noah Meyer", "Technical Writer"),
+      member("m35", "Iris Alvarez", "UX Researcher"),
+      member("m36", "Caleb Tran", "Frontend Developer"),
     ],
   },
 ];

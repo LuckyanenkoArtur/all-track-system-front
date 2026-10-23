@@ -1,8 +1,6 @@
 import { useMemo, useState } from "react";
 import { useUserProfile } from "../../../context/UserProfileContext";
 import { useTranslation } from "../../../i18n";
-import Title from "@primitive/title/Title.tsx";
-
 import { TaskCreationButton } from "../../tasks/components/buttons/task-creation-button/TaskCreationButton";
 import { TaskDetailsDrawer } from "../../tasks/components/drawers/task-details-drawer/Drawer.tsx";
 import { DrawerDismissContext } from "@overlay/drawer/Drawer.tsx";
@@ -58,7 +56,6 @@ export function OverviewPage() {
     <DrawerDismissContext.Provider value={() => setSelectedTaskId(null)}>
       <div className={styles.page}>
         <header className={styles.pageHeader}>
-          <Title text={t.sidebar.tasksOverview} />
           <TaskCreationButton
             onSubmit={addTask}
             initiatorName={initiatorName}

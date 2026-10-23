@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react";
 import { BiAbacus, BiTable } from "react-icons/bi";
-import { FiFilter, FiGrid, FiList, FiPlus } from "react-icons/fi";
+import { FiFilter, FiGrid, FiPlus } from "react-icons/fi";
 
 import { Button } from "@primitive/button/Button.tsx";
-import Title from "@primitive/title/Title.tsx";
 import { SearchBar } from "@input/search-bar/SearchBar.tsx";
 import { DataTablePagination } from "@table/data-table/pagination/DataTablePagination.tsx";
 import { ViewSwitcher } from "@table/view-switcher/ViewSwitcher.tsx";
@@ -13,7 +12,6 @@ import { ProjectCreationDrawer } from "./components/project-creation-drawer/Proj
 import { ProjectDataTable } from "./components/project-data-table/ProjectDataTable.tsx";
 import { ProjectFilterDrawer } from "./components/project-filter-drawer/ProjectFilterDrawer.tsx";
 import { ProjectKanbanBoard } from "./components/project-kanban/ProjectKanbanBoard.tsx";
-import { ProjectListView } from "./components/project-list/ProjectListView.tsx";
 import {
   EMPTY_PROJECT_FILTERS,
   countActiveProjectFilters,
@@ -24,7 +22,7 @@ import { addProject, useProjects } from "./store/projects.store.ts";
 import styles from "./ProjectsPage.module.scss";
 
 const PAGE_SIZE_OPTIONS = [6, 12, 18];
-type ProjectsView = "cards" | "list" | "kanban" | "table";
+type ProjectsView = "cards" | "kanban" | "table";
 
 function isoDateDaysFromNow(days: number) {
   const date = new Date();
@@ -78,13 +76,11 @@ export default function ProjectsPage() {
   const viewSwitcherItems = useMemo(
     () => [
       { id: "cards", label: t.projects.cardsView, icon: FiGrid },
-      { id: "list", label: t.projects.listView, icon: FiList },
       { id: "kanban", label: t.projects.kanbanView, icon: BiAbacus },
       { id: "table", label: t.projects.tableView, icon: BiTable },
     ],
     [
       t.projects.cardsView,
-      t.projects.listView,
       t.projects.kanbanView,
       t.projects.tableView,
     ],
@@ -107,7 +103,6 @@ export default function ProjectsPage() {
   return (
     <div className={styles.page}>
       <header className={styles.pageHeader}>
-        <Title text={t.sidebar.projects} />
         <div className={styles.pageToolbar}>
           <div className={styles.toolbarSearch}>
             <SearchBar
@@ -140,7 +135,6 @@ export default function ProjectsPage() {
             onChange={(id) => {
               if (
                 id === "cards" ||
-                id === "list" ||
                 id === "kanban" ||
                 id === "table"
               ) {
@@ -162,18 +156,16 @@ export default function ProjectsPage() {
         </div>
       </header>
 
-      {view === "cards" || view === "list" ? (
+      {view === "cards" ? (
         <div className={styles.panel}>
           {visibleProjects.length === 0 ? (
             <p className={styles.empty}>{t.projects.noResults}</p>
-          ) : view === "cards" ? (
+          ) : (
             <div className={styles.grid}>
               {visibleProjects.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
-          ) : (
-            <ProjectListView projects={visibleProjects} />
           )}
 
           <DataTablePagination
@@ -253,6 +245,7 @@ export default function ProjectsPage() {
             timeSpentMinutes: 0,
             moneySpent: 0,
             members: [],
+            startDate: isoDateDaysFromNow(0),
             dueDate: isoDateDaysFromNow(30),
           };
           addProject(project);

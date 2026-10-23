@@ -29,7 +29,6 @@ import {
   sortTasks,
 } from "../../utils/taskListUtils.ts";
 import styles from "./TasksPage.module.scss";
-import Title from "@primitive/title/Title.tsx";
 import { SearchBar } from "@input/search-bar/SearchBar";
 import { CompleteTaskDrawer } from "../../components/drawers/task-complete-drawer/Drawer.tsx";
 
@@ -160,7 +159,6 @@ export default function TaskPage() {
     <DrawerDismissContext.Provider value={() => setSelectedTaskId(null)}>
       <div className={styles.page}>
         <header className={styles.pageHeader}>
-          <Title text={t.sidebar.tasks} />
           <div className={styles.pageToolbar}>
             <div className={styles.toolbarSearch}>
               <SearchBar
@@ -250,7 +248,7 @@ export default function TaskPage() {
                 taskDetails: t.tasks.taskDetails,
                 status: t.tasks.status,
                 priority: t.tasks.priority,
-                groups: t.tasks.groups,
+                categories: t.tasks.categories,
                 project: t.tasks.project,
                 createdAt: t.tasks.createdAt,
                 dueDate: t.tasks.dueDate,

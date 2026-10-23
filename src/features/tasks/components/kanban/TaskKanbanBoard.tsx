@@ -1,20 +1,45 @@
 import { useMemo, useState, type DragEvent, type ReactNode } from "react";
 import {
-  FiAlertTriangle,
   FiCheckCircle,
   FiClock,
+  FiPauseCircle,
   FiPlayCircle,
+  FiXCircle,
 } from "react-icons/fi";
 
 import { useTranslation } from "../../../../i18n/index.ts";
 import type { Task, TaskStatus } from "../../domain/others.ts";
-import { isTerminalTaskStatus } from "../../utils/taskStatusUtils.ts";
+import { TASK_STATUS_IDS } from "../../utils/taskStatusUtils.ts";
 import { TaskKanbanCard } from "./TaskKanbanCard.tsx";
 import styles from "./TaskKanbanBoard.module.scss";
 
 const TASK_DRAG_MIME = "application/x-alltrack-task-id";
 
-export type TaskKanbanColumnId = "todo" | "overdue" | "doing" | "completed";
+const COLUMN_CHROME: Record<
+  TaskStatus,
+  { icon: ReactNode; headerClass: string }
+> = {
+  open: {
+    icon: <FiClock size={15} aria-hidden />,
+    headerClass: styles.openHeader,
+  },
+  onHold: {
+    icon: <FiPauseCircle size={15} aria-hidden />,
+    headerClass: styles.onHoldHeader,
+  },
+  inProgress: {
+    icon: <FiPlayCircle size={15} aria-hidden />,
+    headerClass: styles.inProgressHeader,
+  },
+  completed: {
+    icon: <FiCheckCircle size={15} aria-hidden />,
+    headerClass: styles.completedHeader,
+  },
+  cancelled: {
+    icon: <FiXCircle size={15} aria-hidden />,
+    headerClass: styles.cancelledHeader,
+  },
+};
 
 type TaskKanbanBoardProps = {
   tasks: Task[];
@@ -26,31 +51,6 @@ type TaskKanbanBoardProps = {
   onLogBudgetExpense: (taskId: string) => void;
   isTracking: (taskId: string) => boolean;
   onToggleTracking: (taskId: string) => void;
-};
-
-function startOfToday() {
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  return date.getTime();
-}
-
-function isTaskOverdue(task: Task) {
-  if (isTerminalTaskStatus(task.status)) return false;
-  return new Date(task.dueDate).getTime() < startOfToday();
-}
-
-function getKanbanColumn(task: Task): TaskKanbanColumnId | null {
-  if (task.status === "cancelled") return null;
-  if (task.status === "completed") return "completed";
-  if (task.status === "inProgress") return "doing";
-  if (isTaskOverdue(task)) return "overdue";
-  return "todo";
-}
-
-const DROP_STATUS: Partial<Record<TaskKanbanColumnId, TaskStatus>> = {
-  todo: "open",
-  doing: "inProgress",
-  completed: "completed",
 };
 
 export function TaskKanbanBoard({
@@ -65,66 +65,24 @@ export function TaskKanbanBoard({
   onToggleTracking,
 }: TaskKanbanBoardProps) {
   const { t } = useTranslation();
-  const [activeColumn, setActiveColumn] = useState<TaskKanbanColumnId | null>(
-    null,
-  );
+  const [activeStatus, setActiveStatus] = useState<TaskStatus | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
 
   const columns = useMemo(() => {
-    const buckets: Record<TaskKanbanColumnId, Task[]> = {
-      todo: [],
-      overdue: [],
-      doing: [],
-      completed: [],
-    };
+    const byStatus = Object.fromEntries(
+      TASK_STATUS_IDS.map((status) => [status, [] as Task[]]),
+    ) as Record<TaskStatus, Task[]>;
 
     for (const task of tasks) {
-      const column = getKanbanColumn(task);
-      if (column) buckets[column].push(task);
+      byStatus[task.status]?.push(task);
     }
 
-    const defs: {
-      id: TaskKanbanColumnId;
-      label: string;
-      icon: ReactNode;
-      headerClass: string;
-      acceptsDrop: boolean;
-    }[] = [
-      {
-        id: "todo",
-        label: t.tasks.kanban.todo,
-        icon: <FiClock size={15} aria-hidden />,
-        headerClass: styles.todoHeader,
-        acceptsDrop: true,
-      },
-      {
-        id: "overdue",
-        label: t.tasks.kanban.overdue,
-        icon: <FiAlertTriangle size={15} aria-hidden />,
-        headerClass: styles.overdueHeader,
-        acceptsDrop: false,
-      },
-      {
-        id: "doing",
-        label: t.tasks.kanban.doing,
-        icon: <FiPlayCircle size={15} aria-hidden />,
-        headerClass: styles.doingHeader,
-        acceptsDrop: true,
-      },
-      {
-        id: "completed",
-        label: t.tasks.kanban.completed,
-        icon: <FiCheckCircle size={15} aria-hidden />,
-        headerClass: styles.completedHeader,
-        acceptsDrop: true,
-      },
-    ];
-
-    return defs.map((column) => ({
-      ...column,
-      tasks: buckets[column.id],
+    return TASK_STATUS_IDS.map((status) => ({
+      status,
+      label: t.tasks[status],
+      tasks: byStatus[status],
     }));
-  }, [tasks, t.tasks.kanban]);
+  }, [tasks, t.tasks]);
 
   const handleDragStart = (event: DragEvent, taskId: string) => {
     event.dataTransfer.setData(TASK_DRAG_MIME, taskId);
@@ -135,76 +93,60 @@ export function TaskKanbanBoard({
 
   const handleDragEnd = () => {
     setDraggingId(null);
-    setActiveColumn(null);
+    setActiveStatus(null);
   };
 
-  const handleDragOver = (
-    event: DragEvent,
-    columnId: TaskKanbanColumnId,
-    acceptsDrop: boolean,
-  ) => {
-    if (!acceptsDrop) return;
+  const handleDragOver = (event: DragEvent, status: TaskStatus) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
-    if (activeColumn !== columnId) setActiveColumn(columnId);
+    if (activeStatus !== status) setActiveStatus(status);
   };
 
-  const handleDragLeave = (event: DragEvent, columnId: TaskKanbanColumnId) => {
+  const handleDragLeave = (event: DragEvent, status: TaskStatus) => {
     const next = event.relatedTarget as Node | null;
     if (next && event.currentTarget.contains(next)) return;
-    if (activeColumn === columnId) setActiveColumn(null);
+    if (activeStatus === status) setActiveStatus(null);
   };
 
-  const handleDrop = (
-    event: DragEvent,
-    columnId: TaskKanbanColumnId,
-    acceptsDrop: boolean,
-  ) => {
+  const handleDrop = (event: DragEvent, status: TaskStatus) => {
     event.preventDefault();
-    if (!acceptsDrop) {
-      setDraggingId(null);
-      setActiveColumn(null);
-      return;
-    }
-
     const taskId =
       event.dataTransfer.getData(TASK_DRAG_MIME) ||
       event.dataTransfer.getData("text/plain");
-    const nextStatus = DROP_STATUS[columnId];
-    if (taskId && nextStatus) {
-      if (nextStatus === "completed") {
+
+    if (taskId) {
+      if (status === "completed") {
         onCompleteTask(taskId);
       } else {
-        onStatusChange(taskId, nextStatus);
+        onStatusChange(taskId, status);
       }
     }
+
     setDraggingId(null);
-    setActiveColumn(null);
+    setActiveStatus(null);
   };
 
   return (
-    <div
-      className={styles.board}
-      role="list"
-      aria-label={t.tasks.kanbanView}
-    >
+    <div className={styles.board} role="list" aria-label={t.tasks.kanbanView}>
       {columns.map((column) => (
         <section
-          key={column.id}
+          key={column.status}
           className={`${styles.column} ${
-            activeColumn === column.id ? styles.columnActive : ""
+            activeStatus === column.status ? styles.columnActive : ""
           }`}
           role="list"
           aria-label={column.label}
-          onDragOver={(event) =>
-            handleDragOver(event, column.id, column.acceptsDrop)
-          }
-          onDragLeave={(event) => handleDragLeave(event, column.id)}
-          onDrop={(event) => handleDrop(event, column.id, column.acceptsDrop)}
+          onDragOver={(event) => handleDragOver(event, column.status)}
+          onDragLeave={(event) => handleDragLeave(event, column.status)}
+          onDrop={(event) => handleDrop(event, column.status)}
         >
-          <header className={`${styles.columnHeader} ${column.headerClass}`}>
+          <header
+            className={`${styles.columnHeader} ${COLUMN_CHROME[column.status].headerClass}`}
+          >
             <div className={styles.columnTitleGroup}>
-              <span className={styles.columnIcon}>{column.icon}</span>
+              <span className={styles.columnIcon}>
+                {COLUMN_CHROME[column.status].icon}
+              </span>
               <h3 className={styles.columnTitle}>{column.label}</h3>
             </div>
             <span className={styles.columnCount}>{column.tasks.length}</span>

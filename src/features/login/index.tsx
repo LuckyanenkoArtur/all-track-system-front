@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../auth/auth";
 import { LanguageSwitcher, useTranslation } from "../../i18n";
 import AllTrackPreview from "./login/AllTrackPreview";
@@ -165,9 +165,9 @@ export default function LoginPage() {
 
           <p className="login-page__register">
             {t.login.noAccount}{" "}
-            <button type="button" className="login-page__link" disabled>
+            <Link to="/register" className="login-page__link">
               {t.login.registerNow}
-            </button>
+            </Link>
           </p>
         </div>
 

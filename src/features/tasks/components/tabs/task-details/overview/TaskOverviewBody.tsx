@@ -31,7 +31,7 @@ import { DueDateCard } from "../../../cards/due-date-card/DueDateCard.tsx";
 import { ObservablesCard } from "../../../cards/observables-card/ObservablesCard.tsx";
 import { PriorityCard } from "../../../cards/priority-card/PriorityCard.tsx";
 import { ProjectCard } from "../../../cards/project-card/ProjectCard.tsx";
-import { RelatedGroupsCard } from "../../../cards/related-groups-card/RelatedGroupsCard.tsx";
+import { CategoryCard } from "../../../cards/category-card/CategoryCard.tsx";
 import { ResponsibleCard } from "../../../cards/responsible-card/ResponsibleCard.tsx";
 import { StartDateCard } from "../../../cards/start-date-card/StartDateCard.tsx";
 import { StatusCard } from "../../../cards/status-card/StatusCard.tsx";
@@ -120,9 +120,9 @@ export function TaskOverviewBody({
                   observables={task.observables}
                 />
                 <Divider icon={<FiEye size={11} aria-hidden />} />
-                <RelatedGroupsCard
-                  title={t.tasks.groups}
-                  groups={task.groups}
+                <CategoryCard
+                  title={t.tasks.categories}
+                  category={task.category}
                 />
               </div>
             </div>

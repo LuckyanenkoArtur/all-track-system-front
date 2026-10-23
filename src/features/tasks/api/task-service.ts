@@ -50,7 +50,7 @@ const DEFAULT_COLLECTIONS: TaskCollection[] = [
       search: "",
       statuses: ["inProgress"],
       priorities: [TASK_PRIORITIES.high],
-      groups: [],
+      categories: [],
       projects: [],
       initiators: [],
       responsible: [],
@@ -73,7 +73,7 @@ const DEFAULT_COLLECTIONS: TaskCollection[] = [
       search: "",
       statuses: ["open"],
       priorities: [],
-      groups: [],
+      categories: [],
       projects: [],
       initiators: [],
       responsible: [],
@@ -127,11 +127,29 @@ function initialsFromName(name: string) {
     .toUpperCase();
 }
 
+function resolveTaskCategory(task: Task & { groups?: string[] }): string {
+  if (typeof task.category === "string" && task.category.trim()) {
+    return task.category.trim();
+  }
+  if (Array.isArray(task.groups)) {
+    const fromGroups = task.groups.find(
+      (group) => typeof group === "string" && group.trim(),
+    );
+    if (fromGroups) return fromGroups.trim();
+  }
+  return "General";
+}
+
 function normalizeTask(task: Task): Task {
+  const { groups: _legacyGroups, ...rest } = task as Task & {
+    groups?: string[];
+  };
+
   return {
-    ...task,
+    ...rest,
     status: normalizeTaskStatus(task.status),
     priority: resolveTaskPriority(task.priority),
+    category: resolveTaskCategory(task as Task & { groups?: string[] }),
     project: task.project ?? null,
     observables: task.observables ?? [],
     startDate: task.startDate ?? task.createdAt,
@@ -142,8 +160,10 @@ function normalizeTask(task: Task): Task {
 }
 
 function normalizeFilters(filters: TaskFilters): TaskFilters {
+  const legacy = filters as TaskFilters & { groups?: string[] };
   return {
     ...filters,
+    categories: filters.categories ?? legacy.groups ?? [],
     projects: filters.projects ?? [],
     observables: filters.observables ?? [],
     priorities: (filters.priorities ?? []).map(resolveTaskPriority),
@@ -268,7 +288,7 @@ export class TaskServiceTested {
       title: input.title.trim(),
       status: "open",
       priority: resolveTaskPriority(input.priority),
-      groups: input.groups.filter(Boolean),
+      category: input.category.trim() || "General",
       project: input.project ?? null,
       observables: input.observables.filter(Boolean),
       createdAt: now,
@@ -300,7 +320,7 @@ export class TaskServiceTested {
             ...task,
             title: input.title.trim(),
             priority: resolveTaskPriority(input.priority),
-            groups: input.groups.filter(Boolean),
+            category: input.category.trim() || "General",
             project:
               input.project !== undefined ? input.project : (task.project ?? null),
             observables: input.observables.filter(Boolean),

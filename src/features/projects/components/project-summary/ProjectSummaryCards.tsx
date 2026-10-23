@@ -28,7 +28,7 @@ export function ProjectSummaryCards({ projects }: ProjectSummaryCardsProps) {
   ];
 
   return (
-    <section className={styles.root} aria-label={t.projects.tabs.summary}>
+    <section className={styles.root} aria-label={t.projects.stats}>
       {items.map((item) => (
         <Card key={item.id} className={styles.card}>
           <Card.Content>

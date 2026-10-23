@@ -68,7 +68,7 @@ export function matchesSearch(task: Task, search: string): boolean {
     task.priority.id,
     task.priority.name,
     getProjectName(task.project) ?? "",
-    ...task.groups,
+    task.category,
     ...task.responsible,
     ...task.observables,
   ]
@@ -92,7 +92,12 @@ export function matchesFilters(task: Task, filters: TaskFilters): boolean {
     return false;
   }
 
-  if (!includesAny(task.groups, filters.groups)) return false;
+  if (
+    filters.categories.length > 0 &&
+    !filters.categories.includes(task.category)
+  ) {
+    return false;
+  }
   const projectFilters = filters.projects ?? [];
   if (
     projectFilters.length > 0 &&
@@ -141,8 +146,8 @@ function compareField(a: Task, b: Task, field: SortField): number {
       );
     case "priority":
       return PRIORITY_ORDER[a.priority.id] - PRIORITY_ORDER[b.priority.id];
-    case "groups":
-      return a.groups.join(", ").localeCompare(b.groups.join(", "));
+    case "category":
+      return a.category.localeCompare(b.category);
     case "project":
       return (a.project ?? "").localeCompare(b.project ?? "");
     case "createdAt":
@@ -198,20 +203,20 @@ export function processTaskList(tasks: Task[], query: TaskListQuery) {
 }
 
 export function getUniqueFilterOptions(tasks: Task[]) {
-  const groups = new Set<string>();
+  const categories = new Set<string>();
   const initiators = new Set<string>();
   const responsible = new Set<string>();
   const observables = new Set<string>();
 
   for (const task of tasks) {
-    task.groups.forEach((group) => groups.add(group));
+    if (task.category) categories.add(task.category);
     initiators.add(task.initiator);
     task.responsible.forEach((person) => responsible.add(person));
     task.observables.forEach((person) => observables.add(person));
   }
 
   return {
-    groups: [...groups].sort(),
+    categories: [...categories].sort(),
     initiators: [...initiators].sort(),
     responsible: [...responsible].sort(),
     observables: [...observables].sort(),
@@ -233,7 +238,7 @@ export function areFiltersEqual(a: TaskFilters, b: TaskFilters): boolean {
       a.priorities.map((priority) => priority.id),
       b.priorities.map((priority) => priority.id),
     ) &&
-    arraysEqual(a.groups, b.groups) &&
+    arraysEqual(a.categories, b.categories) &&
     arraysEqual(a.projects ?? [], b.projects ?? []) &&
     arraysEqual(a.initiators, b.initiators) &&
     arraysEqual(a.responsible, b.responsible) &&
@@ -256,7 +261,7 @@ export function hasDrawerFilters(filters: TaskFilters): boolean {
   return (
     filters.statuses.length > 0 ||
     filters.priorities.length > 0 ||
-    filters.groups.length > 0 ||
+    filters.categories.length > 0 ||
     (filters.projects ?? []).length > 0 ||
     filters.initiators.length > 0 ||
     filters.responsible.length > 0 ||
@@ -274,7 +279,7 @@ export function countDrawerFilters(filters: TaskFilters): number {
   let count = 0;
   if (filters.statuses.length) count += 1;
   if (filters.priorities.length) count += 1;
-  if (filters.groups.length) count += 1;
+  if (filters.categories.length) count += 1;
   if ((filters.projects ?? []).length) count += 1;
   if (filters.initiators.length) count += 1;
   if (filters.responsible.length) count += 1;
@@ -290,7 +295,7 @@ export function hasActiveFilters(filters: TaskFilters): boolean {
     filters.search.trim() !== "" ||
     filters.statuses.length > 0 ||
     filters.priorities.length > 0 ||
-    filters.groups.length > 0 ||
+    filters.categories.length > 0 ||
     (filters.projects ?? []).length > 0 ||
     filters.initiators.length > 0 ||
     filters.responsible.length > 0 ||
@@ -309,7 +314,7 @@ export function countActiveFilters(filters: TaskFilters): number {
   if (filters.search.trim()) count += 1;
   if (filters.statuses.length) count += 1;
   if (filters.priorities.length) count += 1;
-  if (filters.groups.length) count += 1;
+  if (filters.categories.length) count += 1;
   if ((filters.projects ?? []).length) count += 1;
   if (filters.initiators.length) count += 1;
   if (filters.responsible.length) count += 1;

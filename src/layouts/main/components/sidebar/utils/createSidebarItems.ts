@@ -1,7 +1,15 @@
 import type { SidebarNavItemData } from "../components/navigation/types/navigation-item";
 
 import { RxDashboard } from "react-icons/rx";
-import { FiCheckSquare, FiFolder, FiCalendar, FiDollarSign, FiBell } from "react-icons/fi";
+import {
+  FiCheckSquare,
+  FiFolder,
+  FiCalendar,
+  FiDollarSign,
+  FiBell,
+  FiClock,
+  FiMap,
+} from "react-icons/fi";
 
 type TFunction = {
   sidebar: Record<string, string>;
@@ -95,18 +103,33 @@ export function createSidebarItems(t: TFunction): SidebarNavItemData[] {
       ],
     },
     {
-      kind: "link",
-      id: "calendar",
-      to: "/app/calendar",
-      label: t.sidebar.calendar,
-      icon: FiCalendar,
-    },
-    {
-      kind: "link",
-      id: "reminders",
-      to: "/app/reminders",
-      label: t.sidebar.reminders,
-      icon: FiBell,
+      kind: "group",
+      id: "planning",
+      label: t.sidebar.planning,
+      icon: FiClock,
+      children: [
+        {
+          kind: "link",
+          id: "planners",
+          to: "/app/planners",
+          label: t.sidebar.planners,
+          icon: FiMap,
+        },
+        {
+          kind: "link",
+          id: "events",
+          to: "/app/calendar",
+          label: t.sidebar.events,
+          icon: FiCalendar,
+        },
+        {
+          kind: "link",
+          id: "reminders",
+          to: "/app/reminders",
+          label: t.sidebar.reminders,
+          icon: FiBell,
+        },
+      ],
     },
   ];
 }

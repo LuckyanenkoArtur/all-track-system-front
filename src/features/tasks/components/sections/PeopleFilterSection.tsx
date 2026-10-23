@@ -16,14 +16,14 @@ import { getProjectSelectOptions } from "../../data/mockProjects";
 import styles from "../drawers/task-filter-drawer/Drawer.module.scss";
 
 export type PeopleFilterOptions = {
-  groups: string[];
+  categories: string[];
   initiators: string[];
   responsible: string[];
   observables: string[];
 };
 
 type PeopleFilterKey =
-  | "groups"
+  | "categories"
   | "projects"
   | "initiators"
   | "responsible"
@@ -49,9 +49,13 @@ export function PeopleFilterSection({
 }: PeopleFilterSectionProps) {
   const { t } = useTranslation();
 
-  const groupOptions = useMemo(
-    () => options.groups.map((group) => ({ value: group, label: group })),
-    [options.groups],
+  const categoryOptions = useMemo(
+    () =>
+      options.categories.map((category) => ({
+        value: category,
+        label: category,
+      })),
+    [options.categories],
   );
 
   const projectOptions = useMemo(() => getProjectSelectOptions(), []);
@@ -95,9 +99,9 @@ export function PeopleFilterSection({
         icon: <FiFolder />,
       },
       {
-        key: "groups",
-        label: t.tasks.groups,
-        options: groupOptions,
+        key: "categories",
+        label: t.tasks.categories,
+        options: categoryOptions,
         icon: <FiGrid />,
       },
       {
@@ -122,7 +126,7 @@ export function PeopleFilterSection({
     [
       t,
       projectOptions,
-      groupOptions,
+      categoryOptions,
       initiatorOptions,
       responsibleOptions,
       observableOptions,

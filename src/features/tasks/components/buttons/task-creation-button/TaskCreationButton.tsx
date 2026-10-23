@@ -7,7 +7,7 @@ import { getProjectSelectOptions } from "../../../data/mockProjects";
 import { TaskCreationDrawer } from "../../drawers/task-creation-drawer/Drawer";
 
 type FilterOptions = {
-  groups: string[];
+  categories: string[];
   initiators: string[];
   responsible: string[];
   observables: string[];
@@ -31,9 +31,13 @@ export function TaskCreationButton({
   const taskLabels = t.tasks;
   const detailLabels = taskLabels.details;
 
-  const groupSelectOptions = useMemo(
-    () => filterOptions.groups.map((group) => ({ value: group, label: group })),
-    [filterOptions.groups],
+  const categorySelectOptions = useMemo(
+    () =>
+      filterOptions.categories.map((category) => ({
+        value: category,
+        label: category,
+      })),
+    [filterOptions.categories],
   );
 
   const userSelectOptions = useMemo(() => {
@@ -70,7 +74,7 @@ export function TaskCreationButton({
         onClose={() => setOpen(false)}
         onSubmit={onSubmit}
         initiatorName={initiatorName}
-        groupOptions={groupSelectOptions}
+        categoryOptions={categorySelectOptions}
         userOptions={userSelectOptions}
         projectOptions={projectSelectOptions}
         labels={{
@@ -86,7 +90,8 @@ export function TaskCreationButton({
           stepPlaceholder: labels.stepPlaceholder,
           removeStep: labels.removeStep,
           initiator: taskLabels.initiator,
-          groups: taskLabels.groups,
+          categories: taskLabels.categories,
+          selectCategory: taskLabels.selectCategory,
           project: taskLabels.project,
           selectProject: taskLabels.selectProject,
           observables: taskLabels.observables,
