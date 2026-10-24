@@ -1,12 +1,21 @@
 import { FiUserPlus } from "react-icons/fi";
 
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { FeedItem } from "@feed/feed-item/FeedItem.tsx";
 import { Button } from "@primitive/button/Button.tsx";
 import { Card } from "@layout/card/Card.tsx";
 import { useTranslation } from "../../../../i18n/index.ts";
+import {
+  getTaskPriorityLabel,
+  resolveTaskPriority,
+} from "../../../tasks/domain/priority.ts";
 import { useTasks } from "../../../tasks/hooks/useTasks.ts";
+import {
+  getTaskStatusLabel,
+  normalizeTaskStatus,
+} from "../../../tasks/utils/taskStatusUtils.ts";
 import { parseBudget } from "../../../tasks/utils/taskListUtils.ts";
 import {
   formatProjectMoneySpent,
@@ -64,13 +73,15 @@ export function ProjectMemberList({ members }: { members: ProjectMember[] }) {
     <ul className={styles.memberList} aria-label={t.projects.members}>
       {members.map((member) => (
         <li key={member.id} className={styles.member}>
-          <FeedItem.Avatar className={styles.memberAvatar}>
-            {member.initials}
-          </FeedItem.Avatar>
-          <div className={styles.memberCopy}>
-            <span className={styles.memberName}>{member.name}</span>
-            <span className={styles.memberRole}>{member.role}</span>
-          </div>
+          <Link className={styles.memberLink} to={`/app/users/${member.id}/view`}>
+            <FeedItem.Avatar className={styles.memberAvatar}>
+              {member.initials}
+            </FeedItem.Avatar>
+            <span className={styles.memberCopy}>
+              <span className={styles.memberName}>{member.name}</span>
+              <span className={styles.memberRole}>{member.role}</span>
+            </span>
+          </Link>
         </li>
       ))}
     </ul>
@@ -86,6 +97,20 @@ export function ProjectDetailsSidebar({
   const startDate = formatDueDate(project.startDate, language);
   const endDate = formatDueDate(project.dueDate, language);
   const responsible = project.members[0] ?? null;
+  const status = normalizeTaskStatus(project.status);
+  const priority = resolveTaskPriority(project.priority).id;
+  const statusLabel = getTaskStatusLabel(status, {
+    open: t.tasks.open,
+    onHold: t.tasks.onHold,
+    inProgress: t.tasks.inProgress,
+    completed: t.tasks.completed,
+    cancelled: t.tasks.cancelled,
+  });
+  const priorityLabel = getTaskPriorityLabel(priority, {
+    high: t.tasks.high,
+    medium: t.tasks.medium,
+    low: t.tasks.low,
+  });
   const budget = useMemo(
     () =>
       tasks
@@ -114,19 +139,25 @@ export function ProjectDetailsSidebar({
 
         <dl className={styles.meta}>
           <div className={styles.metaRow}>
+            <dt>{t.tasks.status}</dt>
+            <dd className={styles[status]}>{statusLabel}</dd>
+          </div>
+          <div className={styles.metaRow}>
+            <dt>{t.tasks.priority}</dt>
+            <dd className={styles[priority]}>{priorityLabel}</dd>
+          </div>
+          <div className={styles.metaRow}>
             <dt>{t.projects.details.lead}</dt>
             <dd>
               {responsible ? (
-                <span className={styles.responsible}>
-                  <FeedItem.Avatar className={styles.responsibleAvatar}>
-                    {responsible.initials}
-                  </FeedItem.Avatar>
-                  <span className={styles.responsibleName}>
-                    {responsible.name}
-                  </span>
-                </span>
+                <Link
+                  className={styles.leadLink}
+                  to={`/app/users/${responsible.id}/view`}
+                >
+                  {responsible.name}
+                </Link>
               ) : (
-                <span className={styles.muted}>—</span>
+                "—"
               )}
             </dd>
           </div>

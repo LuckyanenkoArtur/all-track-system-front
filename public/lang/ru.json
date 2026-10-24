@@ -58,6 +58,11 @@
     "expand": "Развернуть боковую панель",
     "collapse": "Свернуть боковую панель"
   },
+  "users": {
+    "title": "Пользователи",
+    "role": "Роль",
+    "projects": "Проекты"
+  },
   "tasks": {
     "tasksCount": "задач",
     "inProgressCount": "в работе",
@@ -532,6 +537,7 @@
     },
     "details": {
       "backToProjects": "К проектам",
+      "backToProject": "К проекту",
       "placeholder": "Сведения о проекте появятся здесь.",
       "sidebar": "Сведения о проекте",
       "lead": "Руководитель",

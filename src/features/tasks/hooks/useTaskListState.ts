@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useTasks } from "../hooks/useTasks";
 import type { TaskFilters } from "../domain/filters";
+import type { Task } from "../domain/task";
 import type { TaskSort } from "../domain/sort";
 import { DEFAULT_FILTERS } from "../domain/filters";
 import {
@@ -11,8 +12,9 @@ import {
 import { useTaskCollections } from "./useTaskCollections";
 import { DEFAULT_PAGE_SIZE, type PageSize } from "../domain/others";
 
-export function useTaskListState() {
-  const { tasks } = useTasks();
+export function useTaskListState(tasksOverride?: Task[]) {
+  const { tasks: storedTasks } = useTasks();
+  const tasks = tasksOverride ?? storedTasks;
   const { collections, saveCollection, deleteCollection } =
     useTaskCollections();
 

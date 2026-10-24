@@ -1,13 +1,9 @@
 import { useMemo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@layout/card/Card.tsx";
-import Badge from "@primitive/badge/Badge.tsx";
 import { useTranslation } from "../../../../i18n/index.ts";
-import PriorityBadge from "../../../tasks/components/badges/priority-badge/PriorityBadge.tsx";
-import StatusBadge from "../../../tasks/components/badges/status-badge/StatusBadge.tsx";
 import { useTasks } from "../../../tasks/hooks/useTasks.ts";
 import { TaskDetailsTabPlaceholder } from "../../../tasks/components/placeholders/TaskDetailsTabPlaceholder.tsx";
-import type { Task } from "../../../tasks/domain/task";
 import {
   formatProjectMoneySpent,
   type Project,
@@ -21,6 +17,8 @@ import {
   ProjectTaskSummary,
 } from "./ProjectOverviewTemplates.tsx";
 import type { ProjectDetailTab } from "./projectDetailTabs.ts";
+import { projectTaskDetailsPath } from "./projectTaskPaths.ts";
+import { ProjectTasksView } from "./ProjectTasksView.tsx";
 import styles from "./ProjectDetailsPanels.module.scss";
 
 type ProjectPanelProps = {
@@ -36,46 +34,6 @@ function useProjectTasks(projectId: string) {
         .filter((task) => task.project === projectId)
         .sort((a, b) => a.dueDate.localeCompare(b.dueDate)),
     [tasks, projectId],
-  );
-}
-
-function formatTaskDue(isoDate: string, language: string) {
-  const date = new Date(isoDate);
-  if (Number.isNaN(date.getTime())) return isoDate;
-
-  return date.toLocaleDateString(language === "ru" ? "ru-RU" : "en-GB", {
-    day: "2-digit",
-    month: "short",
-  });
-}
-
-function ProjectTaskList({ tasks }: { tasks: Task[] }) {
-  const { t, language } = useTranslation();
-
-  if (tasks.length === 0) {
-    return <p className={styles.empty}>{t.projects.details.noTasks}</p>;
-  }
-
-  return (
-    <ul className={styles.taskList}>
-      {tasks.map((task) => (
-        <li key={task.id}>
-          <Link to={`/app/tasks/${task.id}`} className={styles.task}>
-            <Badge variant="info" className={styles.taskId}>
-              <Badge.Label>{task.id}</Badge.Label>
-            </Badge>
-            <span className={styles.taskTitle} title={task.title}>
-              {task.title}
-            </span>
-            <StatusBadge status={task.status} />
-            <PriorityBadge priority={task.priority} />
-            <span className={styles.taskDue}>
-              {formatTaskDue(task.dueDate, language)}
-            </span>
-          </Link>
-        </li>
-      ))}
-    </ul>
   );
 }
 
@@ -121,13 +79,7 @@ export function ProjectPlaceholderPanel({
 }
 
 export function ProjectTasksPanel({ project }: ProjectPanelProps) {
-  const tasks = useProjectTasks(project.id);
-
-  return (
-    <div className={styles.panel}>
-      <ProjectTaskList tasks={tasks} />
-    </div>
-  );
+  return <ProjectTasksView project={project} />;
 }
 
 export function ProjectTransactionsPanel({ project }: ProjectPanelProps) {
@@ -152,7 +104,10 @@ export function ProjectTransactionsPanel({ project }: ProjectPanelProps) {
           <ul className={styles.budgetList}>
             {tasks.map((task) => (
               <li key={task.id}>
-                <Link to={`/app/tasks/${task.id}`} className={styles.budgetRow}>
+                <Link
+                  to={projectTaskDetailsPath(project.id, task.id)}
+                  className={styles.budgetRow}
+                >
                   <span className={styles.taskTitle} title={task.title}>
                     {task.title}
                   </span>

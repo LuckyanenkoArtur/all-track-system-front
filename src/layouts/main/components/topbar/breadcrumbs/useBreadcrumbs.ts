@@ -8,6 +8,7 @@ import { useTranslation } from "../../../../../i18n";
 export type BreadcrumbItem = {
   label: string;
   to?: string;
+  state?: unknown;
 };
 
 /** Section titles live in the crumb slot. Nested pages add a parent link. */
@@ -32,9 +33,7 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
           tasks.find((item) => item.id === id)?.title,
         );
       case "projects":
-        return entityCrumbs(parts, sidebar.projects, "/app/projects", (id) =>
-          projects.find((item) => item.id === id)?.name,
-        );
+        return projectCrumbs(parts, sidebar.projects, projects, tasks);
       case "planners":
         return planningCrumbs(parts, sidebar.planning, sidebar.planners);
       case "calendar":
@@ -45,6 +44,8 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
         return financeCrumbs(parts.slice(2), sidebar);
       case "profile":
         return leaf(parts, t.userPage.title);
+      case "users":
+        return userCrumbs(parts, t.users.title, projects);
       default:
         return [];
     }
@@ -62,6 +63,44 @@ function planningCrumbs(
 ): BreadcrumbItem[] {
   if (parts.length !== 2) return [];
   return [{ label: planningLabel }, { label: pageLabel }];
+}
+
+function projectCrumbs(
+  parts: string[],
+  sectionLabel: string,
+  projects: { id: string; name: string }[],
+  tasks: { id: string; title: string; project?: string | null }[],
+): BreadcrumbItem[] {
+  if (parts.length === 2) return [{ label: sectionLabel }];
+
+  const project = projects.find((item) => item.id === parts[2]);
+  if (!project) return [];
+
+  if (parts.length === 3) {
+    return [
+      { label: sectionLabel, to: "/app/projects" },
+      { label: project.name },
+    ];
+  }
+
+  if (parts.length === 5 && parts[3] === "tasks") {
+    const task = tasks.find(
+      (item) => item.id === parts[4] && item.project === project.id,
+    );
+    if (!task) return [];
+
+    return [
+      { label: sectionLabel, to: "/app/projects" },
+      {
+        label: project.name,
+        to: `/app/projects/${project.id}`,
+        state: { tab: "tasks" },
+      },
+      { label: task.title },
+    ];
+  }
+
+  return [];
 }
 
 function entityCrumbs(
@@ -126,4 +165,19 @@ function financeCrumbs(
     { label: sidebar.finance, to: "/app/finance" },
     { label: pageLabel },
   ];
+}
+
+function userCrumbs(
+  parts: string[],
+  sectionLabel: string,
+  projects: { members: { id: string; name: string }[] }[],
+): BreadcrumbItem[] {
+  if (parts.length !== 4 || parts[3] !== "view") return [];
+
+  const member = projects
+    .flatMap((project) => project.members)
+    .find((item) => item.id === parts[2]);
+  if (!member) return [];
+
+  return [{ label: sectionLabel }, { label: member.name }];
 }

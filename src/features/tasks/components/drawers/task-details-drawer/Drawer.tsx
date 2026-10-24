@@ -6,12 +6,17 @@ import { Drawer } from "@overlay/drawer/Drawer.tsx";
 type TaskDetailsDrawerProps = {
   task: Task | null;
   initialTab?: string;
+  expandTo?: string;
 };
 
-export function TaskDetailsDrawer({ task, initialTab }: TaskDetailsDrawerProps) {
+export function TaskDetailsDrawer({
+  task,
+  initialTab,
+  expandTo,
+}: TaskDetailsDrawerProps) {
   const { t } = useTranslation();
   const open = task !== null;
-  const expandUrl = task ? `/app/tasks/${task.id}` : undefined;
+  const expandUrl = expandTo ?? (task ? `/app/tasks/${task.id}` : undefined);
 
   return (
     <Drawer open={open} expander={expandUrl}>

@@ -35,7 +35,12 @@ export default function Breadcrumbs() {
                   {item.label}
                 </span>
               ) : (
-                <Link className={styles.link} to={item.to} title={item.label}>
+                <Link
+                  className={styles.link}
+                  to={item.to}
+                  state={item.state}
+                  title={item.label}
+                >
                   {item.label}
                 </Link>
               )}

@@ -14,6 +14,7 @@ import RemindersPage from "./features/reminders";
 import PlannersPage from "./features/planners";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import { ProjectDetailsPage } from "./features/projects/pages/project-details/ProjectDetailsPage";
+import { UserViewPage } from "./features/users/pages/UserViewPage";
 
 import {
   FinanceLayout,
@@ -73,8 +74,16 @@ export const router = createBrowserRouter([
             element: <ProjectsPage />,
           },
           {
+            path: "/app/projects/:projectId/tasks/:taskId",
+            element: <TaskDetailsPage />,
+          },
+          {
             path: "/app/projects/:id",
             element: <ProjectDetailsPage />,
+          },
+          {
+            path: "/app/users/:id/view",
+            element: <UserViewPage />,
           },
           {
             path: "/app/planners",

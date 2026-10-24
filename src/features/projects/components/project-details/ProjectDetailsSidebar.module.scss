@@ -113,6 +113,7 @@
 }
 
 .metaRow {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -138,27 +139,56 @@
     font-weight: 600;
     color: var(--color-text);
     text-align: right;
+
+    &.open,
+    &.low {
+      color: var(--color-text-muted);
+    }
+
+    &.inProgress {
+      color: var(--color-accent);
+    }
+
+    &.onHold,
+    &.medium {
+      color: #d97706;
+    }
+
+    &.completed {
+      color: #166534;
+    }
+
+    &.cancelled,
+    &.high {
+      color: #dc2626;
+    }
   }
 }
 
-.responsible {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
+:global([data-theme="dark"]) .metaRow dd.completed {
+  color: #86efac;
 }
 
-.responsibleAvatar {
-  width: 28px;
-  height: 28px;
-  font-size: 0.625rem;
-}
+.leadLink {
+  color: inherit;
+  text-decoration: none;
 
-.responsibleName {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 .memberList {
@@ -173,9 +203,28 @@
 
 .member {
   display: flex;
+  min-width: 0;
+}
+
+.memberLink {
+  display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
   min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 8px;
+
+  &:hover .memberName,
+  &:focus-visible .memberName {
+    color: var(--color-accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 .memberAvatar {

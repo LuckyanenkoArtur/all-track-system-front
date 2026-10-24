@@ -58,6 +58,11 @@
     "expand": "Expand sidebar",
     "collapse": "Collapse sidebar"
   },
+  "users": {
+    "title": "Users",
+    "role": "Role",
+    "projects": "Projects"
+  },
   "tasks": {
     "tasksCount": "tasks",
     "inProgressCount": "in progress",
@@ -532,6 +537,7 @@
     },
     "details": {
       "backToProjects": "Back to projects",
+      "backToProject": "Back to project",
       "placeholder": "Project details will appear here.",
       "sidebar": "Project details",
       "lead": "Lead",

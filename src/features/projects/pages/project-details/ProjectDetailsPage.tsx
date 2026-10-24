@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoDocuments } from "react-icons/io5";
 import {
@@ -14,8 +14,6 @@ import ProgressBar from "@primitive/progress-bar/ProgressBar.tsx";
 import Title from "@primitive/title/Title.tsx";
 import { Tabulator } from "@nav/tabulator/Tabulator.tsx";
 import { useTranslation } from "../../../../i18n/index.ts";
-import PriorityBadge from "../../../tasks/components/badges/priority-badge/PriorityBadge.tsx";
-import StatusBadge from "../../../tasks/components/badges/status-badge/StatusBadge.tsx";
 import {
   ProjectMembersPanel,
   ProjectOverviewPanel,
@@ -24,9 +22,19 @@ import {
   ProjectTransactionsPanel,
 } from "../../components/project-details/ProjectDetailsPanels.tsx";
 import { ProjectDetailsSidebar } from "../../components/project-details/ProjectDetailsSidebar.tsx";
-import type { ProjectDetailTab } from "../../components/project-details/projectDetailTabs.ts";
+import {
+  PROJECT_DETAIL_TABS,
+  type ProjectDetailTab,
+} from "../../components/project-details/projectDetailTabs.ts";
 import { useProjects } from "../../store/projects.store.ts";
 import styles from "./ProjectDetailsPage.module.scss";
+
+function isProjectTab(value: unknown): value is ProjectDetailTab {
+  return (
+    value === "members" ||
+    PROJECT_DETAIL_TABS.includes(value as (typeof PROJECT_DETAIL_TABS)[number])
+  );
+}
 
 const PROJECT_TABS = [
   { id: "overview", icon: AiOutlineDashboard },
@@ -39,14 +47,18 @@ const PROJECT_TABS = [
 export function ProjectDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const projects = useProjects();
   const project = projects.find((item) => item.id === id) ?? null;
-  const [tab, setTab] = useState<ProjectDetailTab>("overview");
+  const requestedTab = (location.state as { tab?: unknown } | null)?.tab;
+  const [tab, setTab] = useState<ProjectDetailTab>(
+    isProjectTab(requestedTab) ? requestedTab : "overview",
+  );
 
   useEffect(() => {
-    setTab("overview");
-  }, [id]);
+    setTab(isProjectTab(requestedTab) ? requestedTab : "overview");
+  }, [id, requestedTab]);
 
   if (!project) {
     return <Navigate to="/404" replace />;
@@ -75,11 +87,6 @@ export function ProjectDetailsPage() {
           </Button>
 
           <Title text={project.name} className={styles.projectTitle} title={project.name} />
-
-          <div className={styles.badges}>
-            <StatusBadge status={project.status} />
-            <PriorityBadge priority={project.priority} />
-          </div>
         </div>
 
         <div
@@ -128,9 +135,7 @@ export function ProjectDetailsPage() {
                 </div>
               </Tabulator.Panel>
               <Tabulator.Panel value="tasks">
-                <div className={styles.panelScroll}>
-                  <ProjectTasksPanel project={project} />
-                </div>
+                <ProjectTasksPanel project={project} />
               </Tabulator.Panel>
               <Tabulator.Panel value="activities">
                 <div className={styles.panelScroll}>
